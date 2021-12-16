@@ -1,0 +1,97 @@
+// -----------------------------------------------------------------------------
+// Prisma DB  -  https://prisma.io
+// -----------------------------------------------------------------------------
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// The generated dbml file is located at: ./dbml/schema.dbml
+// Chech https://dbdiagram.io/d to visualy inspect the schema
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+// -----------------------------------------------------------------------------
+// Enums
+// -----------------------------------------------------------------------------
+
+enum Role {
+  admin
+  student
+  professor
+}
+
+enum Color {
+  primary
+  light
+  dark
+  red
+  blue
+  green
+  yellow
+  purple
+  orange
+  pink
+}
+
+// -----------------------------------------------------------------------------
+// Models
+// -----------------------------------------------------------------------------
+
+model Institution {
+  id          String    @id
+  name        String
+  description String
+  imageUrl    String
+  address     String
+  city        String
+  state       String
+  phone       String
+  email       String
+  website     String
+  novelties   Novelty[]
+}
+
+model Novelty {
+  id            String      @id @default(cuid())
+  description   String
+  link          String
+  imageUrl      String
+  institution   Institution @relation(fields: [institutionId], references: [id])
+  institutionId String
+}
+
+model User {
+  id              String   @id @default(cuid())
+  firstName       String
+  lastName        String
+  birthDate       DateTime
+  email           String   @unique
+  profileImageUrl String
+  password        String
+  role            Role     @default(student)
+}
+
+model Course {
+  id           String          @id @default(cuid())
+  name         String
+  slug         String          @unique
+  description  String
+  moreInfo     String
+  imageUrl     String
+  enrollmentId String          @unique
+  settings     CourseSettings?
+}
+
+model CourseSettings {
+  baseColor Color  @default(primary)
+  course    Course @relation(fields: [courseId], references: [id])
+  courseId  String @unique
+}

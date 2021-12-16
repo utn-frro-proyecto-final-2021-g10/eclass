@@ -3,20 +3,39 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "yarn run docker:up && npx prisma migrate dev && npx prisma generate && npx prisma db seed && next dev -p 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db": "npx prisma studio",
+    "docker:up": "docker compose up -d --remove-orphans",
+    "docker:down": "docker compose down"
+  },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^1.0.15",
+    "@chakra-ui/react": "^1.6.8",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@prisma/client": "3.4.1",
+    "@types/bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
+    "framer-motion": "^4",
     "next": "11.1.2",
+    "next-auth": "^4.0.5",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
   "devDependencies": {
+    "@types/node": "16.11.6",
     "@types/react": "17.0.26",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
+    "prisma": "3.4.1",
+    "prisma-dbml-generator": "^0.8.3",
+    "ts-node": "^10.4.0",
     "typescript": "4.4.3"
   }
 }

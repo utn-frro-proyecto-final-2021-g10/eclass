@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:13
+    container_name: e-class_postgres
+    build:
+      context: .
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: e_class_db,e_class_db_shadow
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+
+  waitfor:
+    build:
+      context: .
+    hostname: waitfor
+    depends_on:
+      - postgres
+    command: sh -c "/wait"
+    environment:
+      WAIT_HOSTS: postgres:5432
+volumes:
+  e-class_postgres:
