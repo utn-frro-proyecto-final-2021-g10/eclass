@@ -1,4 +1,5 @@
-import { Institution, User, Role } from "@prisma/client";
+import { Institution, User, Role, Color, CourseSettings } from "@prisma/client";
+import { FullCourse } from "../../types/Course";
 
 export const institution: Institution = {
   id: "institution",
@@ -114,5 +115,86 @@ export const users: Omit<User, "id">[] = [
     profileImageUrl: "https://avatars.dicebear.com/api/bottts/10.svg",
     password: "student",
     role: Role.student,
+  },
+];
+
+interface ICourseSettings extends Omit<CourseSettings, "courseId" | "id"> {}
+
+interface ICourse extends Omit<FullCourse, "id" | "settings"> {
+  settings?: ICourseSettings;
+}
+
+export const courses: Omit<ICourse, "ownerId">[] = [
+  {
+    name: "Introduction to Programming",
+    slug: "intro-to-programming",
+    description: "Commission AB1",
+    moreInfo:
+      "In this course, we will learn the basics of programming and how to write code. We will also learn about the different types of programming languages, data structures and more.",
+    imageUrl: "https://avatars.dicebear.com/api/jdenticon/1.svg",
+    enrollmentId: "INTRO-TO-PROGRAMMING-AB1",
+    settings: {
+      baseColor: Color.blue,
+    },
+  },
+  {
+    name: "Physics I",
+    slug: "physics-1",
+    description: "Commission AB1",
+    moreInfo:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    imageUrl: "https://avatars.dicebear.com/api/jdenticon/2.svg",
+    enrollmentId: "PHYSICS-1-AB1",
+    settings: {
+      baseColor: Color.red,
+    },
+  },
+  {
+    name: "Calculus I",
+    slug: "calculus-1",
+    description: "Commission AB1",
+    moreInfo:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    imageUrl: "https://avatars.dicebear.com/api/jdenticon/3.svg",
+    enrollmentId: "CALCULUS-1-AB1",
+    settings: {
+      baseColor: Color.green,
+    },
+  },
+  {
+    name: "Algebra",
+    slug: "algebra",
+    description: "Commission AB1",
+    moreInfo:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    imageUrl: "https://avatars.dicebear.com/api/jdenticon/4.svg",
+    enrollmentId: "ALGEBRA-AB1",
+    settings: {
+      baseColor: Color.yellow,
+    },
+  },
+  {
+    name: "Arquitecture of computers",
+    slug: "arquitecture-of-computers",
+    description: "Commission AB1",
+    moreInfo:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    imageUrl: "https://avatars.dicebear.com/api/jdenticon/5.svg",
+    enrollmentId: "ARQUITECTURE-OF-COMPUTERS-AB1",
+    settings: {
+      baseColor: Color.pink,
+    },
+  },
+  {
+    name: "Systems and organizations",
+    slug: "systems-and-organizations",
+    description: "Commission AB1",
+    moreInfo:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    imageUrl: "https://avatars.dicebear.com/api/jdenticon/6.svg",
+    enrollmentId: "SYSTEMS-AND-ORGANIZATIONS-AB1",
+    settings: {
+      baseColor: Color.purple,
+    },
   },
 ];

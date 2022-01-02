@@ -69,14 +69,16 @@ model Novelty {
 }
 
 model User {
-  id              String   @id @default(cuid())
+  id              String         @id @default(cuid())
   firstName       String
   lastName        String
   birthDate       DateTime
-  email           String   @unique
+  email           String         @unique
   profileImageUrl String
   password        String
-  role            Role     @default(student)
+  role            Role           @default(student)
+  courses         CourseMember[]
+  ownedCourses    Course[]
 }
 
 model Course {
@@ -88,6 +90,18 @@ model Course {
   imageUrl     String
   enrollmentId String          @unique
   settings     CourseSettings?
+  members      CourseMember[]
+  owner        User            @relation(fields: [ownerId], references: [id])
+  ownerId      String
+}
+
+model CourseMember {
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  @@id([userId, courseId])
 }
 
 model CourseSettings {

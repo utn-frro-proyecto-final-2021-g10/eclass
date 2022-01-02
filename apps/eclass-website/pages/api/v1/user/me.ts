@@ -16,6 +16,18 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
       where: {
         id: req.user.id,
       },
+      include: {
+        courses: {
+          include: {
+            course: {
+              include: {
+                owner: true,
+                settings: true,
+              },
+            }
+          },
+        },
+      },
     });
     return res.status(200).json({
       success: true,
