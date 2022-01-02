@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   Box,
   VStack,
@@ -6,20 +8,76 @@ import {
   Heading,
   Divider,
   AspectRatio,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
+  Badge,
+  Tooltip,
+  useClipboard,
+  useToast,
 } from "@chakra-ui/react";
-import { SettingsIcon } from "@chakra-ui/icons";
+import { SettingsIcon, ArrowBackIcon, EditIcon } from "@chakra-ui/icons";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { useFormToast } from "../../../hooks/useFormToast";
 import { FullCourse } from "../../../types/Course";
 import { Card, CardHeader, CardBody } from "../../Card";
 
 export const CourseCard = ({ course }: { course: FullCourse }) => {
+  const router = useRouter();
+  const { hasCopied: hasCopiedEnrollmentId, onCopy: onCopyEnrollmentId } =
+    useClipboard(course.enrollmentId);
+  const toast = useToast();
+  const { showToast } = useFormToast({
+    successMessage: "Successfully disenrolled from",
+  });
+  const me = useCurrentUser();
+
+  useEffect(() => {
+    if (hasCopiedEnrollmentId) {
+      toast({
+        title: `Enrollment ID for ${course.name} copied`,
+        description: course.enrollmentId,
+        status: "info",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  }, [hasCopiedEnrollmentId, toast, course]);
+
+  const handleCopyEnrollmentId = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onCopyEnrollmentId();
+  };
+
+  const handleDisenroll = async (enrollmentId: string) => {
+    const result = await fetch("/api/v1/course/disenroll", {
+      method: "POST",
+      body: JSON.stringify({ enrollmentId }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await result.json();
+    showToast(data);
+    if (data.success) {
+      // TODO: use react-query and invalidate instead of reloading
+      router.reload();
+    }
+  };
+
   return (
-    <Card baseColor={course?.settings?.baseColor}>
+    <Card
+      baseColor={course.settings?.baseColor}
+      href={`/course/${course.slug}/feed`}
+    >
       <CardHeader>
         <HStack spacing="2">
-          <Avatar />
+          <Avatar src={course.imageUrl} />
           <VStack align="left" spacing="0">
-            <Heading size="s">Course Name</Heading>
-            <Heading size="xs">Course Description</Heading>
+            <Heading size="s">{course.name}</Heading>
+            <Heading size="xs">{course.description}</Heading>
           </VStack>
         </HStack>
       </CardHeader>
@@ -46,11 +104,55 @@ export const CourseCard = ({ course }: { course: FullCourse }) => {
               position="absolute"
               right={0}
               top="-4rem"
+              src={course.owner?.profileImageUrl}
             />
           </HStack>
           <Divider />
-          <HStack spacing={3} justify="end">
-            <SettingsIcon />
+          <HStack spacing={3} justify="space-between">
+            <Tooltip label="Copy enrollment id">
+              <Badge
+                as="button"
+                onClick={handleCopyEnrollmentId}
+                variant="outline"
+                colorScheme={course.settings?.baseColor || "teal"}
+              >
+                {course.enrollmentId}
+              </Badge>
+            </Tooltip>
+            <Menu placement="top-start">
+              <MenuButton
+                as={IconButton}
+                size="sm"
+                aria-label="Course options"
+                icon={<SettingsIcon />}
+                variant="ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              />
+              <MenuList>
+                <MenuItem
+                  onClick={(e) => {
+                    handleDisenroll(course.enrollmentId);
+                    e.stopPropagation();
+                  }}
+                  icon={<ArrowBackIcon />}
+                >
+                  Salir del curso
+                </MenuItem>
+                {me?.role === "professor" && (
+                  <MenuItem
+                    onClick={(e) => {
+                      alert("Edit course");
+                      e.stopPropagation();
+                    }}
+                    icon={<EditIcon />}
+                  >
+                    Editar curso
+                  </MenuItem>
+                )}
+              </MenuList>
+            </Menu>
           </HStack>
         </VStack>
       </CardBody>

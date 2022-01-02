@@ -1,12 +1,24 @@
 import React, { useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Box, Flex, Text, Stack, Avatar, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Stack,
+  Avatar,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
 import {
   CloseIcon,
   HamburgerIcon,
   InfoIcon,
-  SettingsIcon,
+  ArrowBackIcon,
+  AtSignIcon,
 } from "@chakra-ui/icons";
 import { courseContext } from "../../layouts/course-layout";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
@@ -40,8 +52,6 @@ const Tab = ({ displayName, url }: { displayName: string; url: string }) => {
 
 export const Navigation = () => {
   const course = useContext(courseContext);
-
-  console.log(course);
   const [isOpen, setIsOpen] = React.useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const me = useCurrentUser();
@@ -105,15 +115,43 @@ export const Navigation = () => {
       )}
       <Box pb={{ base: 0, lg: 2 }}>
         <Stack spacing={6} align="center" direction="row">
-          <InfoIcon boxSize="6" />
-          <SettingsIcon boxSize="6" />
-          <Avatar
-            name={me ? `${me.firstName} ${me.lastName}` : undefined}
-            src={me?.profileImageUrl}
-          />
-          <Box onClick={toggle} display={{ lg: "none" }}>
-            {isOpen ? <CloseIcon boxSize="4" /> : <HamburgerIcon boxSize="6" />}
-          </Box>
+          <Menu>
+            <MenuButton
+              as={InfoIcon}
+              cursor="pointer"
+              aria-label="Settings"
+              boxSize="6"
+              variant="ghost"
+            />
+            <MenuList></MenuList>
+          </Menu>
+          <Menu>
+            <MenuButton
+              as={Avatar}
+              cursor="pointer"
+              aria-label="Settings"
+              name={me ? `${me.firstName} ${me.lastName}` : undefined}
+              src={me?.profileImageUrl}
+              variant="ghost"
+            />
+            <MenuList>
+              <MenuItem icon={<AtSignIcon />}>Profile</MenuItem>
+              <Link href="/api/auth/signout" passHref>
+                <MenuItem as="a" icon={<ArrowBackIcon />}>
+                  Sign out
+                </MenuItem>
+              </Link>
+            </MenuList>
+          </Menu>
+          {course && (
+            <Box onClick={toggle} display={{ lg: "none" }}>
+              {isOpen ? (
+                <CloseIcon boxSize="4" />
+              ) : (
+                <HamburgerIcon boxSize="6" />
+              )}
+            </Box>
+          )}
         </Stack>
       </Box>
     </Flex>

@@ -1,12 +1,16 @@
 import Head from "next/head";
 import { Flex } from "@chakra-ui/react";
+import { Loader } from "../components/Loader";
 import { Navigation } from "../components/Navigation";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export interface BaseLayoutProps {
   children: React.ReactNode;
 }
 
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
+  const me = useCurrentUser();
+  
   return (
     <>
       <Head>
@@ -17,8 +21,10 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Flex as="main" direction="column" minH="100vh" pb={5}>
-        <Navigation />
+        {me ? <>
+          <Navigation />
         {children}
+        </> : <Loader />}
       </Flex>
     </>
   );
