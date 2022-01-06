@@ -4,13 +4,26 @@ import { stylesContext } from "./Card";
 
 interface CardHeaderProps {
   children: React.ReactNode;
+  onClick?: () => void;
 }
 
-export const CardHeader = ({ children, ...props }: CardHeaderProps) => {
+export const CardHeader = ({
+  children,
+  onClick,
+  ...props
+}: CardHeaderProps) => {
   const styles = useContext(stylesContext);
 
   return (
-    <Box px="4" py="3" background={styles.baseColor} color="white" {...props}>
+    <Box
+      px="4"
+      py="3"
+      onClick={onClick}
+      background={styles.baseColor}
+      color="white"
+      cursor={onClick && "pointer"}
+      {...props}
+    >
       {children}
     </Box>
   );

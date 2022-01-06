@@ -51,7 +51,7 @@ const Tab = ({ displayName, url }: { displayName: string; url: string }) => {
 };
 
 export const Navigation = () => {
-  const course = useContext(courseContext);
+  const { course } = useContext(courseContext);
   const [isOpen, setIsOpen] = React.useState(false);
   const toggle = () => setIsOpen(!isOpen);
   const me = useCurrentUser();
