@@ -23,7 +23,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Hunt",
     birthDate: new Date("2000-01-01"),
     email: "admin@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/1.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/admin-1.svg?b=%23dedede",
     password: "admin",
     role: Role.admin,
   },
@@ -36,7 +37,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Mason",
     birthDate: new Date("2000-01-01"),
     email: "professor@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/2.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/professor-1.svg?b=%23dedede",
     password: "professor",
     role: Role.professor,
   },
@@ -45,7 +47,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Abrams",
     birthDate: new Date("2000-01-01"),
     email: "professor2@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/3.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/professor-2.svg?b=%23dedede",
     password: "professor",
     role: Role.professor,
   },
@@ -54,7 +57,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Townsend",
     birthDate: new Date("2000-01-01"),
     email: "professor3@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/4.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/professor-3.svg?b=%23dedede",
     password: "professor",
     role: Role.professor,
   },
@@ -67,7 +71,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Harker",
     birthDate: new Date("2000-01-01"),
     email: "student@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/5.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/student-1.svg?b=%23dedede",
     password: "student",
     role: Role.student,
   },
@@ -76,7 +81,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Howitt",
     birthDate: new Date("2000-01-01"),
     email: "student2@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/6.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/student-2.svg?b=%23dedede",
     password: "student",
     role: Role.student,
   },
@@ -85,7 +91,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Kenyon",
     birthDate: new Date("2000-01-01"),
     email: "student3@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/7.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/student-3.svg?b=%23dedede",
     password: "student",
     role: Role.student,
   },
@@ -94,7 +101,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Boucher",
     birthDate: new Date("2000-01-01"),
     email: "student4@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/8.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/student-4.svg?b=%23dedede",
     password: "student",
     role: Role.student,
   },
@@ -103,7 +111,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Montgomery",
     birthDate: new Date("2000-01-01"),
     email: "student5@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/9.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/student-5.svg?b=%23dedede",
     password: "student",
     role: Role.student,
   },
@@ -112,7 +121,8 @@ export const users: Omit<User, "id">[] = [
     lastName: "Smith",
     birthDate: new Date("2000-01-01"),
     email: "student6@eclass.com",
-    profileImageUrl: "https://avatars.dicebear.com/api/bottts/10.svg",
+    profileImageUrl:
+      "https://avatars.dicebear.com/api/bottts/student-6.svg?b=%23dedede",
     password: "student",
     role: Role.student,
   },
@@ -131,7 +141,7 @@ export const courses: Omit<ICourse, "ownerId">[] = [
     description: "Commission AB1",
     moreInfo:
       "In this course, we will learn the basics of programming and how to write code. We will also learn about the different types of programming languages, data structures and more.",
-    imageUrl: "https://avatars.dicebear.com/api/jdenticon/1.svg",
+    imageUrl: "https://avatars.dicebear.com/api/identicon/1.svg?b=%23dedede",
     enrollmentId: "INTRO-TO-PROGRAMMING-AB1",
     settings: {
       baseColor: Color.blue,
@@ -143,7 +153,7 @@ export const courses: Omit<ICourse, "ownerId">[] = [
     description: "Commission AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    imageUrl: "https://avatars.dicebear.com/api/jdenticon/2.svg",
+    imageUrl: "https://avatars.dicebear.com/api/identicon/2.svg?b=%23dedede",
     enrollmentId: "PHYSICS-1-AB1",
     settings: {
       baseColor: Color.red,
@@ -155,7 +165,7 @@ export const courses: Omit<ICourse, "ownerId">[] = [
     description: "Commission AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    imageUrl: "https://avatars.dicebear.com/api/jdenticon/3.svg",
+    imageUrl: "https://avatars.dicebear.com/api/identicon/3.svg?b=%23dedede",
     enrollmentId: "CALCULUS-1-AB1",
     settings: {
       baseColor: Color.green,
@@ -167,7 +177,7 @@ export const courses: Omit<ICourse, "ownerId">[] = [
     description: "Commission AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    imageUrl: "https://avatars.dicebear.com/api/jdenticon/4.svg",
+    imageUrl: "https://avatars.dicebear.com/api/identicon/4.svg?b=%23dedede",
     enrollmentId: "ALGEBRA-AB1",
     settings: {
       baseColor: Color.yellow,
@@ -179,7 +189,7 @@ export const courses: Omit<ICourse, "ownerId">[] = [
     description: "Commission AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    imageUrl: "https://avatars.dicebear.com/api/jdenticon/5.svg",
+    imageUrl: "https://avatars.dicebear.com/api/identicon/5.svg?b=%23dedede",
     enrollmentId: "ARQUITECTURE-OF-COMPUTERS-AB1",
     settings: {
       baseColor: Color.pink,
@@ -191,7 +201,7 @@ export const courses: Omit<ICourse, "ownerId">[] = [
     description: "Commission AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    imageUrl: "https://avatars.dicebear.com/api/jdenticon/6.svg",
+    imageUrl: "https://avatars.dicebear.com/api/identicon/6.svg?b=%23dedede",
     enrollmentId: "SYSTEMS-AND-ORGANIZATIONS-AB1",
     settings: {
       baseColor: Color.purple,
