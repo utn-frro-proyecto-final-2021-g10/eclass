@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn run docker:up && npx prisma migrate dev && npx prisma generate && npx prisma db seed && next dev -p 3000",
+    "dev": "yarn docker:down && docker volume rm eclass-website_database-data --force && yarn run docker:up && npx prisma db push && npx prisma generate && npx prisma db seed && next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
