@@ -1,25 +1,12 @@
-version: "3.9"
+version: '3'
 services:
-  postgres:
-    image: postgres:13
-    container_name: e-class_postgres
-    build:
-      context: .
+  database:
+    image: "postgres" # use latest official postgres version
     ports:
       - "5432:5432"
-    environment:
-      POSTGRES_MULTIPLE_DATABASES: e_class_db,e_class_db_shadow
-      POSTGRES_USER: dev
-      POSTGRES_PASSWORD: dev
-
-  waitfor:
-    build:
-      context: .
-    hostname: waitfor
-    depends_on:
-      - postgres
-    command: sh -c "/wait"
-    environment:
-      WAIT_HOSTS: postgres:5432
+    env_file:
+      - database.env # configure postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data/ # persist data even if container shuts down
 volumes:
-  e-class_postgres:
+  database-data: # named volumes can be managed easier using docker-compose
