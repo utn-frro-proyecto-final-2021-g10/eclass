@@ -1,8 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
+import { reqWithUser } from "../../../../types/reqWithUser";
 
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: reqWithUser, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
       return getUserById();
@@ -57,8 +58,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             ownedCourses: req.body.user.ownedCourses,
             profileImageUrl: req.body.user.profileImageUrl,
             role: req.body.user.role,
-            
           },
+            
         });
         if (user) {
           return res.status(200).json({

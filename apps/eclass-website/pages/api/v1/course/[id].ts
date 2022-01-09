@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
-
+const env = process.env.NODE_ENV;
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (req.method) {
@@ -44,18 +44,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           where: {
             id: req.query.id.toString(),
           },
-          data: {
-            description: req.body.course.description,
-            enrollmentId: req.body.course.enrollmentId,
-            imageUrl: req.body.course.imageUrl,
-            members: req.body.course.members,
-            moreInfo: req.body.course.moreInfo,
-            name: req.body.course.name,
-            owner: req.body.course.owner,
-            ownerId: req.body.course.ownerId,
-            settings: req.body.course.settings,
-            slug: req.body.course.slug,
-          },
+          data: req.body,
         });
         if (course) {
           return res.status(200).json({
@@ -63,10 +52,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
             course: course,
           });
         }
-      } catch (error) {
+      } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: "Error al modificar curso",
+          message: env === 'development' ? error.message : "Error al modificar curso",
         });
       }
     }
@@ -86,10 +75,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         course: course
       })
     }
-    catch(error){
+    catch(error: any){
       return res.status(400).json({
         success: false,
-        message: "Error al eliminar curso"
+        message: env === 'development' ? error.message : "Error al eliminar curso"
       })
     }
     

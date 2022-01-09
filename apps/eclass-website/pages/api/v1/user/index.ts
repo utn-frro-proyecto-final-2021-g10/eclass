@@ -1,7 +1,9 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
+import { reqWithUser } from "../../../../types/reqWithUser";
+const env = process.env.NODE_ENV;
 
-function handler(req: NextApiRequest, res: NextApiResponse) {
+function handler(req: reqWithUser, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
       return getUsers();
@@ -31,15 +33,18 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   async function createUser() {
     if (req.body) {
       try {
-        const user = prisma.user.create(req.body);
+        const user = await prisma.user.create({
+          data: req.body
+        });
         return res.status(200).json({
           success: true,
           user: user,
         });
-      } catch (error) {
+      } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: "Error al crear el curso",
+          message: env === 'development' ? error.message :  "Error al crear el usuario",
+          env: env,
         });
       }
     }

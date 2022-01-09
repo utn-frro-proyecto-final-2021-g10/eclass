@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 
+const env = process.env.NODE_ENV;
+
 function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
@@ -16,7 +18,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
 
   // gets all courses
   async function getCourses() {
-    const courses = prisma.course.findMany({});
+    const courses = await prisma.course.findMany({});
     if (courses)
       return res.status(200).json({
         success: true,
@@ -31,15 +33,17 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   async function createCourse() {
     if (req.body) {
       try {
-        const course = prisma.course.create(req.body);
+        const course = await prisma.course.create({
+          data: req.body
+        });
         return res.status(200).json({
           success: true,
           course: course,
         });
-      } catch (error) {
+      } catch (error: any) {
           return res.status(400).json({
             success: false,
-            message: "Error al crear el curso"    
+            message: env === 'development' ? error.message : "Error al crear el curso"    
         })
       }
     }
