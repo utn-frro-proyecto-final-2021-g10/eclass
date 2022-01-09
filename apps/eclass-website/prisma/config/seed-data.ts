@@ -134,7 +134,7 @@ interface ICourse extends Omit<FullCourse, "id" | "settings"> {
   settings?: ICourseSettings;
 }
 
-export const courses: Omit<ICourse, "ownerId">[] = [
+export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
   {
     name: "Introduction to Programming",
     slug: "intro-to-programming",

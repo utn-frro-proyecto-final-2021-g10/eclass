@@ -95,7 +95,7 @@ model Course {
   members      CourseMember[]
   owner        User            @relation(fields: [ownerId], references: [id])
   ownerId      String
-  forumId      String
+  forumId      String?
   Forum        Forum?
   Task         Task[]
 }
