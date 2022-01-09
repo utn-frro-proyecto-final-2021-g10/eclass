@@ -78,9 +78,9 @@ model User {
   role            Role           @default(student)
   courses         CourseMember[]
   ownedCourses    Course[]
-  File            File[]
-  Message         Message[]
-  Answer          Answer[]
+  files           File[]
+  messages        Message[]
+  answers         Answer[]
 }
 
 model Course {
