@@ -6,9 +6,9 @@ const env = process.env.NODE_ENV;
 function handler(req: reqWithUser, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
-      return getInstitutions();
+      return getTasks();
     case "POST":
-      return createInstitution();
+      return createTask();
     default:
       return res.status(405).json({
         success: false,
@@ -16,34 +16,34 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       });
   }
 
-  // gets all institutions
-  async function getInstitutions() {
-    const institutions = await prisma.institution.findMany();
-    if (institutions)
+  // gets all tasks
+  async function getTasks() {
+    const tasks = await prisma.task.findMany();
+    if (tasks)
       return res.status(200).json({
         success: true,
-        institutions: institutions,
+        tasks: tasks,
       });
     return res.status(404).json({
       success: false,
-      message: "No se encontraron instituciones",
+      message: "No se encontraron tareas",
     });
   }
-  // creates an institution
-  async function createInstitution() {
+  // creates an task
+  async function createTask() {
     if (req.body) {
       try {
-        const institution = await prisma.institution.create({
+        const task = await prisma.task.create({
           data: req.body
         });
         return res.status(200).json({
           success: true,
-          institution: institution,
+          task: task,
         });
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el usuario",
+          message: env === 'development' ? error.message :  "Error al crear la tarea",
         });
       }
     }

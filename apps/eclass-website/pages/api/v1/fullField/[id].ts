@@ -1,88 +1,84 @@
 import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-const env = process.env.NODE_ENV;
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
-      return getCourseById();
+      return getFullFieldById();
     case "PUT":
-      return updateCourse();
+      return updateFullField();
     case "DELETE":
-      return deleteCourse();
+      return deleteFullField();
     default:
       return res.status(405).json({
         success: false,
         message: `Metodo ${req.method} no permitido`,
       });
   }
-  // Finds a course given a course id
-  async function getCourseById() {
-    const course = await prisma.course.findUnique({
+  // Finds an fullField given an fullField id
+  async function getFullFieldById() {
+    const fullField = await prisma.fullField.findUnique({
       where: {
         id: req.query.id.toString(),
       },
     });
 
-    if (course) {
+    if (fullField) {
       return res.status(200).json({
         success: true,
-        course: course,
+        fullField: fullField,
       });
     }
 
     return res.status(404).json({
       success: false,
-      message: "Curso no encontrado",
+      message: "Campo completo no encontrado",
     });
   }
-  /// updates a course given a course in the body of the request
-  async function updateCourse() {
+  /// updates an fullField given an fullField in the body of the request
+  async function updateFullField() {
     if (req.body) {
       try {
-        const course = await prisma.course.update({
+        const fullField = await prisma.fullField.update({
           where: {
             id: req.query.id.toString(),
           },
           data: req.body,
         });
-        if (course) {
+        if (fullField) {
           return res.status(200).json({
             success: true,
-            course: course,
+            fullField: fullField,
           });
         }
-      } catch (error: any) {
+      } catch (error) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message : "Error al modificar curso",
+          message: "Error al modificar campo completo",
         });
       }
     }
   }
 
-  // deletes a course given an id
-  async function deleteCourse() {
-    try{
-
-      const course = await prisma.course.delete({
+  // deletes an fullField given an id
+  async function deleteFullField() {
+    try {
+      const fullField = await prisma.fullField.delete({
         where: {
-          id: req.query.id.toString()
-        }
+          id: req.query.id.toString(),
+        },
       });
       return res.status(200).json({
         success: true,
-        course: course
-      })
-    }
-    catch(error: any){
+        fullField: fullField,
+      });
+    } catch (error) {
       return res.status(400).json({
         success: false,
-        message: env === 'development' ? error.message : "Error al eliminar curso"
-      })
+        message: "Error al eliminar campo completo",
+      });
     }
-    
   }
 };
 

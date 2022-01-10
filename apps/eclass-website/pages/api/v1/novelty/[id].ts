@@ -1,88 +1,84 @@
 import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-const env = process.env.NODE_ENV;
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
-      return getCourseById();
+      return getNoveltyById();
     case "PUT":
-      return updateCourse();
+      return updateNovelty();
     case "DELETE":
-      return deleteCourse();
+      return deleteNovelty();
     default:
       return res.status(405).json({
         success: false,
         message: `Metodo ${req.method} no permitido`,
       });
   }
-  // Finds a course given a course id
-  async function getCourseById() {
-    const course = await prisma.course.findUnique({
+  // Finds an novelty given an novelty id
+  async function getNoveltyById() {
+    const novelty = await prisma.novelty.findUnique({
       where: {
         id: req.query.id.toString(),
       },
     });
 
-    if (course) {
+    if (novelty) {
       return res.status(200).json({
         success: true,
-        course: course,
+        novelty: novelty,
       });
     }
 
     return res.status(404).json({
       success: false,
-      message: "Curso no encontrado",
+      message: "Novedad no encontrada",
     });
   }
-  /// updates a course given a course in the body of the request
-  async function updateCourse() {
+  /// updates an novelty given an novelty in the body of the request
+  async function updateNovelty() {
     if (req.body) {
       try {
-        const course = await prisma.course.update({
+        const novelty = await prisma.novelty.update({
           where: {
             id: req.query.id.toString(),
           },
           data: req.body,
         });
-        if (course) {
+        if (novelty) {
           return res.status(200).json({
             success: true,
-            course: course,
+            novelty: novelty,
           });
         }
-      } catch (error: any) {
+      } catch (error) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message : "Error al modificar curso",
+          message: "Error al modificar novedad",
         });
       }
     }
   }
 
-  // deletes a course given an id
-  async function deleteCourse() {
-    try{
-
-      const course = await prisma.course.delete({
+  // deletes an novelty given an id
+  async function deleteNovelty() {
+    try {
+      const novelty = await prisma.novelty.delete({
         where: {
-          id: req.query.id.toString()
-        }
+          id: req.query.id.toString(),
+        },
       });
       return res.status(200).json({
         success: true,
-        course: course
-      })
-    }
-    catch(error: any){
+        novelty: novelty,
+      });
+    } catch (error) {
       return res.status(400).json({
         success: false,
-        message: env === 'development' ? error.message : "Error al eliminar curso"
-      })
+        message: "Error al eliminar novedad",
+      });
     }
-    
   }
 };
 

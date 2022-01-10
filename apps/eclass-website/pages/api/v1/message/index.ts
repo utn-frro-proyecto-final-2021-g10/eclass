@@ -6,9 +6,9 @@ const env = process.env.NODE_ENV;
 function handler(req: reqWithUser, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
-      return getInstitutions();
+      return getMessages();
     case "POST":
-      return createInstitution();
+      return createMessage();
     default:
       return res.status(405).json({
         success: false,
@@ -16,34 +16,34 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       });
   }
 
-  // gets all institutions
-  async function getInstitutions() {
-    const institutions = await prisma.institution.findMany();
-    if (institutions)
+  // gets all messages
+  async function getMessages() {
+    const messages = await prisma.message.findMany();
+    if (messages)
       return res.status(200).json({
         success: true,
-        institutions: institutions,
+        messages: messages,
       });
     return res.status(404).json({
       success: false,
-      message: "No se encontraron instituciones",
+      message: "No se encontraron mensajes",
     });
   }
-  // creates an institution
-  async function createInstitution() {
+  // creates an message
+  async function createMessage() {
     if (req.body) {
       try {
-        const institution = await prisma.institution.create({
+        const message = await prisma.message.create({
           data: req.body
         });
         return res.status(200).json({
           success: true,
-          institution: institution,
+          message: message,
         });
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el usuario",
+          message: env === 'development' ? error.message :  "Error al crear el mensaje",
         });
       }
     }

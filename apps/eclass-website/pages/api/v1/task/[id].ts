@@ -1,88 +1,84 @@
 import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-const env = process.env.NODE_ENV;
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
-      return getCourseById();
+      return getTaskById();
     case "PUT":
-      return updateCourse();
+      return updateTask();
     case "DELETE":
-      return deleteCourse();
+      return deleteTask();
     default:
       return res.status(405).json({
         success: false,
         message: `Metodo ${req.method} no permitido`,
       });
   }
-  // Finds a course given a course id
-  async function getCourseById() {
-    const course = await prisma.course.findUnique({
+  // Finds an task given an task id
+  async function getTaskById() {
+    const task = await prisma.task.findUnique({
       where: {
         id: req.query.id.toString(),
       },
     });
 
-    if (course) {
+    if (task) {
       return res.status(200).json({
         success: true,
-        course: course,
+        task: task,
       });
     }
 
     return res.status(404).json({
       success: false,
-      message: "Curso no encontrado",
+      message: "Tarea no encontrada",
     });
   }
-  /// updates a course given a course in the body of the request
-  async function updateCourse() {
+  /// updates an task given an task in the body of the request
+  async function updateTask() {
     if (req.body) {
       try {
-        const course = await prisma.course.update({
+        const task = await prisma.task.update({
           where: {
             id: req.query.id.toString(),
           },
           data: req.body,
         });
-        if (course) {
+        if (task) {
           return res.status(200).json({
             success: true,
-            course: course,
+            task: task,
           });
         }
-      } catch (error: any) {
+      } catch (error) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message : "Error al modificar curso",
+          message: "Error al modificar tarea",
         });
       }
     }
   }
 
-  // deletes a course given an id
-  async function deleteCourse() {
-    try{
-
-      const course = await prisma.course.delete({
+  // deletes an task given an id
+  async function deleteTask() {
+    try {
+      const task = await prisma.task.delete({
         where: {
-          id: req.query.id.toString()
-        }
+          id: req.query.id.toString(),
+        },
       });
       return res.status(200).json({
         success: true,
-        course: course
-      })
-    }
-    catch(error: any){
+        task: task,
+      });
+    } catch (error) {
       return res.status(400).json({
         success: false,
-        message: env === 'development' ? error.message : "Error al eliminar curso"
-      })
+        message: "Error al eliminar tarea",
+      });
     }
-    
   }
 };
 

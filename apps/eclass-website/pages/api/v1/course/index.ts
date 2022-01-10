@@ -1,9 +1,10 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
+import { reqWithUser } from "../../../../types/reqWithUser";
 
 const env = process.env.NODE_ENV;
 
-function handler(req: NextApiRequest, res: NextApiResponse) {
+function handler(req: reqWithUser, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
       return getCourses();

@@ -1,88 +1,84 @@
 import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-const env = process.env.NODE_ENV;
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
-      return getCourseById();
+      return getFieldById();
     case "PUT":
-      return updateCourse();
+      return updateField();
     case "DELETE":
-      return deleteCourse();
+      return deleteField();
     default:
       return res.status(405).json({
         success: false,
         message: `Metodo ${req.method} no permitido`,
       });
   }
-  // Finds a course given a course id
-  async function getCourseById() {
-    const course = await prisma.course.findUnique({
+  // Finds an field given an field id
+  async function getFieldById() {
+    const field = await prisma.field.findUnique({
       where: {
         id: req.query.id.toString(),
       },
     });
 
-    if (course) {
+    if (field) {
       return res.status(200).json({
         success: true,
-        course: course,
+        field: field,
       });
     }
 
     return res.status(404).json({
       success: false,
-      message: "Curso no encontrado",
+      message: "Campo no encontrado",
     });
   }
-  /// updates a course given a course in the body of the request
-  async function updateCourse() {
+  /// updates an field given an field in the body of the request
+  async function updateField() {
     if (req.body) {
       try {
-        const course = await prisma.course.update({
+        const field = await prisma.field.update({
           where: {
             id: req.query.id.toString(),
           },
           data: req.body,
         });
-        if (course) {
+        if (field) {
           return res.status(200).json({
             success: true,
-            course: course,
+            field: field,
           });
         }
-      } catch (error: any) {
+      } catch (error) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message : "Error al modificar curso",
+          message: "Error al modificar campo",
         });
       }
     }
   }
 
-  // deletes a course given an id
-  async function deleteCourse() {
-    try{
-
-      const course = await prisma.course.delete({
+  // deletes an field given an id
+  async function deleteField() {
+    try {
+      const field = await prisma.field.delete({
         where: {
-          id: req.query.id.toString()
-        }
+          id: req.query.id.toString(),
+        },
       });
       return res.status(200).json({
         success: true,
-        course: course
-      })
-    }
-    catch(error: any){
+        field: field,
+      });
+    } catch (error) {
       return res.status(400).json({
         success: false,
-        message: env === 'development' ? error.message : "Error al eliminar curso"
-      })
+        message: "Error al eliminar campo",
+      });
     }
-    
   }
 };
 

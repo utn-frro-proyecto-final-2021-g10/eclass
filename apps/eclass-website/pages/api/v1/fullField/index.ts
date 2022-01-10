@@ -6,9 +6,9 @@ const env = process.env.NODE_ENV;
 function handler(req: reqWithUser, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
-      return getInstitutions();
+      return getFullFields();
     case "POST":
-      return createInstitution();
+      return createFullField();
     default:
       return res.status(405).json({
         success: false,
@@ -16,34 +16,34 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       });
   }
 
-  // gets all institutions
-  async function getInstitutions() {
-    const institutions = await prisma.institution.findMany();
-    if (institutions)
+  // gets all fullFields
+  async function getFullFields() {
+    const fullFields = await prisma.fullField.findMany();
+    if (fullFields)
       return res.status(200).json({
         success: true,
-        institutions: institutions,
+        fullFields: fullFields,
       });
     return res.status(404).json({
       success: false,
-      message: "No se encontraron instituciones",
+      message: "No se encontraron campos completos",
     });
   }
-  // creates an institution
-  async function createInstitution() {
+  // creates an fullField
+  async function createFullField() {
     if (req.body) {
       try {
-        const institution = await prisma.institution.create({
+        const fullField = await prisma.fullField.create({
           data: req.body
         });
         return res.status(200).json({
           success: true,
-          institution: institution,
+          fullField: fullField,
         });
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el usuario",
+          message: env === 'development' ? error.message :  "Error al crear el campo completo",
         });
       }
     }

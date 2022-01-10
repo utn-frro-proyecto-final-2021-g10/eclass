@@ -6,9 +6,9 @@ const env = process.env.NODE_ENV;
 function handler(req: reqWithUser, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
-      return getInstitutions();
+      return getNovelties();
     case "POST":
-      return createInstitution();
+      return createNovelty();
     default:
       return res.status(405).json({
         success: false,
@@ -16,34 +16,34 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       });
   }
 
-  // gets all institutions
-  async function getInstitutions() {
-    const institutions = await prisma.institution.findMany();
-    if (institutions)
+  // gets all novelties
+  async function getNovelties() {
+    const novelties = await prisma.novelty.findMany();
+    if (novelties)
       return res.status(200).json({
         success: true,
-        institutions: institutions,
+        novelties: novelties,
       });
     return res.status(404).json({
       success: false,
-      message: "No se encontraron instituciones",
+      message: "No se encontraron novedades",
     });
   }
-  // creates an institution
-  async function createInstitution() {
+  // creates an novelty
+  async function createNovelty() {
     if (req.body) {
       try {
-        const institution = await prisma.institution.create({
+        const novelty = await prisma.novelty.create({
           data: req.body
         });
         return res.status(200).json({
           success: true,
-          institution: institution,
+          novelty: novelty,
         });
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el usuario",
+          message: env === 'development' ? error.message :  "Error al crear el novedad",
         });
       }
     }

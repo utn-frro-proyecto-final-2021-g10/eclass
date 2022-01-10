@@ -45,20 +45,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
           where: {
             id: req.query.id.toString(),
           },
-          data: {
-            email: req.body.user.email,
-            password: req.body.user.password,
-            answers: req.body.user.answers,
-            files : req.body.user.files,
-            birthDate: req.body.user.birthDate,
-            firstName: req.body.user.firstName,
-            lastName: req.body.user.lastName,
-            courses: req.body.user.courses,
-            messages: req.body.user.messages,
-            ownedCourses: req.body.user.ownedCourses,
-            profileImageUrl: req.body.user.profileImageUrl,
-            role: req.body.user.role,
-          },
+          data: req.body,
             
         });
         if (user) {
