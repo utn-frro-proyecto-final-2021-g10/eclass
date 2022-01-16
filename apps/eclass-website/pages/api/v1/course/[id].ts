@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
@@ -19,6 +20,12 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
   // Finds a course given a course id
   async function getCourseById() {
+    if (req.user.role !== Role.admin){
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
     const course = await prisma.course.findUnique({
       where: {
         id: req.query.id.toString(),
@@ -39,6 +46,12 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
   /// updates a course given a course in the body of the request
   async function updateCourse() {
+    if (req.user.role !== Role.admin){
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      });
+    }
     if (req.body) {
       try {
         const course = await prisma.course.update({
@@ -64,6 +77,12 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
 
   // deletes a course given an id
   async function deleteCourse() {
+    if (req.user.role !== Role.admin){
+      return res.status(401).json({
+        success: false,
+        messsage: "Unauthorized"
+      });
+    }
     try{
 
       const course = await prisma.course.delete({

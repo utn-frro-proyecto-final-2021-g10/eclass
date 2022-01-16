@@ -1,3 +1,4 @@
+import { Role } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
@@ -31,6 +32,12 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
   // creates an institution
   async function createInstitution() {
+    if (req.user.role !== Role.admin){
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      })
+    }
     if (req.body) {
       try {
         const institution = await prisma.institution.create({

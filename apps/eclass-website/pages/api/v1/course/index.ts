@@ -1,3 +1,5 @@
+import { Role } from "@prisma/client";
+import { rmSync } from "fs";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
@@ -19,6 +21,12 @@ function handler(req: reqWithUser, res: NextApiResponse) {
 
   // gets all courses
   async function getCourses() {
+    if (req.user.role !== Role.admin){
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      })
+    }
     const courses = await prisma.course.findMany({});
     if (courses)
       return res.status(200).json({
@@ -32,6 +40,12 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
   // creates a course
   async function createCourse() {
+    if (req.user.role !== Role.admin){
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized"
+      })
+    }
     if (req.body) {
       try {
         const course = await prisma.course.create({
