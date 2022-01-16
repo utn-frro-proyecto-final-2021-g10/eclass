@@ -1,0 +1,108 @@
+answer{
+    getAllAnswers : admin
+    createAnswer : admin
+    deleteAnswer : admin
+    updateAnswer : admin
+    getAnswerById : admin
+}
+category{
+    getAllCategories : admin
+    createCategory : admin
+    deleteCategory : admin
+    updateCategory : admin
+    getCategoryById : admin
+}
+course{
+    getAllCourses   : admin
+    createCourse    : admin
+    deleteCourse    : admin
+    updateCourse    : admin
+    getCourseById   : admin
+    enroll          : student
+    disenroll       : student
+}
+field{
+    getAllFields : admin
+    createField : admin
+    deleteField : admin
+    updateField : admin
+    getFieldById : admin
+}
+file{
+    getAllFiles : admin
+    createFile : admin
+    deleteFile : admin
+    updateFile : admin
+    getFileById : admin
+}
+form{
+    getAllForms : admin
+    createForm : admin
+    deleteForm : admin
+    updateForm : admin
+    getFormById : admin
+}
+forum{
+    getAllForums : admin
+    createForum : admin
+    deleteForum : admin
+    updateForum : admin
+    getForumById : admin
+}
+fullField{
+    getAllFullFields : admin
+    createFullField : admin
+    deleteFullField : admin
+    updateFullField : admin
+    getFullFieldById : admin
+}
+fullForm{
+    getAllFullForms : admin
+    createFullForm : admin
+    deleteFullForm : admin
+    updateFullForm : admin
+    getFullFormById : admin
+}
+institution{
+    getAllInstitutions : admin
+    createInstitution : admin
+    deleteInstitution : admin
+    updateInstitution : admin
+    getInstitutionById : admin
+}
+message{
+    getAllMessages : admin
+    createMessage : admin
+    deleteMessage : admin
+    updateMessage : admin
+    getMessageById : admin
+}
+novelty{
+    getAllNovelties :admin 
+    createNovelty : admin
+    deleteNovelty : admin
+    updateNovelty : admin
+    getNoveltyById : admin
+}
+reply{
+    getAllReplies :admin 
+    createReply : admin
+    deleteReply : admin
+    updateReply : admin
+    getReplyById : admin
+}
+task{
+    getAllTasks : admin
+    createTask : admin
+    deleteTask : admin
+    updateTask : admin
+    getTaskById : admin
+}
+user{
+    getAllUsers : admin
+    createUser  : admin
+    deleteUser  : admin
+    updateUser  : admin
+    getUserById : admin
+    me          : any
+}

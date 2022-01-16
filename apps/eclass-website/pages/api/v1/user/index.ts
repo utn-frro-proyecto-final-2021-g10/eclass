@@ -1,9 +1,12 @@
 import { NextApiResponse } from "next";
-import { protect } from "../../../../middleware/protect";
+import { protect, protectWithRoles } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
+import { Role } from "@prisma/client";
 const env = process.env.NODE_ENV;
 
 function handler(req: reqWithUser, res: NextApiResponse) {
+
+  
   switch (req.method) {
     case "GET":
       return getUsers();
@@ -51,4 +54,4 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
 }
 
-export default protect(handler);
+export default protectWithRoles(handler, [Role.admin]);

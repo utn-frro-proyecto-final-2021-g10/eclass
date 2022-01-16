@@ -1,9 +1,14 @@
+import { Role } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-const env = process.env.NODE_ENV;
 
+const env = process.env.NODE_ENV;
 function handler(req: reqWithUser, res: NextApiResponse) {
+  const unauthorized = res.status(401).json({
+    success: false,
+    message: "No autorizado"
+  })
   switch (req.method) {
     case "GET":
       return getAnswers();
@@ -50,4 +55,4 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
 }
 
-export default protect(handler);
+export default protect(handler, [Role.admin]);

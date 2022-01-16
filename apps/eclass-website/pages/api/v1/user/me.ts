@@ -2,12 +2,19 @@ import type { NextApiResponse } from "next";
 import { reqWithUser } from "../../../../types/reqWithUser";
 import { prisma } from "../../../../lib/prisma";
 import { protect } from "../../../../middleware/protect";
+import { Role } from "@prisma/client";
 
 const me = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "GET") {
     return res.status(405).json({
       success: false,
       message: "method not allowed",
+    });
+  }
+  if (req.user.role === Role.admin){
+    return res.status(401).json({
+      success: false,
+      message: "Metodo no permitido para admin",
     });
   }
 

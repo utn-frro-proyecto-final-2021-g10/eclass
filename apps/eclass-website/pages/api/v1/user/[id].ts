@@ -1,5 +1,6 @@
+import { Role } from "@prisma/client";
 import type { NextApiResponse } from "next";
-import { protect } from "../../../../middleware/protect";
+import { protect, protectWithRoles } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
 
 
@@ -87,4 +88,4 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
 };
 
-export default protect(handler);
+export default protectWithRoles(handler, [Role.admin]);
