@@ -22,19 +22,20 @@ export default NextAuth({
           },
         });
 
-        if (
-          user?.password &&
-          credentials?.password &&
-          compare(user.password, credentials.password)
-        ) {
-          const { id, firstName, lastName, email, role } = user;
-          return {
-            id,
-            firstName,
-            lastName,
-            email,
-            role,
-          };
+        if (user?.password && credentials?.password) {
+          const match = await compare(credentials.password, user.password);
+          if (match) {
+            const { id, firstName, lastName, email, role } = user;
+            return {
+              id,
+              firstName,
+              lastName,
+              email,
+              role,
+            };
+          } else {
+            throw new Error("Invalid username or password");
+          }
         }
         throw new Error("Invalid username or password");
       },
