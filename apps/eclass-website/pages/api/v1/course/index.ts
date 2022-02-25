@@ -1,5 +1,4 @@
 import { Role } from "@prisma/client";
-import { rmSync } from "fs";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
@@ -21,11 +20,11 @@ function handler(req: reqWithUser, res: NextApiResponse) {
 
   // gets all courses
   async function getCourses() {
-    if (req.user.role !== Role.admin){
+    if (req.user.role !== Role.admin) {
       res.status(401).json({
         success: false,
-        message: "Unauthorized"
-      })
+        message: "Unauthorized",
+      });
     }
     const courses = await prisma.course.findMany({});
     if (courses)
@@ -40,29 +39,30 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
   // creates a course
   async function createCourse() {
-    if (req.user.role !== Role.admin){
+    if (req.user.role !== Role.admin) {
       res.status(401).json({
         success: false,
-        message: "Unauthorized"
-      })
+        message: "Unauthorized",
+      });
     }
     if (req.body) {
       try {
         const course = await prisma.course.create({
-          data: req.body
+          data: req.body,
         });
         return res.status(200).json({
           success: true,
           course: course,
         });
       } catch (error: any) {
-          return res.status(400).json({
-            success: false,
-            message: env === 'development' ? error.message : "Error al crear el curso"    
-        })
+        return res.status(400).json({
+          success: false,
+          message:
+            env === "development" ? error.message : "Error al crear el curso",
+        });
       }
     }
   }
 }
 
-export default protect(handler)
+export default protect(handler);

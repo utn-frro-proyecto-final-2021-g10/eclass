@@ -20,11 +20,11 @@ function handler(req: reqWithUser, res: NextApiResponse) {
 
   // gets all tasks
   async function getTasks() {
-    if (req.user.role !== Role.admin){
+    if (req.user.role !== Role.admin) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized"
-      })
+        message: "Unauthorized",
+      });
     }
 
     const tasks = await prisma.task.findMany();
@@ -40,17 +40,16 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
   // creates an task
   async function createTask() {
-  
     if (req.body) {
-      if (!await userOwnsCourse(req.user.id, req.body.courseId)){
+      if (!(await userOwnsCourse(req.user.id, req.body.courseId))) {
         return res.status(401).json({
           success: false,
           message: "El usuario no es dueño del curso",
-        })
+        });
       }
       try {
         const task = await prisma.task.create({
-          data: req.body
+          data: req.body,
         });
         return res.status(200).json({
           success: true,
@@ -59,7 +58,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear la tarea",
+          message:
+            env === "development" ? error.message : "Error al crear la tarea",
         });
       }
     }

@@ -3,7 +3,6 @@ import type { NextApiResponse } from "next";
 import { protect, protectWithRoles } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
 
-
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
@@ -47,7 +46,6 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             id: req.query.id.toString(),
           },
           data: req.body,
-            
         });
         if (user) {
           return res.status(200).json({
@@ -66,25 +64,22 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
 
   // deletes a user given an id
   async function deleteUser() {
-    try{
-
+    try {
       const user = await prisma.user.delete({
         where: {
-          id: req.query.id.toString()
-        }
+          id: req.query.id.toString(),
+        },
       });
       return res.status(200).json({
         success: true,
-        user: user
-      })
-    }
-    catch(error){
+        user: user,
+      });
+    } catch (error) {
       return res.status(400).json({
         success: false,
-        message: "Error al eliminar usuario"
-      })
+        message: "Error al eliminar usuario",
+      });
     }
-    
   }
 };
 

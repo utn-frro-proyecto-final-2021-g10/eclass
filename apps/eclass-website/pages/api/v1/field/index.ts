@@ -34,7 +34,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     if (req.body) {
       try {
         const field = await prisma.field.create({
-          data: req.body
+          data: req.body,
         });
         return res.status(200).json({
           success: true,
@@ -43,7 +43,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el campo",
+          message:
+            env === "development" ? error.message : "Error al crear el campo",
         });
       }
     }

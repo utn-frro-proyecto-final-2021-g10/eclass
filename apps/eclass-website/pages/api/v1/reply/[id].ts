@@ -36,7 +36,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       message: "Respuesta no encontrada",
     });
   }
-  /// updates an reply given an reply in the body of the request
+  // updates an reply given an reply in the body of the request
   async function updateReply() {
     if (req.body) {
       try {

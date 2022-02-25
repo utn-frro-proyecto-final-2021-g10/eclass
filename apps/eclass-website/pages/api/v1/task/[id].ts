@@ -2,13 +2,13 @@ import { Role } from "@prisma/client";
 import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-import getUserCourses from "../../../../utils/getUserCourses";
-import getUserOwnedCourses from "../../../../utils/getUserOwnedCourses";
 import userIsInCourse from "../../../../utils/userIsInCourse";
 import userOwnsCourse from "../../../../utils/userOwnsCourse";
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
-  const unauthorized = res.status(401).json({success: false, message: "Unauthorized"});
+  const unauthorized = res
+    .status(401)
+    .json({ success: false, message: "Unauthorized" });
   switch (req.method) {
     case "GET":
       return getTaskById();
@@ -29,19 +29,21 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
         id: req.query.id.toString(),
       },
     });
-    
-    
+
     if (task) {
       if (
-        !(await userIsInCourse(req.user.id, task.courseId) ||
-          await userOwnsCourse(req.user.id, task.courseId))
-        ){
+        !(
+          (await userIsInCourse(req.user.id, task.courseId)) ||
+          (await userOwnsCourse(req.user.id, task.courseId))
+        )
+      ) {
         return res.status(401).json({
           success: false,
-          message: "Usuario no pertenece al curso de la tarea ni es dueño del curso"
-        })
+          message:
+            "Usuario no pertenece al curso de la tarea ni es dueño del curso",
+        });
       }
-      
+
       return res.status(200).json({
         success: true,
         task: task,
@@ -64,12 +66,12 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
           },
         });
 
-        if (task){
-          if (!await userOwnsCourse(req.user.id, task.courseId)){
+        if (task) {
+          if (!(await userOwnsCourse(req.user.id, task.courseId))) {
             return res.status(401).json({
               success: false,
-              message: "El usuario no es dueño de este curso"
-            })
+              message: "El usuario no es dueño de este curso",
+            });
           }
         }
 
@@ -104,12 +106,12 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
         },
       });
 
-      if (task){
-        if (!await userOwnsCourse(req.user.id, task.courseId)){
+      if (task) {
+        if (!(await userOwnsCourse(req.user.id, task.courseId))) {
           return res.status(401).json({
             success: false,
-            message: "El usuario no es dueño de este curso"
-          })
+            message: "El usuario no es dueño de este curso",
+          });
         }
       }
 

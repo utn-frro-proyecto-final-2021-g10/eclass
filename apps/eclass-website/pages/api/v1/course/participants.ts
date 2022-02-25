@@ -1,4 +1,3 @@
-import { transformDocument } from "@prisma/client/runtime";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
@@ -23,7 +22,7 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
   if (course) {
     if (
       course?.members.map((m) => m.userId).includes(req.user.id) ||
-      await userOwnsCourse(req.user.id, course?.id)
+      (await userOwnsCourse(req.user.id, course?.id))
     ) {
       return res.status(200).json({
         success: true,
@@ -37,4 +36,4 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
   }
 }
 
-export default protect(handler)
+export default protect(handler);

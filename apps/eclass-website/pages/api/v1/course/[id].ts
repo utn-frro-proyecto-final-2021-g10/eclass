@@ -20,10 +20,10 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
   // Finds a course given a course id
   async function getCourseById() {
-    if (req.user.role !== Role.admin){
+    if (req.user.role !== Role.admin) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized"
+        message: "Unauthorized",
       });
     }
     const course = await prisma.course.findUnique({
@@ -46,10 +46,10 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
   /// updates a course given a course in the body of the request
   async function updateCourse() {
-    if (req.user.role !== Role.admin){
+    if (req.user.role !== Role.admin) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized"
+        message: "Unauthorized",
       });
     }
     if (req.body) {
@@ -69,7 +69,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message : "Error al modificar curso",
+          message:
+            env === "development" ? error.message : "Error al modificar curso",
         });
       }
     }
@@ -77,31 +78,29 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
 
   // deletes a course given an id
   async function deleteCourse() {
-    if (req.user.role !== Role.admin){
+    if (req.user.role !== Role.admin) {
       return res.status(401).json({
         success: false,
-        messsage: "Unauthorized"
+        messsage: "Unauthorized",
       });
     }
-    try{
-
+    try {
       const course = await prisma.course.delete({
         where: {
-          id: req.query.id.toString()
-        }
+          id: req.query.id.toString(),
+        },
       });
       return res.status(200).json({
         success: true,
-        course: course
-      })
-    }
-    catch(error: any){
+        course: course,
+      });
+    } catch (error: any) {
       return res.status(400).json({
         success: false,
-        message: env === 'development' ? error.message : "Error al eliminar curso"
-      })
+        message:
+          env === "development" ? error.message : "Error al eliminar curso",
+      });
     }
-    
   }
 };
 

@@ -8,7 +8,7 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
       message: "Metodo no permitido",
     });
   }
-  if (req.body.id !== req.user.id){
+  if (req.body.id !== req.user.id) {
     return res.status(401).json({
       success: false,
       message: "Usuario no coincide con el usuario que se intenta modificar",
@@ -21,7 +21,6 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
           id: req.query.id.toString(),
         },
         data: req.body,
-          
       });
       if (user) {
         return res.status(200).json({

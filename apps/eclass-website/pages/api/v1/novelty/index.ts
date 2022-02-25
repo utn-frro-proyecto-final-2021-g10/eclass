@@ -29,12 +29,13 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       message: "No se encontraron novedades",
     });
   }
+
   // creates an novelty
   async function createNovelty() {
     if (req.body) {
       try {
         const novelty = await prisma.novelty.create({
-          data: req.body
+          data: req.body,
         });
         return res.status(200).json({
           success: true,
@@ -43,7 +44,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el novedad",
+          message:
+            env === "development" ? error.message : "Error al crear el novedad",
         });
       }
     }

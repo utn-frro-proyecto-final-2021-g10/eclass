@@ -32,16 +32,16 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
   // creates an institution
   async function createInstitution() {
-    if (req.user.role !== Role.admin){
+    if (req.user.role !== Role.admin) {
       res.status(401).json({
         success: false,
-        message: "Unauthorized"
-      })
+        message: "Unauthorized",
+      });
     }
     if (req.body) {
       try {
         const institution = await prisma.institution.create({
-          data: req.body
+          data: req.body,
         });
         return res.status(200).json({
           success: true,
@@ -50,7 +50,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el usuario",
+          message:
+            env === "development" ? error.message : "Error al crear el usuario",
         });
       }
     }

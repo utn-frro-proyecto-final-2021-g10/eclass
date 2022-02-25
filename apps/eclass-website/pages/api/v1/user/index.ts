@@ -5,8 +5,6 @@ import { Role } from "@prisma/client";
 const env = process.env.NODE_ENV;
 
 function handler(req: reqWithUser, res: NextApiResponse) {
-
-  
   switch (req.method) {
     case "GET":
       return getUsers();
@@ -37,7 +35,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     if (req.body) {
       try {
         const user = await prisma.user.create({
-          data: req.body
+          data: req.body,
         });
         return res.status(200).json({
           success: true,
@@ -46,7 +44,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       } catch (error: any) {
         return res.status(400).json({
           success: false,
-          message: env === 'development' ? error.message :  "Error al crear el usuario",
+          message:
+            env === "development" ? error.message : "Error al crear el usuario",
           env: env,
         });
       }

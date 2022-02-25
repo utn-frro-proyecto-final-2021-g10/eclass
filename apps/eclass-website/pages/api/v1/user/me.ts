@@ -11,7 +11,7 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
       message: "method not allowed",
     });
   }
-  if (req.user.role === Role.admin){
+  if (req.user.role === Role.admin) {
     return res.status(401).json({
       success: false,
       message: "Metodo no permitido para admin",
@@ -31,7 +31,7 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
                 owner: true,
                 settings: true,
               },
-            }
+            },
           },
         },
       },
