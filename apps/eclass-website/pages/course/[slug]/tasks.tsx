@@ -4,6 +4,8 @@ import { prisma } from "../../../lib/prisma";
 import { CourseLayout, courseContext } from "../../../layouts/course-layout";
 import { Flex, GridItem } from "@chakra-ui/react";
 import { Loader } from "../../../components/Loader";
+import { TasksList } from "../../../components/pages/course/tasks";
+import { Course } from "@prisma/client";
 
 const Tasks: NextPage = ({ course }) => {
   const { setCourse } = useContext(courseContext);
@@ -15,6 +17,9 @@ const Tasks: NextPage = ({ course }) => {
     <GridItem colSpan={12}>
       <Flex justify="center" width="100%" height="20rem">
         <Loader />
+        <TasksList 
+         course={course}
+        />
       </Flex>
     </GridItem>
   );
@@ -31,8 +36,21 @@ export const getServerSideProps = async (context: any) => {
     where: {
       slug: context.params.slug,
     },
+    include:{
+      Tasks: {
+        select: {
+          id: true,
+          name: true,
+          description: true,
+          form: true,
+          dateEnd: true,
+          dateStart: true,
+          answers: true,
+        }
+      }
+    }
   });
-
+  console.log(JSON.stringify(course, null, 4));
   return {
     props: { course },
   };

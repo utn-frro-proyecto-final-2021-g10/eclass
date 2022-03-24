@@ -96,8 +96,8 @@ model Course {
   owner        User            @relation(fields: [ownerId], references: [id])
   ownerId      String
   forumId      String?
-  Forum        Forum?
-  Task         Task[]
+  forum        Forum?
+  tasks        Task[]
 }
 
 model CourseMember {
