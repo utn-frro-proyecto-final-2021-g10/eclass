@@ -2,10 +2,11 @@ import type { NextPage } from "next";
 import { useContext, useEffect } from "react";
 import { prisma } from "../../../lib/prisma";
 import { CourseLayout, courseContext } from "../../../layouts/course-layout";
-import { Flex, GridItem } from "@chakra-ui/react";
+import { Avatar, Button, Flex, GridItem, HStack, Text } from "@chakra-ui/react";
 import { Loader } from "../../../components/Loader";
 import { TasksList } from "../../../components/pages/course/tasks";
-import { Course } from "@prisma/client";
+import { Card, CardBody } from "../../../components/Card";
+import { ArrowForwardIcon } from "@chakra-ui/icons";
 
 const Tasks: NextPage = ({ course }) => {
   const { setCourse } = useContext(courseContext);
@@ -16,10 +17,25 @@ const Tasks: NextPage = ({ course }) => {
   return (
     <GridItem colSpan={12}>
       <Flex justify="center" width="100%" height="20rem">
-        <Loader />
-        <TasksList 
-         course={course}
-        />
+        <Card>
+          <CardBody>
+          <HStack align="center" justify="space-between">
+              <HStack>
+                <Avatar size="sm" />
+                <Text fontSize="sm">Crea una tarea!</Text>
+              </HStack>
+              <Button>
+                <ArrowForwardIcon />
+              </Button>
+            </HStack>
+          </CardBody>
+        </Card>
+        {course.tasks ?
+         <Loader /> : 
+         <TasksList 
+          course={course}
+         />}
+        
       </Flex>
     </GridItem>
   );
@@ -37,20 +53,9 @@ export const getServerSideProps = async (context: any) => {
       slug: context.params.slug,
     },
     include:{
-      Tasks: {
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          form: true,
-          dateEnd: true,
-          dateStart: true,
-          answers: true,
-        }
-      }
+      tasks: true
     }
   });
-  console.log(JSON.stringify(course, null, 4));
   return {
     props: { course },
   };
