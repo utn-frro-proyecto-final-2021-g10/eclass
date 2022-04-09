@@ -20,12 +20,16 @@ import {
 import { Questions } from "../../../components/pages/course/tasks";
 import { Card, CardBody } from "../../../components/Card";
 import { AddIcon, ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
+import { GridContainer } from "../../../components/GridContainer";
 
 const Tasks: NextPage = ({ course }) => {
   const { setCourse } = useContext(courseContext);
   const [showForm, setShowForm] = useState(false);
   const [questionNumber, setQuestionNumber] = useState(1);
   const [questions, setQuestions] = useState([0]);
+  
+  const [taskName, setTaskName] = useState("");
+
   useEffect(() => {
     setCourse(course);
   }, []);
@@ -52,20 +56,19 @@ const Tasks: NextPage = ({ course }) => {
                   paddingTop="1.2em"
                   templateColumns="repeat(5, 1fr)"
                   width="80%"
-                  align="center"
                   gap={4}
                 >
                   <GridItem colSpan={1} alignSelf="end" justifySelf="end">
                     <FormLabel>Name</FormLabel>
                   </GridItem>
                   <GridItem colSpan={4}>
-                    <Input width="100%" placeholder="Task name" />
+                    <Input width="100%" placeholder="Task name" id="taskName" value={taskName}/>
                   </GridItem>
                   <GridItem colSpan={1} alignSelf="end" justifySelf="end">
                     <FormLabel>Description</FormLabel>
                   </GridItem>
                   <GridItem colSpan={4}>
-                    <Input width="100%" placeholder="Task description" />
+                    <Input width="100%" placeholder="Task description" id="taskDescription" />
                   </GridItem>
                   {/* TODO: Poner un datetimepicker */}
                   <GridItem colSpan={1} alignSelf="end" justifySelf="end">
@@ -80,26 +83,54 @@ const Tasks: NextPage = ({ course }) => {
                   <GridItem colSpan={4}>
                     <Input width="100%" placeholder="dd/MM/yyyy hh:mm" />
                   </GridItem>
-                  <GridItem colSpan={5} width="100%">
-                  <Questions
-                    questions={questions}
-                  />
+                  <GridItem
+                    colSpan={4}
+                    colStart={2}
+                  >
+                    <Box boxShadow='xs' p='6' rounded='md' bg='white'>
+                      <Text fontWeight="bold" fontSize="1.2rem">
+                        Add your questions here:{" "}
+                      </Text>
+                      {/* <GridContainer > */}
+                      {questions.length > 0 &&
+                        questions[0] !== 0 &&
+                        questions.map((question, i) => (
+                          <>
+                            <GridItem key={i} paddingTop="0.5rem">
+                              <FormLabel>Question {question}</FormLabel>
+                            </GridItem>
+                            <GridItem key={i + 1}>
+                              <Input placeholder="Question" />
+                            </GridItem>
+                            <GridItem key={i + 2} paddingTop="0.5rem">
+                              <FormLabel>Answer to question {question}</FormLabel>
+                            </GridItem>
+                            <GridItem key={i + 3}>
+                              <Input placeholder="Answer to question(optional)" />
+                            </GridItem>
+                          </>
+                        ))}
+                      {/* </GridContainer> */}
+                    </Box>
                   </GridItem>
                   <GridItem colSpan={1} colStart={2} justifySelf="start">
                     <Button
                       onClick={() => {
                         setQuestionNumber(questionNumber + 1);
-                        if (questions.length === 1 && questions[0] === 0) setQuestions([1]);
+                        if (questions.length === 1 && questions[0] === 0)
+                          setQuestions([1]);
                         else setQuestions(questions.concat([questionNumber]));
-                      }
-                      }
+                      }}
                     >
                       <AddIcon />
                     </Button>
                   </GridItem>
 
                   <GridItem colSpan={5} justifySelf="end">
-                    <Button width="100%">Submit</Button>
+                    <Button 
+                    width="100%"
+                    onClick={() => createTask()}
+                    >Submit</Button>
                   </GridItem>
                 </Grid>
               </>
@@ -139,3 +170,9 @@ export const getServerSideProps = async (context: any) => {
 };
 
 export default Tasks;
+
+function createTask(): void {
+  console.log("ENTRO");
+  console.log(taskName);
+}
+
