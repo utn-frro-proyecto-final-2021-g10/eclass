@@ -24,7 +24,7 @@ import { FullTask } from "../../../types/Task";
 
 const Tasks: NextPage<{
   course: Course;
-  tasks: Task[];
+  tasks: any[];
 }> = ({ course, tasks }) => {
   const { setCourse } = useContext(courseContext);
   const [showForm, setShowForm] = useState(false);
@@ -46,24 +46,33 @@ const Tasks: NextPage<{
       const questionKey = questions[i];
       const answerKey = answers[i];
       const pointsKey = points[i];
-
       fields.push({
         question: values[questionKey],
         correctAnswer: values[answerKey],
-        value: values[pointsKey],
+        value: parseFloat(values[pointsKey]),
         type: "Writing",
       });
     }
+
     let task = {
       courseId: course.id,
       name: values.taskName,
       description: values.taskDescription,
-      dateStart: new Date(values.startDate).toISOString(),
-      dateEnd: new Date(values.endDate).toISOString(),
+      dateStart: values.startDate
+        ? new Date(values.startDate).toISOString()
+        : null,
+      dateEnd: values.endDate ? new Date(values.endDate).toISOString() : null,
       form: {
-        fields: fields,
+        create: {
+          fields: {
+            createMany: {
+              data: fields,
+            },
+          },
+        },
       },
     };
+
     const result = await fetch("/api/v1/task", {
       method: "POST",
       body: JSON.stringify(task),
@@ -83,7 +92,7 @@ const Tasks: NextPage<{
     <GridItem colSpan={12}>
       <Grid justify="center" width="100%" height="auto">
         <Card>
-          <CardBody width="100%">
+          <CardBody>
             <HStack align="center" justify="space-between">
               <HStack>
                 <Avatar size="sm" />
@@ -125,11 +134,7 @@ const Tasks: NextPage<{
                   </FormControl>
                   <FormControl>
                     <FormLabel>End Date</FormLabel>
-                    <Input
-                      type="datetime-local"
-                      width="100%"
-                      name="endDate"
-                    />
+                    <Input type="datetime-local" width="100%" name="endDate" />
                   </FormControl>
                 </Box>
                 <Grid
@@ -205,10 +210,15 @@ const Tasks: NextPage<{
         </Card>
       </Grid>
       <Flex>
-        {tasks ? (
+        {tasks && tasks?.length === 0 ? (
           <Text> No hay tareas en el curso</Text>
         ) : (
-          <Text> Tareas {tasks} </Text>
+          tasks.map((t) => (
+            <>
+              <h1>{t.name}</h1>
+              <h2>{t.description}</h2>
+            </>
+          ))
         )}
       </Flex>
     </GridItem>
@@ -229,11 +239,12 @@ export const getServerSideProps = async (context: any) => {
     },
   });
   // If course is null return empty
+  console.log(course);
   if (!course) {
     return { props: {} };
   }
 
-  const fetchCourseTasks = async (): Promise<Task[]> => {
+  const fetchCourseTasks = async (): Promise<any[]> => {
     const tasks = await prisma.task.findMany({
       where: {
         courseId: course.id.toString(),
@@ -241,8 +252,14 @@ export const getServerSideProps = async (context: any) => {
     });
     return tasks;
   };
-  const tasks = await fetchCourseTasks();
-
+  let tasks = await fetchCourseTasks();
+  console.log(tasks);
+  tasks = tasks.map((task) => ({
+    id: task.id,
+    courseId: task.courseId,
+    description: task.description,
+    name: task.name,
+  }));
   return {
     props: { course, tasks },
   };

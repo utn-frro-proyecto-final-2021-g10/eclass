@@ -41,12 +41,12 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   // creates an task
   async function createTask() {
     if (req.body) {
-        // if (!(await userOwnsCourse(req.user.id, req.body.courseId))) {
-        //   return res.status(401).json({
-        //     success: false,
-        //     message: "El usuario no es dueño del curso",
-        //   });
-        // }
+      // if (!(await userOwnsCourse(req.user.id, req.body.courseId))) {
+      //   return res.status(401).json({
+      //     success: false,
+      //     message: "El usuario no es dueño del curso",
+      //   });
+      // }
       try {
         const task = await prisma.task.create({
           data: req.body,
