@@ -8,6 +8,7 @@ import {
   Button,
   Divider,
   Flex,
+  FormControl,
   FormLabel,
   Grid,
   GridItem,
@@ -17,8 +18,9 @@ import {
 } from "@chakra-ui/react";
 import { Card, CardBody } from "../../../components/Card";
 import { AddIcon, ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
-import { Course, Task } from "@prisma/client";
-import { METHODS } from "http";
+import { Course, Task, Form } from "@prisma/client";
+import { getFormValues } from "../../../utils/getFormValues";
+import { FullTask } from "../../../types/Task";
 
 const Tasks: NextPage<{
   course: Course;
@@ -28,8 +30,50 @@ const Tasks: NextPage<{
   const [showForm, setShowForm] = useState(false);
   const [questionNumber, setQuestionNumber] = useState(1);
   const [questions, setQuestions] = useState([0]);
-  const [taskName, setTaskName] = useState("");
 
+  const createTask = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const values = getFormValues(formData);
+
+    let properties = Object.getOwnPropertyNames(values);
+    let answers = properties.filter((s) => s.startsWith("Answer-"));
+    let questions = properties.filter((s) => s.startsWith("Question-"));
+    let points = properties.filter((s) => s.startsWith("Points-"));
+    let fields = [];
+    for (let i = 0; i < questions.length; i++) {
+      const questionKey = questions[i];
+      const answerKey = answers[i];
+      const pointsKey = points[i];
+
+      fields.push({
+        question: values[questionKey],
+        correctAnswer: values[answerKey],
+        value: values[pointsKey],
+        type: "Writing",
+      });
+    }
+    let task = {
+      courseId: course.id,
+      name: values.taskName,
+      description: values.taskDescription,
+      dateStart: new Date(values.startDate).toISOString(),
+      dateEnd: new Date(values.endDate).toISOString(),
+      form: {
+        fields: fields,
+      },
+    };
+    const result = await fetch("/api/v1/task", {
+      method: "POST",
+      body: JSON.stringify(task),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await result.json();
+    console.log(data);
+  };
 
   useEffect(() => {
     setCourse(course);
@@ -51,75 +95,89 @@ const Tasks: NextPage<{
             </HStack>
 
             {showForm && (
-              <>
+              <form onSubmit={createTask}>
                 <Divider />
+                <Box width="80%" margin="auto" marginTop="1.5rem">
+                  <FormControl>
+                    <FormLabel>Name</FormLabel>
+                    <Input
+                      width="100%"
+                      placeholder="Task name"
+                      name="taskName"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Description</FormLabel>
+                    <Input
+                      width="100%"
+                      placeholder="Task description"
+                      name="taskDescription"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Start Date</FormLabel>
+                    <Input
+                      type="datetime-local"
+                      width="100%"
+                      defaultValue={Date.now()}
+                      name="startDate"
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>End Date</FormLabel>
+                    <Input
+                      type="datetime-local"
+                      width="100%"
+                      name="endDate"
+                    />
+                  </FormControl>
+                </Box>
                 <Grid
                   paddingTop="1.2em"
                   templateColumns="repeat(5, 1fr)"
                   width="80%"
                   gap={4}
                 >
-                  <GridItem colSpan={1} alignSelf="end" justifySelf="end">
-                    <FormLabel>Name</FormLabel>
-                  </GridItem>
-                  <GridItem colSpan={4}>
-                    <Input
-                      width="100%"
-                      placeholder="Task name"
-                      id="taskName"
-                      value={taskName}
-                    />
-                  </GridItem>
-                  <GridItem colSpan={1} alignSelf="end" justifySelf="end">
-                    <FormLabel>Description</FormLabel>
-                  </GridItem>
-                  <GridItem colSpan={4}>
-                    <Input
-                      width="100%"
-                      placeholder="Task description"
-                      id="taskDescription"
-                    />
-                  </GridItem>
-                  {/* TODO: Poner un datetimepicker */}
-                  <GridItem colSpan={1} alignSelf="end" justifySelf="end">
-                    <FormLabel>Start Date</FormLabel>
-                  </GridItem>
-                  <GridItem colSpan={4}>
-                    <Input width="100%" placeholder="dd/MM/yyyy hh:mm" />
-                  </GridItem>
-                  <GridItem colSpan={1} alignSelf="end" justifySelf="end">
-                    <FormLabel>End Date</FormLabel>
-                  </GridItem>
-                  <GridItem colSpan={4}>
-                    <Input width="100%" placeholder="dd/MM/yyyy hh:mm" />
-                  </GridItem>
                   <GridItem colSpan={4} colStart={2}>
                     <Box boxShadow="xs" p="6" rounded="md" bg="white">
-                      <Text fontWeight="bold" fontSize="1.2rem">
+                      <Text
+                        fontWeight="bold"
+                        fontSize="1.2rem"
+                        marginBottom="0.7rem"
+                      >
                         Add your questions here:{" "}
                       </Text>
-                      {/* <GridContainer > */}
                       {questions.length > 0 &&
                         questions[0] !== 0 &&
                         questions.map((question, i) => (
                           <>
-                            <GridItem key={i} paddingTop="0.5rem">
+                            <FormControl>
                               <FormLabel>Question {question}</FormLabel>
-                            </GridItem>
-                            <GridItem key={i + 1}>
-                              <Input placeholder="Question" />
-                            </GridItem>
-                            <GridItem key={i + 2} paddingTop="0.5rem">
+                              <Input
+                                name={`Question-${i}`}
+                                placeholder="Question"
+                              />
+                            </FormControl>
+                            <FormControl>
                               <FormLabel>
                                 Answer to question {question}
                               </FormLabel>
-                            </GridItem>
-                            <GridItem key={i + 3}>
-                              <Input placeholder="Answer to question(optional)" />
-                            </GridItem>
+                              <Input
+                                name={`Answer-${i}`}
+                                placeholder="Answer to question(optional)"
+                              />
+                            </FormControl>
+                            <FormControl>
+                              <FormLabel>
+                                Points for question {question}
+                              </FormLabel>
+                              <Input
+                                name={`Points-${i}`}
+                                placeholder="How many points"
+                              />
+                            </FormControl>
                           </>
                         ))}
-                      {/* </GridContainer> */}
                     </Box>
                   </GridItem>
                   <GridItem colSpan={1} colStart={2} justifySelf="start">
@@ -128,7 +186,7 @@ const Tasks: NextPage<{
                         setQuestionNumber(questionNumber + 1);
                         if (questions.length === 1 && questions[0] === 0)
                           setQuestions([1]);
-                        else setQuestions(questions.concat([questionNumber]));
+                        else setQuestions([...questions, questionNumber]);
                       }}
                     >
                       <AddIcon />
@@ -136,10 +194,12 @@ const Tasks: NextPage<{
                   </GridItem>
 
                   <GridItem colSpan={5} justifySelf="end">
-                    <Button width="100%">Submit</Button>
+                    <Button type="submit" width="100%">
+                      Submit
+                    </Button>
                   </GridItem>
                 </Grid>
-              </>
+              </form>
             )}
           </CardBody>
         </Card>
@@ -166,7 +226,7 @@ export const getServerSideProps = async (context: any) => {
   const course = await prisma.course.findUnique({
     where: {
       slug: context.params.slug,
-    }
+    },
   });
   // If course is null return empty
   if (!course) {
@@ -174,13 +234,11 @@ export const getServerSideProps = async (context: any) => {
   }
 
   const fetchCourseTasks = async (): Promise<Task[]> => {
-    const response = await fetch(
-      `/api/v1/course/${course.id}/tasks`,
-      {
-        method: "GET",
-      }
-    );
-    const tasks = await response.json();
+    const tasks = await prisma.task.findMany({
+      where: {
+        courseId: course.id.toString(),
+      },
+    });
     return tasks;
   };
   const tasks = await fetchCourseTasks();
