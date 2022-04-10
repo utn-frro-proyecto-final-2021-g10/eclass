@@ -8,27 +8,28 @@ import {
   Button,
   Divider,
   Flex,
-  FormControl,
   FormLabel,
   Grid,
   GridItem,
   HStack,
   Input,
   Text,
-  VStack,
 } from "@chakra-ui/react";
-import { Questions } from "../../../components/pages/course/tasks";
 import { Card, CardBody } from "../../../components/Card";
 import { AddIcon, ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
-import { GridContainer } from "../../../components/GridContainer";
+import { Course, Task } from "@prisma/client";
+import { METHODS } from "http";
 
-const Tasks: NextPage = ({ course }) => {
+const Tasks: NextPage<{
+  course: Course;
+  tasks: Task[];
+}> = ({ course, tasks }) => {
   const { setCourse } = useContext(courseContext);
   const [showForm, setShowForm] = useState(false);
   const [questionNumber, setQuestionNumber] = useState(1);
   const [questions, setQuestions] = useState([0]);
-  
   const [taskName, setTaskName] = useState("");
+
 
   useEffect(() => {
     setCourse(course);
@@ -42,7 +43,7 @@ const Tasks: NextPage = ({ course }) => {
             <HStack align="center" justify="space-between">
               <HStack>
                 <Avatar size="sm" />
-                <Text fontSize="sm">Crea una tarea!</Text>
+                <Text fontSize="sm">Create a task!</Text>
               </HStack>
               <Button onClick={() => setShowForm(!showForm)}>
                 {showForm ? <ArrowUpIcon /> : <ArrowDownIcon />}
@@ -62,13 +63,22 @@ const Tasks: NextPage = ({ course }) => {
                     <FormLabel>Name</FormLabel>
                   </GridItem>
                   <GridItem colSpan={4}>
-                    <Input width="100%" placeholder="Task name" id="taskName" value={taskName}/>
+                    <Input
+                      width="100%"
+                      placeholder="Task name"
+                      id="taskName"
+                      value={taskName}
+                    />
                   </GridItem>
                   <GridItem colSpan={1} alignSelf="end" justifySelf="end">
                     <FormLabel>Description</FormLabel>
                   </GridItem>
                   <GridItem colSpan={4}>
-                    <Input width="100%" placeholder="Task description" id="taskDescription" />
+                    <Input
+                      width="100%"
+                      placeholder="Task description"
+                      id="taskDescription"
+                    />
                   </GridItem>
                   {/* TODO: Poner un datetimepicker */}
                   <GridItem colSpan={1} alignSelf="end" justifySelf="end">
@@ -83,11 +93,8 @@ const Tasks: NextPage = ({ course }) => {
                   <GridItem colSpan={4}>
                     <Input width="100%" placeholder="dd/MM/yyyy hh:mm" />
                   </GridItem>
-                  <GridItem
-                    colSpan={4}
-                    colStart={2}
-                  >
-                    <Box boxShadow='xs' p='6' rounded='md' bg='white'>
+                  <GridItem colSpan={4} colStart={2}>
+                    <Box boxShadow="xs" p="6" rounded="md" bg="white">
                       <Text fontWeight="bold" fontSize="1.2rem">
                         Add your questions here:{" "}
                       </Text>
@@ -103,7 +110,9 @@ const Tasks: NextPage = ({ course }) => {
                               <Input placeholder="Question" />
                             </GridItem>
                             <GridItem key={i + 2} paddingTop="0.5rem">
-                              <FormLabel>Answer to question {question}</FormLabel>
+                              <FormLabel>
+                                Answer to question {question}
+                              </FormLabel>
                             </GridItem>
                             <GridItem key={i + 3}>
                               <Input placeholder="Answer to question(optional)" />
@@ -127,10 +136,7 @@ const Tasks: NextPage = ({ course }) => {
                   </GridItem>
 
                   <GridItem colSpan={5} justifySelf="end">
-                    <Button 
-                    width="100%"
-                    onClick={() => createTask()}
-                    >Submit</Button>
+                    <Button width="100%">Submit</Button>
                   </GridItem>
                 </Grid>
               </>
@@ -139,10 +145,10 @@ const Tasks: NextPage = ({ course }) => {
         </Card>
       </Grid>
       <Flex>
-        {course.tasks ? (
+        {tasks ? (
           <Text> No hay tareas en el curso</Text>
         ) : (
-          <Text> Tareas </Text>
+          <Text> Tareas {tasks} </Text>
         )}
       </Flex>
     </GridItem>
@@ -156,23 +162,32 @@ Tasks.getLayout = function getLayout(page: ReactElement) {
 
 export const getServerSideProps = async (context: any) => {
   // TODD: check if the user belongs to the course
+
   const course = await prisma.course.findUnique({
     where: {
       slug: context.params.slug,
-    },
-    include: {
-      tasks: true,
-    },
+    }
   });
+  // If course is null return empty
+  if (!course) {
+    return { props: {} };
+  }
+
+  const fetchCourseTasks = async (): Promise<Task[]> => {
+    const response = await fetch(
+      `/api/v1/course/${course.id}/tasks`,
+      {
+        method: "GET",
+      }
+    );
+    const tasks = await response.json();
+    return tasks;
+  };
+  const tasks = await fetchCourseTasks();
+
   return {
-    props: { course },
+    props: { course, tasks },
   };
 };
 
 export default Tasks;
-
-function createTask(): void {
-  console.log("ENTRO");
-  console.log(taskName);
-}
-
