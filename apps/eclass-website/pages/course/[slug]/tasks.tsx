@@ -1,34 +1,19 @@
 import type { NextPage } from "next";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { prisma } from "../../../lib/prisma";
 import { CourseLayout, courseContext } from "../../../layouts/course-layout";
 import {
-  Avatar,
   Box,
-  Button,
-  Divider,
   Flex,
-  FormControl,
-  FormLabel,
-  Grid,
   GridItem,
-  HStack,
-  Input,
-  StackDivider,
+  Link,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { Card, CardBody } from "../../../components/Card";
-import { AddIcon, ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
-import { Course, Task, Form, Role } from "@prisma/client";
-import { getFormValues } from "../../../utils/getFormValues";
-import { FullTask } from "../../../types/Task";
-import { useFormToast } from "../../../hooks/useFormToast";
-import router from "next/router";
+import { Course, Task, Role } from "@prisma/client";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
-import { GridContainer } from "../../../components/GridContainer";
-import { CourseCard } from "../../../components/pages/home/CourseCard";
 import { TaskForm } from "../../../components/Task/TaskForm";
+import { Card } from "../../../components/Card";
 
 const Tasks: NextPage<{
   course: Course;
@@ -62,6 +47,9 @@ const Tasks: NextPage<{
 
             {tasks.map((task: Task, index) => (
               <>
+              <Card
+                href={`/course/${course.slug}/${task.id}`}
+              >
                 <Box
                   width={"100%"}
                   boxShadow="base"
@@ -72,8 +60,10 @@ const Tasks: NextPage<{
                   <Text fontSize={"2xl"} as={"i"}>
                     {task.name}
                   </Text>
-                  <Text>{task.description}</Text>
+                  <Text>
+                    {task.description}</Text>
                 </Box>
+              </Card>
               </>
             ))}
           </VStack>
