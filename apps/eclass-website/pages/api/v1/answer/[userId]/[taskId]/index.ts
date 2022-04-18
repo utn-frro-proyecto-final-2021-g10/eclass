@@ -1,6 +1,6 @@
 import type { NextApiResponse } from "next";
-import { protect } from "../../../../../middleware/protect";
-import { reqWithUser } from "../../../../../types/reqWithUser";
+import { protect } from "../../../../../../middleware/protect";
+import { reqWithUser } from "../../../../../../types/reqWithUser";
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   let userId = req.query.userId.toString();

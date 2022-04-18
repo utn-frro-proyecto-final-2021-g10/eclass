@@ -8,6 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { Answer, Field } from "@prisma/client";
 import type { NextPage } from "next";
+import router from "next/router";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { FullTask } from "../../../../types/Task";
@@ -23,14 +24,11 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     studentAnswer !== undefined && setAnswer(studentAnswer);
   }, [fullTask, me]);
 
-  console.log("Answer: " + answer);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
     const formData = new FormData(form);
     const values = getFormValues(formData);
-
-    console.log(JSON.stringify(values));
 
     if (me) {
       fullTask.task.fields = fullTask.task.fields.map((field: Field, index) => {
@@ -62,15 +60,20 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
         },
       };
 
-      const result = await fetch("/api/v1/answer", {
-        method: "POST",
-        body: JSON.stringify(answer),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const result = await fetch(
+        `/api/v1/answer/${me.id}/${fullTask.task.id}/changeAnswer`,
+        {
+          method: "POST",
+          body: JSON.stringify(answer),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const res = await result.json();
-      console.log(`RESULT : ${JSON.stringify(res)}`);
+      if (res.success) {
+        router.reload();
+      }
     }
   };
 
