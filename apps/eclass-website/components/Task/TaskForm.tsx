@@ -57,20 +57,23 @@ export const TaskForm = ({ course }: { course: Course }) => {
     }
 
     let task = {
-      courseId: course.id,
+      course: {
+        connect: { id: course.id },
+      },
       name: values.taskName,
       description: values.taskDescription,
       dateEnd: values.endDate ? new Date(values.endDate).toISOString() : null,
       dateStart: values.startDate
         ? new Date(values.startDate).toISOString()
         : null,
-      form: {
-        create: {
-          fields: {
-            createMany: {
-              data: fields,
-            },
-          },
+      fields: {
+        createMany: {
+          data: fields,
+        },
+      },
+      answers: {
+        createMany: {
+          data: [],
         },
       },
     };
@@ -86,7 +89,7 @@ export const TaskForm = ({ course }: { course: Course }) => {
     if (data?.success == true) {
       showToast(data);
       router.reload();
-    }
+    } else console.log(JSON.stringify(data));
   };
 
   return (

@@ -2,14 +2,7 @@ import type { NextPage } from "next";
 import { useContext, useEffect } from "react";
 import { prisma } from "../../../lib/prisma";
 import { CourseLayout, courseContext } from "../../../layouts/course-layout";
-import {
-  Box,
-  Flex,
-  GridItem,
-  Link,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Flex, GridItem, Link, Text, VStack } from "@chakra-ui/react";
 import { Course, Task, Role } from "@prisma/client";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { TaskForm } from "../../../components/Task/TaskForm";
@@ -47,23 +40,20 @@ const Tasks: NextPage<{
 
             {tasks.map((task: Task, index) => (
               <>
-              <Card
-                href={`/course/${course.slug}/${task.id}`}
-              >
-                <Box
-                  width={"100%"}
-                  boxShadow="base"
-                  p="6"
-                  rounded="md"
-                  bg="white"
-                >
-                  <Text fontSize={"2xl"} as={"i"}>
-                    {task.name}
-                  </Text>
-                  <Text>
-                    {task.description}</Text>
-                </Box>
-              </Card>
+                <Card href={`/course/${course.slug}/${task.id}`}>
+                  <Box
+                    width={"100%"}
+                    boxShadow="base"
+                    p="6"
+                    rounded="md"
+                    bg="white"
+                  >
+                    <Text fontSize={"2xl"} as={"i"}>
+                      {task.name}
+                    </Text>
+                    <Text>{task.description}</Text>
+                  </Box>
+                </Card>
               </>
             ))}
           </VStack>

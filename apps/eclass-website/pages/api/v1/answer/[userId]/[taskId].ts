@@ -24,6 +24,11 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       where: {
         userId_taskId: { userId, taskId },
       },
+      include: {
+        task: true,
+        fields: true,
+        user: true,
+      },
     });
 
     if (answer) {
