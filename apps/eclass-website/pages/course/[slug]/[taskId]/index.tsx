@@ -4,6 +4,8 @@ import {
   FormControl,
   FormLabel,
   Input,
+  NumberInput,
+  NumberInputField,
   Text,
 } from "@chakra-ui/react";
 import { Answer, Field } from "@prisma/client";
@@ -33,42 +35,14 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     const values = getFormValues(formData);
 
     let answer = fullTask.task.answers[values.AnswerIndex];
+    console.log(`index: ${values.AnswerIndex}`);
+
     for (let index = 0; index < answer.fields.length; index++) {
       const field = answer.fields[index];
       field.qualification = parseFloat(values[`${index}-score`]);
     }
 
     let insert = {
-      userId: answer.user.id,
-      taskId: fullTask.task.id,
-      dateSubmitted: answer.dateSubmitted,
-      qualification: null,
-      // task: {
-      //   id: "cl26ns2yf01349wvrzif7i1bo",
-      //   dateStart: null,
-      //   dateEnd: null,
-      //   name: "Tarea1",
-      //   description: "Descripcion",
-      //   courseId: "cl26njaml0024mwvrggirpj60",
-      // },
-      fields: answer.fields,
-      // [
-      //   {
-      //     id: "cl26qsm2z12669wvrjouja6fk",
-      //     type: "writing",
-      //     question: "Pregunta 1",
-      //     correctAnswer: null,
-      //     value: 100,
-      //     studentAnswer: "Respuesta a pregunta 2",
-      //     dateSubmitted: "2022-04-19T22:53:32.368Z",
-      //     qualification: null,
-      //     taskId: null,
-      //     answerUserId: "cl26njb0j0207mwvrai8zevrg",
-      //     answerTaskId: "cl26ns2yf01349wvrzif7i1bo",
-      //   },
-      // ],
-    };
-    insert = {
       userId: answer.user.id,
       taskId: fullTask.task.id,
       dateSubmitted: new Date(),
@@ -89,7 +63,6 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
       },
     };
 
-    console.log(JSON.stringify(fullTask.task));
     const result = await fetch(
       `/api/v1/answer/${answer.user.id}/${fullTask.task.id}/changeAnswer`,
       {
@@ -101,7 +74,9 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
       }
     );
     const response = await result.json();
-    console.log(`RESPUESTA: ${JSON.stringify(response)}`);
+    if (response.success) {
+      router.reload();
+    }
   };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -165,6 +140,7 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
           <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
         )}
         {fullTask.task.answers.map((answer, index) => (
+          // eslint-disable-next-line react/jsx-key
           <form onSubmit={handleCorrection}>
             <>
               <Card>
@@ -178,20 +154,23 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
 
                 {answer.fields.map((field, index) => (
                   <>
-                      <FormControl>
+                    <pre>{answer.user.lastName}</pre>
+                    <FormControl>
                       <FormLabel>{field.question}</FormLabel>
                       <Input
                         name={`${index}`}
                         defaultValue={field.studentAnswer?.toString()}
                         readOnly={true}
                       />
-                      <Input
+                      <NumberInput
                         min={0}
                         max={field.value}
                         name={`${index}-score`}
                         placeholder={`Max score: ${field.value}`}
                         defaultValue={field.qualification}
-                      />
+                      >
+                        <NumberInputField />
+                      </NumberInput>
                     </FormControl>
                   </>
                 ))}
@@ -314,6 +293,8 @@ export const getServerSideProps = async (context: any) => {
     if (task.dateStart !== null) {
       task.dateStart = task.dateStart?.toString();
     }
+    task.answers.sort((a, b) => a.user.lastName.localeCompare(b.user.lastName));
+
     return { props: { task } };
   }
   return { props: {} };
