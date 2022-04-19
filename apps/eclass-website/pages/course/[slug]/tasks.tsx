@@ -21,7 +21,7 @@ const Tasks: NextPage<{
 
   return (
     <GridItem colSpan={12}>
-      {me?.role == Role.student && <TaskForm course={course} />}
+      {me?.role == Role.professor && <TaskForm course={course} />}
       <Flex>
         {tasks && tasks?.length === 0 ? (
           <Box

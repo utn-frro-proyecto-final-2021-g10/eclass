@@ -15,6 +15,7 @@ import router from "next/router";
 import { useEffect, useState } from "react";
 import { Card } from "../../../../components/Card";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
+import { CourseLayout } from "../../../../layouts/course-layout";
 import { FullTask } from "../../../../types/Task";
 import { getFormValues } from "../../../../utils/getFormValues";
 
@@ -139,6 +140,7 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
         {fullTask.task.dateEnd !== null && (
           <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
         )}
+
         {fullTask.task.answers.map((answer, index) => (
           // eslint-disable-next-line react/jsx-key
           <form onSubmit={handleCorrection}>
@@ -221,7 +223,6 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
         </>
       ) : (
         <>
-          {/* <pre>{JSON.stringify(fullTask, null, 2)}</pre> */}
           <Text> {fullTask.task.name} </Text>
           <Text> {fullTask.task.description} </Text>
           {fullTask.task.dateEnd !== null ?? (
@@ -243,7 +244,10 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     </>
   );
 };
-
+// @ts-ignore
+Task.getLayout = function getLayout(page: ReactElement) {
+  return <CourseLayout>{page}</CourseLayout>;
+};
 export const getServerSideProps = async (context: any) => {
   const task = await prisma.task.findUnique({
     where: {
