@@ -20,16 +20,89 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
   const me = useCurrentUser();
   const [answer, setAnswer] = useState<Answer | null>(null);
   useEffect(() => {
-    // console.log(JSON.stringify(fullTask.task.answers.find()));
     let studentAnswers = fullTask.task.answers.filter(
       (a) => a.user.id == me?.id
     );
-    console.log(JSON.stringify(studentAnswers));
-    console.log((studentAnswers.length > 0).toString());
     if (studentAnswers.length > 0) setAnswer(studentAnswers[0]);
     else setAnswer(null);
   }, [fullTask, fullTask.task, me]);
-  const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {};
+  const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+    const values = getFormValues(formData);
+
+    let answer = fullTask.task.answers[values.AnswerIndex];
+    for (let index = 0; index < answer.fields.length; index++) {
+      const field = answer.fields[index];
+      field.qualification = parseFloat(values[`${index}-score`]);
+    }
+
+    let insert = {
+      userId: answer.user.id,
+      taskId: fullTask.task.id,
+      dateSubmitted: answer.dateSubmitted,
+      qualification: null,
+      // task: {
+      //   id: "cl26ns2yf01349wvrzif7i1bo",
+      //   dateStart: null,
+      //   dateEnd: null,
+      //   name: "Tarea1",
+      //   description: "Descripcion",
+      //   courseId: "cl26njaml0024mwvrggirpj60",
+      // },
+      fields: answer.fields,
+      // [
+      //   {
+      //     id: "cl26qsm2z12669wvrjouja6fk",
+      //     type: "writing",
+      //     question: "Pregunta 1",
+      //     correctAnswer: null,
+      //     value: 100,
+      //     studentAnswer: "Respuesta a pregunta 2",
+      //     dateSubmitted: "2022-04-19T22:53:32.368Z",
+      //     qualification: null,
+      //     taskId: null,
+      //     answerUserId: "cl26njb0j0207mwvrai8zevrg",
+      //     answerTaskId: "cl26ns2yf01349wvrzif7i1bo",
+      //   },
+      // ],
+    };
+    insert = {
+      userId: answer.user.id,
+      taskId: fullTask.task.id,
+      dateSubmitted: new Date(),
+      qualification: null,
+      fields: {
+        create: answer.fields.map((field) => {
+          return {
+            type: field.type,
+            question: field.question,
+            correctAnswer: field.correctAnswer,
+            value: field.value,
+            studentAnswer: field.studentAnswer,
+            dateSubmitted: field.dateSubmitted,
+            qualification: field.qualification,
+            taskId: field.taskId,
+          };
+        }),
+      },
+    };
+
+    console.log(JSON.stringify(fullTask.task));
+    const result = await fetch(
+      `/api/v1/answer/${answer.user.id}/${fullTask.task.id}/changeAnswer`,
+      {
+        method: "POST",
+        body: JSON.stringify(insert),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const response = await result.json();
+    console.log(`RESPUESTA: ${JSON.stringify(response)}`);
+  };
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -91,27 +164,42 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
         {fullTask.task.dateEnd !== null && (
           <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
         )}
-        <form>
-          {fullTask.task.answers.map((answer) => (
+        {fullTask.task.answers.map((answer, index) => (
+          <form onSubmit={handleCorrection}>
             <>
               <Card>
+                <Input
+                  name={`AnswerIndex`}
+                  value={index}
+                  visibility={"hidden"}
+                  width={0}
+                  height={0}
+                />
+
                 {answer.fields.map((field, index) => (
                   <>
-                    <FormControl>
+                      <FormControl>
                       <FormLabel>{field.question}</FormLabel>
                       <Input
                         name={`${index}`}
                         defaultValue={field.studentAnswer?.toString()}
                         readOnly={true}
                       />
+                      <Input
+                        min={0}
+                        max={field.value}
+                        name={`${index}-score`}
+                        placeholder={`Max score: ${field.value}`}
+                        defaultValue={field.qualification}
+                      />
                     </FormControl>
                   </>
                 ))}
+                <Button type="submit">Submit</Button>
               </Card>
             </>
-          ))}
-        </form>
-        <pre>{JSON.stringify(fullTask.task, null, 2)}</pre>
+          </form>
+        ))}
       </>
     );
   }
@@ -132,10 +220,8 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     <>
       {answer !== null ? (
         <>
-          {/* <pre>{JSON.stringify(answer, null, 2)}</pre> */}
           <Text> {fullTask.task.name} </Text>
           <Text> {fullTask.task.description} </Text>
-          {/* <Text> {JSON.stringify(answer.user)} </Text> */}
           {fullTask.task.dateEnd !== null ?? (
             <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
           )}
@@ -203,6 +289,7 @@ export const getServerSideProps = async (context: any) => {
               id: true,
               type: true,
               value: true,
+              qualification: true,
             },
           },
           user: {

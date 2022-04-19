@@ -27,7 +27,16 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       });
     }
 
-    const tasks = await prisma.task.findMany();
+    const tasks = await prisma.task.findMany({
+      include: {
+        answers: {
+          include: {
+            task: true,
+            fields: true,
+          },
+        },
+      },
+    });
     if (tasks)
       return res.status(200).json({
         success: true,
