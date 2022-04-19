@@ -16,11 +16,13 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
   // Finds an answer given an answer id
   async function changeAnswer() {
-    const answer = await prisma.answer.delete({
-      where: {
-        userId_taskId: { userId, taskId },
-      },
-    });
+    try {
+      const answer = await prisma.answer.delete({
+        where: {
+          userId_taskId: { userId, taskId },
+        },
+      });
+    } catch (error: any) {}
 
     try {
       const answer = await prisma.answer.upsert({

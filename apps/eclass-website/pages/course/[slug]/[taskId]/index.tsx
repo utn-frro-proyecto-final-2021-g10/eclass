@@ -8,8 +8,10 @@ import {
 } from "@chakra-ui/react";
 import { Answer, Field } from "@prisma/client";
 import type { NextPage } from "next";
+import { isTargetLikeServerless } from "next/dist/server/config";
 import router from "next/router";
 import { useEffect, useState } from "react";
+import { Card } from "../../../../components/Card";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { FullTask } from "../../../../types/Task";
 import { getFormValues } from "../../../../utils/getFormValues";
@@ -18,12 +20,16 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
   const me = useCurrentUser();
   const [answer, setAnswer] = useState<Answer | null>(null);
   useEffect(() => {
-    let studentAnswer = fullTask.task.answers.filter(
-      (a) => a.userId == me?.id
-    )[0];
-    studentAnswer !== undefined && setAnswer(studentAnswer);
-  }, [fullTask, me]);
-
+    // console.log(JSON.stringify(fullTask.task.answers.find()));
+    let studentAnswers = fullTask.task.answers.filter(
+      (a) => a.user.id == me?.id
+    );
+    console.log(JSON.stringify(studentAnswers));
+    console.log((studentAnswers.length > 0).toString());
+    if (studentAnswers.length > 0) setAnswer(studentAnswers[0]);
+    else setAnswer(null);
+  }, [fullTask, fullTask.task, me]);
+  const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {};
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -77,13 +83,59 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     }
   };
 
+  if (me?.role == "professor") {
+    return (
+      <>
+        <Text> {fullTask.task.name} </Text>
+        <Text> {fullTask.task.description} </Text>
+        {fullTask.task.dateEnd !== null && (
+          <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
+        )}
+        <form>
+          {fullTask.task.answers.map((answer) => (
+            <>
+              <Card>
+                {answer.fields.map((field, index) => (
+                  <>
+                    <FormControl>
+                      <FormLabel>{field.question}</FormLabel>
+                      <Input
+                        name={`${index}`}
+                        defaultValue={field.studentAnswer?.toString()}
+                        readOnly={true}
+                      />
+                    </FormControl>
+                  </>
+                ))}
+              </Card>
+            </>
+          ))}
+        </form>
+        <pre>{JSON.stringify(fullTask.task, null, 2)}</pre>
+      </>
+    );
+  }
+
+  if (
+    fullTask.task.dateEnd !== null &&
+    Date.parse(fullTask.task.dateEnd) < new Date()
+  ) {
+    return (
+      <>
+        <Box>
+          <Text> Esta tarea ya ha terminado </Text>
+        </Box>
+      </>
+    );
+  }
   return (
     <>
       {answer !== null ? (
         <>
-          <pre>{JSON.stringify(answer, null, 2)}</pre>
+          {/* <pre>{JSON.stringify(answer, null, 2)}</pre> */}
           <Text> {fullTask.task.name} </Text>
           <Text> {fullTask.task.description} </Text>
+          {/* <Text> {JSON.stringify(answer.user)} </Text> */}
           {fullTask.task.dateEnd !== null ?? (
             <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
           )}
@@ -94,7 +146,7 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
                   <FormLabel>{field.question}</FormLabel>
                   <Input
                     name={`${index}`}
-                    value={field.studentAnswer?.toString()}
+                    defaultValue={field.studentAnswer?.toString()}
                   />
                 </FormControl>
               </>
@@ -153,12 +205,28 @@ export const getServerSideProps = async (context: any) => {
               value: true,
             },
           },
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+              role: true,
+              profileImageUrl: true,
+              email: true,
+              id: true,
+            },
+          },
         },
       },
     },
   });
 
   if (task) {
+    if (task.dateEnd !== null) {
+      task.dateEnd = task.dateEnd?.toString();
+    }
+    if (task.dateStart !== null) {
+      task.dateStart = task.dateStart?.toString();
+    }
     return { props: { task } };
   }
   return { props: {} };
