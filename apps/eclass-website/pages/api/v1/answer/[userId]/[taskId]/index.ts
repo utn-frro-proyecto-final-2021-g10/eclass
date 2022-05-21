@@ -1,6 +1,6 @@
 import type { NextApiResponse } from "next";
-import { protect } from "../../../../../middleware/protect";
-import { reqWithUser } from "../../../../../types/reqWithUser";
+import { protect } from "../../../../../../middleware/protect";
+import { reqWithUser } from "../../../../../../types/reqWithUser";
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   let userId = req.query.userId.toString();
@@ -24,6 +24,11 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       where: {
         userId_taskId: { userId, taskId },
       },
+      include: {
+        task: true,
+        fields: true,
+        user: true,
+      },
     });
 
     if (answer) {
@@ -42,11 +47,12 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   async function updateAnswer() {
     if (req.body) {
       try {
-        const answer = await prisma.answer.update({
+        const answer = await prisma.answer.upsert({
           where: {
             userId_taskId: { userId, taskId },
           },
-          data: req.body,
+          update: req.body,
+          create: req.body,
         });
         if (answer) {
           return res.status(200).json({
@@ -55,6 +61,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
           });
         }
       } catch (error) {
+        console.log(error);
         return res.status(400).json({
           success: false,
           message: "Error al modificar respuesta",

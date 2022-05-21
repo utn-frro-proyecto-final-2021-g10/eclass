@@ -5,10 +5,6 @@ import { reqWithUser } from "../../../../types/reqWithUser";
 
 const env = process.env.NODE_ENV;
 function handler(req: reqWithUser, res: NextApiResponse) {
-  const unauthorized = res.status(401).json({
-    success: false,
-    message: "No autorizado",
-  });
   switch (req.method) {
     case "GET":
       return getAnswers();
@@ -38,14 +34,19 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   async function createAnswer() {
     if (req.body) {
       try {
-        const answer = await prisma.answer.create({
-          data: req.body,
+        const answer = await prisma.answer.upsert({
+          where: {
+            userId_taskId: { userId: req.body.userId, taskId: req.body.taskId },
+          },
+          create: req.body,
+          update: req.body,
         });
         return res.status(200).json({
           success: true,
           answer: answer,
         });
       } catch (error: any) {
+        console.log(error);
         return res.status(400).json({
           success: false,
           message:
@@ -58,4 +59,4 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
 }
 
-export default protect(handler, [Role.admin]);
+export default protect(handler);

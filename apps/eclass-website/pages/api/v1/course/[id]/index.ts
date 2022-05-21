@@ -1,7 +1,7 @@
 import { Role } from "@prisma/client";
 import type { NextApiResponse } from "next";
-import { protect } from "../../../../middleware/protect";
-import { reqWithUser } from "../../../../types/reqWithUser";
+import { protect } from "../../../../../middleware/protect";
+import { reqWithUser } from "../../../../../types/reqWithUser";
 const env = process.env.NODE_ENV;
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
