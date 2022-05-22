@@ -1,39 +1,27 @@
 import type { NextPage } from "next";
-import { useContext, useEffect } from "react";
-import { prisma } from "../../../lib/prisma";
-import { CourseLayout, courseContext } from "../../../layouts/course-layout";
-import { Avatar, GridItem, HStack, Text } from "@chakra-ui/react";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
-import { Card, CardBody } from "../../../components/Card";
+import { CourseLayout } from "../../../layouts/course-layout";
+import { useCurrentCourse } from "../../../hooks/useCurrentCourse";
+import { GridItem } from "@chakra-ui/react";
 import { Publication } from "../../../components/pages/course/feed/Publication";
+import { Message } from "@prisma/client";
+import { Loader } from "../../../components/Loader";
+import { NewPublication } from "../../../components/pages/course/feed/NewPublication";
 
-const Feed: NextPage = ({ course }) => {
-  const { setCourse } = useContext(courseContext);
-  useEffect(() => {
-    setCourse(course);
-  }, []);
+const Feed: NextPage<{ courseId: string }> = ({ courseId }) => {
+  const courseData = useCurrentCourse(courseId);
 
   return (
     <>
       <GridItem colSpan={12}>
-        <Card>
-          <CardBody>
-            <HStack align="center" justify="space-between">
-              <HStack>
-                <Avatar size="sm" />
-                <Text fontSize="sm">Haz una publicación!</Text>
-              </HStack>
-              <ArrowForwardIcon />
-            </HStack>
-          </CardBody>
-        </Card>
+        <NewPublication forumId={courseData.data?.forumId} />
       </GridItem>
-      <GridItem colSpan={12}>
-        <Publication />
-      </GridItem>
-      <GridItem colSpan={12}>
-        <Publication />
-      </GridItem>
+      {courseData?.data?.forum.messages.map(
+        (message: Message, index: number) => (
+          <GridItem colSpan={12} key={index}>
+            <Publication message={message} />
+          </GridItem>
+        )
+      )}
     </>
   );
 };
@@ -45,14 +33,8 @@ Feed.getLayout = function getLayout(page: NextPage) {
 
 export const getServerSideProps = async (context: any) => {
   // TODD: check if the user belongs to the course
-  const course = await prisma.course.findUnique({
-    where: {
-      slug: context.params.slug,
-    },
-  });
-
   return {
-    props: { course },
+    props: { courseId: context.params.slug },
   };
 };
 

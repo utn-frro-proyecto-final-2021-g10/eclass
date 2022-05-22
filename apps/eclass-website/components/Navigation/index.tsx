@@ -70,7 +70,7 @@ export const Navigation = () => {
       boxShadow="lg"
       position="sticky"
       top={0}
-      zIndex={1}
+      zIndex={100}
     >
       <Box color="gray.700" pb={[0, 0, 0, 2]}>
         <Link href="/" passHref>
@@ -132,6 +132,7 @@ export const Navigation = () => {
               aria-label="Settings"
               name={me ? `${me.firstName} ${me.lastName}` : undefined}
               src={me?.profileImageUrl}
+              bgColor="transparent"
               variant="ghost"
             />
             <MenuList>

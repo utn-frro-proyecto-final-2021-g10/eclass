@@ -19,7 +19,7 @@ export const CardHeader = ({
       px="4"
       py="3"
       onClick={onClick}
-      background={styles.baseColor}
+      background={styles.base}
       color="white"
       cursor={onClick && "pointer"}
       {...props}

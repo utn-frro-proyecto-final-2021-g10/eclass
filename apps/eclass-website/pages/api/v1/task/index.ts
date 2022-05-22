@@ -2,7 +2,7 @@ import { Role } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-import userOwnsCourse from "../../../../utils/userOwnsCourse";
+import userOwnsCourse from "../../../../utils/db-querys/userOwnsCourse";
 const env = process.env.NODE_ENV;
 
 function handler(req: reqWithUser, res: NextApiResponse) {

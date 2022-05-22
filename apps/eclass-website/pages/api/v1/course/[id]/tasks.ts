@@ -2,8 +2,8 @@ import type { NextApiResponse } from "next";
 import { reqWithUser } from "../../../../../types/reqWithUser";
 import { prisma } from "../../../../../lib/prisma";
 import { protect } from "../../../../../middleware/protect";
-import userIsInCourse from "../../../../../utils/userIsInCourse";
-import userOwnsCourse from "../../../../../utils/userOwnsCourse";
+import userIsInCourse from "../../../../../utils/db-querys/userIsInCourse";
+import userOwnsCourse from "../../../../../utils/db-querys/userOwnsCourse";
 
 const tasksByCourse = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "GET") {

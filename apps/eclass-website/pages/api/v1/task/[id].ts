@@ -2,8 +2,8 @@ import { Role } from "@prisma/client";
 import type { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-import userIsInCourse from "../../../../utils/userIsInCourse";
-import userOwnsCourse from "../../../../utils/userOwnsCourse";
+import userIsInCourse from "../../../../utils/db-querys/userIsInCourse";
+import userOwnsCourse from "../../../../utils/db-querys/userOwnsCourse";
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   const unauthorized = res

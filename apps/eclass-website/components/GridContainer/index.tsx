@@ -1,8 +1,7 @@
 import { Flex, Grid } from "@chakra-ui/react";
-
-interface GridContainerProps {
+import type { FlexProps } from "@chakra-ui/react";
+interface GridContainerProps extends FlexProps {
   children: React.ReactNode;
-  bgGradient?: string;
 }
 
 export const GridContainer = ({ children, ...props }: GridContainerProps) => {

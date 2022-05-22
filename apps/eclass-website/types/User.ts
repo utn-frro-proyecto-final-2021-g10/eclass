@@ -1,7 +1,7 @@
 import { User, Course, CourseMember } from "@prisma/client";
 
 interface FullCourseMember extends CourseMember {
-  course: Course
+  course: Course;
 }
 
 export interface FullUser extends User {

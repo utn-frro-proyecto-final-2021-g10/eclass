@@ -18,10 +18,10 @@ import {
 } from "@chakra-ui/react";
 import { Course } from "@prisma/client";
 import router from "next/router";
-import { useEffect, useState } from "react";
-import { useFormToast } from "../../hooks/useFormToast";
-import { getFormValues } from "../../utils/getFormValues";
-import { Card, CardBody } from "../Card";
+import { useState } from "react";
+import { useFormToast } from "../../../../../hooks/useFormToast";
+import { getFormValues } from "../../../../../utils/getFormValues";
+import { Card, CardBody } from "../../../../Card";
 
 export const TaskForm = ({ course }: { course: Course }) => {
   const { showToast } = useFormToast({

@@ -1,7 +1,7 @@
 import type { NextApiResponse } from "next";
-import { reqWithUser } from "../../../../types/reqWithUser";
-import { prisma } from "../../../../lib/prisma";
-import { protect } from "../../../../middleware/protect";
+import { reqWithUser } from "../../../../../types/reqWithUser";
+import { prisma } from "../../../../../lib/prisma";
+import { protect } from "../../../../../middleware/protect";
 
 const enroll = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "POST") {

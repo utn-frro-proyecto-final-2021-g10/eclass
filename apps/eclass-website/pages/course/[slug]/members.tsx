@@ -1,60 +1,74 @@
 import type { NextPage } from "next";
-import { useContext, useEffect, useState, useMemo } from "react";
-import { prisma } from "../../../lib/prisma";
-import { CourseLayout, courseContext } from "../../../layouts/course-layout";
-import type { User, CourseMember, Course } from "@prisma/client";
+import { useState, useMemo } from "react";
+import { CourseLayout } from "../../../layouts/course-layout";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { useCurrentCourse } from "../../../hooks/useCurrentCourse";
+import type { User, CourseMember } from "@prisma/client";
 import { Button, GridItem, HStack, Collapse } from "@chakra-ui/react";
 import { MemberList } from "../../../components/pages/course/members/MemberList";
 import { EmailIcon, SmallCloseIcon } from "@chakra-ui/icons";
-import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { Loader } from "../../../components/Loader";
 
-const Members: NextPage<{
-  course: Course;
-  students: User[];
-  professors: User[];
-}> = ({ course, students, professors }) => {
-  const { setCourse } = useContext(courseContext);
-  const [selectState, setSelectState] = useState(false);
-  const [checkedStudentsEmails, setCheckedStudentsEmails] = useState({});
-  const [checkedProfessorsEmails, setCheckedProfessorsEmails] = useState({});
+const Members: NextPage<{ courseId: string }> = ({ courseId }) => {
   const me = useCurrentUser();
+  const courseData = useCurrentCourse(courseId);
+
+  const { students, professors } = useMemo(() => {
+    if (courseData.status === "success") {
+      const { members: rawMembers } = courseData.data;
+      const members = rawMembers.map((u: CourseMemberWithUser) => u.user);
+      const students = members.filter((u: User) => u.role === "student");
+      const professors = members.filter((u: User) => u.role === "professor");
+
+      return { students, professors };
+    }
+
+    return { students: [], professors: [] };
+  }, [courseData]);
+
+  const [selectState, setSelectState] = useState(false);
+  const [checkedStudents, setCheckedStudents] = useState({});
+  const [checkedProfessors, setCheckedProfessors] = useState({});
 
   const resetEmailLists = () => {
-    setCheckedStudentsEmails(
+    setCheckedStudents(
       Object.fromEntries(
         students
-          .filter((student) => student.id !== me?.id)
-          .map((student) => [student.email, false])
+          .filter((u: User) => u.id !== me?.id)
+          .map((u: User) => [u.email, false])
       )
     );
-    setCheckedProfessorsEmails(
+    setCheckedProfessors(
       Object.fromEntries(
         professors
-          .filter((professor) => professor.id !== me?.id)
-          .map((professor) => [professor.email, false])
+          .filter((u: User) => u.id !== me?.id)
+          .map((u: User) => [u.email, false])
       )
     );
   };
 
-  const emailList = useMemo(() => {
+  const emailList: string[] = useMemo(() => {
     const list = {
-      ...checkedStudentsEmails,
-      ...checkedProfessorsEmails,
+      ...checkedStudents,
+      ...checkedProfessors,
     };
-    return Object.keys(list).filter((email) => list[email]);
-  }, [checkedStudentsEmails, checkedProfessorsEmails]);
 
-  useEffect(() => {
-    resetEmailLists();
-  }, [me, students, professors]);
+    return Object.keys(list).filter(
+      (email) => list[email as keyof typeof list]
+    );
+  }, [checkedStudents, checkedProfessors]);
 
-  useEffect(() => {
-    setCourse(course);
-  }, []);
+  if (courseData.status === "loading") {
+    return (
+      <GridItem colSpan={12}>
+        <Loader />
+      </GridItem>
+    );
+  }
 
   return (
     <>
-      <GridItem colSpan={12}>
+      <GridItem colSpan={12} display={selectState ? "block" : "none"}>
         <Collapse in={selectState} animateOpacity>
           <HStack>
             <Button
@@ -96,8 +110,8 @@ const Members: NextPage<{
           users={professors}
           selectState={selectState}
           onEnableSelect={() => setSelectState(true)}
-          checkedEmails={checkedProfessorsEmails}
-          setCheckedEmails={setCheckedProfessorsEmails}
+          checkedEmails={checkedProfessors}
+          setCheckedEmails={setCheckedProfessors}
         />
       </GridItem>
 
@@ -108,8 +122,8 @@ const Members: NextPage<{
           users={students}
           selectState={selectState}
           onEnableSelect={() => setSelectState(true)}
-          checkedEmails={checkedStudentsEmails}
-          setCheckedEmails={setCheckedStudentsEmails}
+          checkedEmails={checkedStudents}
+          setCheckedEmails={setCheckedStudents}
         />
       </GridItem>
     </>
@@ -127,39 +141,8 @@ interface CourseMemberWithUser extends CourseMember {
 
 export const getServerSideProps = async (context: any) => {
   // TODD: check if the user belongs to the course
-  const courseData = await prisma.course.findUnique({
-    where: {
-      slug: context.params.slug,
-    },
-    include: {
-      members: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-              role: true,
-              profileImageUrl: true,
-              email: true,
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const { members: membersData, ...course } = courseData;
-  const members = membersData?.map(
-    (member: CourseMemberWithUser) => member.user
-  );
-  const students = members?.filter((member: User) => member.role === "student");
-  const professors = members?.filter(
-    (member: User) => member.role === "professor"
-  );
-
   return {
-    props: { course, students, professors },
+    props: { courseId: context.params.slug },
   };
 };
 

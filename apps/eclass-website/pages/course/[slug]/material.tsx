@@ -1,15 +1,20 @@
 import type { NextPage } from "next";
-import { useContext, useEffect } from "react";
-import { prisma } from "../../../lib/prisma";
-import { CourseLayout, courseContext } from "../../../layouts/course-layout";
+import { CourseLayout } from "../../../layouts/course-layout";
+import { useCurrentCourse } from "../../../hooks/useCurrentCourse";
 import { GridItem } from "@chakra-ui/react";
 import { MaterialList } from "../../../components/pages/course/material/MaterialList";
+import { Loader } from "../../../components/Loader";
 
-const Material: NextPage = ({ course }) => {
-  const { setCourse } = useContext(courseContext);
-  useEffect(() => {
-    setCourse(course);
-  }, []);
+const Material: NextPage<{ courseId: string }> = ({ courseId }) => {
+  const courseData = useCurrentCourse(courseId);
+
+  if (courseData.status === "loading") {
+    return (
+      <GridItem colSpan={12}>
+        <Loader />
+      </GridItem>
+    );
+  }
 
   return (
     <>
@@ -29,14 +34,8 @@ Material.getLayout = function getLayout(page: NextPage) {
 
 export const getServerSideProps = async (context: any) => {
   // TODD: check if the user belongs to the course
-  const course = await prisma.course.findUnique({
-    where: {
-      slug: context.params.slug,
-    },
-  });
-
   return {
-    props: { course },
+    props: { courseId: context.params.slug },
   };
 };
 

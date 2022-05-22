@@ -1,83 +1,131 @@
+import React, { useState } from "react";
 import {
   Text,
   VStack,
   HStack,
   Avatar,
   Divider,
-  Heading,
   Textarea,
   useBoolean,
+  Badge,
+  IconButton,
 } from "@chakra-ui/react";
-import { ChatIcon, StarIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, ChatIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
+import { Reply } from "@prisma/client";
+import ReactMarkdown from "react-markdown";
+import ChakraUIRenderer from "chakra-ui-markdown-renderer";
+import { useQueryClient } from "react-query";
+import { Response } from "./response";
+import { parseDate } from "../../../../../utils/parseDate";
 
-export const Publication = () => {
+export const Publication = ({ message }) => {
   const [showComments, setShowcomment] = useBoolean();
+  const [InputValue, setInputValue] = useState("");
+
+  const [InputFocus, setInputFocus] = useBoolean(false);
+
+  const queryClient = useQueryClient();
+
+  const sendReply = async () => {
+    if (InputValue.length > 0) {
+      await fetch("/api/v1/course/feed/reply", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          description: InputValue,
+          messageId: message.id,
+        }),
+      }).then((res) => {
+        queryClient.invalidateQueries("current-course");
+        setShowcomment.on();
+        setInputFocus.off();
+      });
+
+      setInputValue("");
+    }
+  };
 
   return (
     <Card>
-      <CardHeader>
-        <HStack spacing="2">
-          <Avatar size="sm" />
-          <Text fontSize="xl">User Name</Text>
+      <CardHeader max-width="100%">
+        <HStack justifyContent="space-between">
+          <HStack spacing="2">
+            <Avatar size="sm" src={message.user.profileImageUrl} />
+            <Text fontSize="xl">
+              {message.user.firstName} {message.user.lastName}
+            </Text>
+          </HStack>
+          <Badge colorScheme="teal">{parseDate(message.datetime)}</Badge>
         </HStack>
       </CardHeader>
       <CardBody>
         <VStack align="left" spacing={3}>
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-            euismod, nisl eget consectetur sagittis, nisl nunc euismod nisi, a
-            porttitor nisi nisi euismod nisi.
-          </Text>
-          <HStack spacing={3}>
+          <ReactMarkdown components={ChakraUIRenderer()} skipHtml>
+            {message.description}
+          </ReactMarkdown>
+          <HStack spacing={3} paddingTop="4">
             <HStack
               spacing={1}
               align="center"
               as="button"
-              onClick={setShowcomment.toggle}
+              onClick={() => {
+                message.replies.length > 0
+                  ? setShowcomment.toggle()
+                  : setShowcomment.off();
+              }}
             >
               <ChatIcon />
-              <Text fontSize="sm">X recomendados</Text>
-            </HStack>
-            <HStack spacing={1} align="center" as="button">
-              <StarIcon />
-              <Text fontSize="sm">X comentarios</Text>
+              <Text fontSize="sm">
+                {message.replies?.length || 0}{" "}
+                {message.replies?.length === 1 ? "comentario" : "comentarios"}
+              </Text>
             </HStack>
           </HStack>
           <Divider />
           {showComments && (
             <>
-              {[...Array(3)].map((i) => (
-                <Card baseColor="light" shadow={false} key={i}>
-                  <CardBody>
-                    <HStack align="top">
-                      <Avatar size="sm" />
-                      <VStack align="left" spacing={1}>
-                        <Heading size="md">Skylar Kenter</Heading>
-                        <Text>
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. Donec euismod, nisl eget consectetur sagittis,
-                          nisl nunc euismod nisi, a porttitor nisi nisi euismod
-                          nisi. Lorem ipsum dolor sit amet, consectetur
-                          adipiscing elit. Donec euismod, nisl eget consectetur
-                          sagittis, nisl nunc euismod nisi, a porttitor nisi
-                          nisi euismod nisi. Lorem ipsum dolor sit amet,
-                          consectetur adipiscing elit.
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  </CardBody>
-                </Card>
+              {message?.replies?.map((response: Reply, index: string) => (
+                <Response response={response} key={index} />
               ))}
               <Divider />
             </>
           )}
-          <Textarea
-            borderColor="teal.400"
-            focusBorderColor="teal.200"
-            borderRadius="2xl"
-            placeholder="Comentar..."
-          />
+          <HStack pos="relative">
+            <Textarea
+              borderColor="teal.400"
+              focusBorderColor="teal.200"
+              borderRadius="2xl"
+              placeholder="Comentar..."
+              value={InputValue}
+              onChange={(e) => {
+                setInputValue(e.target.value);
+              }}
+              onFocus={() => {
+                setInputFocus.on();
+              }}
+              resize="none"
+              minHeight={InputFocus ? "8rem" : "2rem"}
+            />
+            <IconButton
+              aria-label="send"
+              icon={<ArrowForwardIcon boxSize="1.5rem" />}
+              size="md"
+              variant="ghost"
+              colorScheme="teal"
+              onClick={sendReply}
+              disabled={InputValue.length === 0}
+              position="absolute"
+              right={2}
+              sx={{
+                borderRightRadius: "2xl",
+              }}
+              height="80%"
+              zIndex={1}
+            />
+          </HStack>
         </VStack>
       </CardBody>
     </Card>

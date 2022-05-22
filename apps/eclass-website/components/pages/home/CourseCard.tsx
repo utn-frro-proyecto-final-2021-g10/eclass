@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useRouter } from "next/router";
 import {
   Box,
   VStack,
@@ -23,9 +22,10 @@ import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { useFormToast } from "../../../hooks/useFormToast";
 import { FullCourse } from "../../../types/Course";
 import { Card, CardHeader, CardBody } from "../../Card";
+import { useQueryClient } from "react-query";
 
 export const CourseCard = ({ course }: { course: FullCourse }) => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const { hasCopied: hasCopiedEnrollmentId, onCopy: onCopyEnrollmentId } =
     useClipboard(course.enrollmentId);
   const toast = useToast();
@@ -62,8 +62,7 @@ export const CourseCard = ({ course }: { course: FullCourse }) => {
     const data = await result.json();
     showToast(data);
     if (data.success) {
-      // TODO: use react-query and invalidate instead of reloading
-      router.reload();
+      queryClient.invalidateQueries("current-user");
     }
   };
 

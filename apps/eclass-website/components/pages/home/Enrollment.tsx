@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import {
   Button,
   IconButton,
@@ -16,9 +15,10 @@ import {
 import { AddIcon } from "@chakra-ui/icons";
 import { useFormToast } from "../../../hooks/useFormToast";
 import { getFormValues } from "../../../utils/getFormValues";
+import { useQueryClient } from "react-query";
 
 export const Enrollment = () => {
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showToast } = useFormToast({
     successMessage: "Successfully enrolled",
@@ -42,8 +42,7 @@ export const Enrollment = () => {
     e.target.reset();
     if (data.success) {
       onClose();
-      // TODO: use react-query and invalidate instead of reloading
-      router.reload();
+      queryClient.invalidateQueries("current-user");
     }
   };
 

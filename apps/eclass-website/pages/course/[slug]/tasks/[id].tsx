@@ -10,7 +10,6 @@ import {
 } from "@chakra-ui/react";
 import { Answer, Field } from "@prisma/client";
 import type { NextPage } from "next";
-import { isTargetLikeServerless } from "next/dist/server/config";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import { Card } from "../../../../components/Card";
@@ -251,7 +250,7 @@ Task.getLayout = function getLayout(page: ReactElement) {
 export const getServerSideProps = async (context: any) => {
   const task = await prisma.task.findUnique({
     where: {
-      id: context.params.taskId,
+      id: context.params.id,
     },
     include: {
       fields: {

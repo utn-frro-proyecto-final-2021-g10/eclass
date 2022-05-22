@@ -80,6 +80,7 @@ model User {
   ownedCourses    Course[]
   files           File[]
   messages        Message[]
+  replies         Reply[]
   answers         Answer[]
 }
 
@@ -95,9 +96,9 @@ model Course {
   members      CourseMember[]
   owner        User            @relation(fields: [ownerId], references: [id])
   ownerId      String
-  forumId      String?
-  forum        Forum?
-  tasks        Task[]
+  forumId      String          @unique
+  forum        Forum           @relation(fields: [forumId], references: [id])
+  Task         Task[]
 }
 
 model CourseMember {
@@ -132,8 +133,7 @@ model Category {
 
 model Forum {
   id       String    @id @default(cuid())
-  courseId String    @unique
-  course   Course    @relation(fields: [courseId], references: [id])
+  course   Course?
   messages Message[]
 }
 
@@ -143,16 +143,19 @@ model Message {
   user        User     @relation(fields: [userId], references: [id])
   description String
   datetime    DateTime
-  Forum       Forum    @relation(fields: [forumId], references: [id])
+  forum       Forum    @relation(fields: [forumId], references: [id])
   forumId     String
   replies     Reply[]
 }
 
 model Reply {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
   description String
+  datetime    DateTime
   messageId   String
-  message     Message @relation(fields: [messageId], references: [id])
+  message     Message  @relation(fields: [messageId], references: [id])
 }
 
 model Task {
