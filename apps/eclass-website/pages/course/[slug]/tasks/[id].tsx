@@ -13,17 +13,22 @@ import type { NextPage } from "next";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import { Card } from "../../../../components/Card";
+import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { CourseLayout } from "../../../../layouts/course-layout";
 import { FullTask } from "../../../../types/Task";
 import { getFormValues } from "../../../../utils/getFormValues";
 
-const Task: NextPage<{ task: FullTask }> = (fullTask) => {
+const Task: NextPage<{ task: FullTask; courseId: string }> = (
+  fullTask,
+  courseId
+) => {
   const me = useCurrentUser();
+  const courseData = useCurrentCourse(courseId);
   const [answer, setAnswer] = useState<Answer | null>(null);
   useEffect(() => {
     let studentAnswers = fullTask.task.answers.filter(
-      (a) => a.user.id == me?.id
+      (a: any) => a.user.id == me?.id
     );
     if (studentAnswers.length > 0) setAnswer(studentAnswers[0]);
     else setAnswer(null);
@@ -34,7 +39,7 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     const formData = new FormData(form);
     const values = getFormValues(formData);
 
-    let answer = fullTask.task.answers[values.AnswerIndex];
+    let answer: any = fullTask.task.answers[values.AnswerIndex];
     console.log(`index: ${values.AnswerIndex}`);
 
     for (let index = 0; index < answer.fields.length; index++) {
@@ -48,7 +53,7 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
       dateSubmitted: new Date(),
       qualification: null,
       fields: {
-        create: answer.fields.map((field) => {
+        create: answer.fields.map((field: any) => {
           return {
             type: field.type,
             question: field.question,
@@ -141,7 +146,6 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
         )}
 
         {fullTask.task.answers.map((answer, index) => (
-          // eslint-disable-next-line react/jsx-key
           <form onSubmit={handleCorrection}>
             <>
               <Card>
@@ -162,15 +166,17 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
                         name={`${index}`}
                         defaultValue={field.studentAnswer?.toString()}
                         readOnly={true}
+                        disabled={true}
                       />
                       <NumberInput
                         min={0}
                         max={field.value}
                         name={`${index}-score`}
-                        placeholder={`Max score: ${field.value}`}
                         defaultValue={field.qualification}
                       >
-                        <NumberInputField />
+                        <NumberInputField
+                          placeholder={`Max score: ${field.value}`}
+                        />
                       </NumberInput>
                     </FormControl>
                   </>
@@ -184,10 +190,7 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     );
   }
 
-  if (
-    fullTask.task.dateEnd !== null &&
-    Date.parse(fullTask.task.dateEnd) < new Date()
-  ) {
+  if (fullTask.task.dateEnd !== null && fullTask.task.dateEnd < new Date()) {
     return (
       <>
         <Box>
@@ -243,10 +246,7 @@ const Task: NextPage<{ task: FullTask }> = (fullTask) => {
     </>
   );
 };
-// @ts-ignore
-Task.getLayout = function getLayout(page: ReactElement) {
-  return <CourseLayout>{page}</CourseLayout>;
-};
+
 export const getServerSideProps = async (context: any) => {
   const task = await prisma.task.findUnique({
     where: {
