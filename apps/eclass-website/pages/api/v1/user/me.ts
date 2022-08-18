@@ -11,12 +11,6 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
       message: "method not allowed",
     });
   }
-  if (req.user.role === Role.admin) {
-    return res.status(401).json({
-      success: false,
-      message: "Metodo no permitido para admin",
-    });
-  }
 
   try {
     const user = await prisma.user.findUnique({
