@@ -45,7 +45,13 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
           where: {
             id: req.query.id.toString(),
           },
-          data: req.body,
+          data: {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            email: req.body.email,
+            password: req.body.password,
+            role: req.body.role,
+          },
         });
         if (user) {
           return res.status(200).json({
@@ -54,6 +60,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
           });
         }
       } catch (error) {
+        console.log(error);
+
         return res.status(400).json({
           success: false,
           message: "Error al modificar usuario",
@@ -75,6 +83,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
         user: user,
       });
     } catch (error) {
+      console.log(error);
+
       return res.status(400).json({
         success: false,
         message: "Error al eliminar usuario",

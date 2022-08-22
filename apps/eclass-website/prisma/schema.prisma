@@ -94,15 +94,15 @@ model Course {
   enrollmentId String          @unique
   settings     CourseSettings?
   members      CourseMember[]
-  owner        User            @relation(fields: [ownerId], references: [id])
-  ownerId      String
+  owner        User?           @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  ownerId      String?
   forumId      String          @unique
   forum        Forum           @relation(fields: [forumId], references: [id])
   Task         Task[]
 }
 
 model CourseMember {
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
   course   Course @relation(fields: [courseId], references: [id])
   courseId String
@@ -120,7 +120,7 @@ model File {
   id          String   @id @default(cuid())
   link        String
   professorId String
-  professor   User     @relation(fields: [professorId], references: [id])
+  professor   User?    @relation(fields: [professorId], references: [id], onDelete: SetNull)
   categoryId  String
   category    Category @relation(fields: [categoryId], references: [id])
 }
@@ -140,7 +140,7 @@ model Forum {
 model Message {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   description String
   datetime    DateTime
   forum       Forum    @relation(fields: [forumId], references: [id])
@@ -151,7 +151,7 @@ model Message {
 model Reply {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   description String
   datetime    DateTime
   messageId   String
@@ -217,7 +217,7 @@ model Field {
 }
 
 model Answer {
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
   task   Task   @relation(fields: [taskId], references: [id])
   taskId String
@@ -225,5 +225,6 @@ model Answer {
   fields        Field[]
   dateSubmitted DateTime?
   qualification Float?
+
   @@id([userId, taskId])
 }

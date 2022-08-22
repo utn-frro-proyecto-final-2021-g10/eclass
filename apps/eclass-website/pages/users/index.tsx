@@ -2,7 +2,6 @@ import { Box } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { json } from "stream/consumers";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 interface UsersPageProps {
