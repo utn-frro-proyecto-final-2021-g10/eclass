@@ -1,4 +1,4 @@
-import { Role } from "@prisma/client";
+import { Forum, Role } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
@@ -46,6 +46,19 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       });
     }
     if (req.body) {
+      if (!req.body.forum) {
+        const forum = await prisma.forum.create({
+          data: {
+            messages: {},
+          },
+        });
+        req.body.forum = {
+          connect: {
+            id: forum.id,
+          },
+        };
+      }
+
       try {
         const course = await prisma.course.create({
           data: req.body,
@@ -55,6 +68,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
           course: course,
         });
       } catch (error: any) {
+        console.log(error);
+
         return res.status(400).json({
           success: false,
           message:
