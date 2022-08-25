@@ -3,15 +3,19 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Radio,
+  RadioGroup,
 } from "@chakra-ui/react";
+import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface CoursePageProps {
   course: any;
+  users: User[]
 }
 
-const CoursePage = ({ course }: CoursePageProps) => {
+const CoursePage = ({ course, users }: CoursePageProps) => {
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,23 +23,28 @@ const CoursePage = ({ course }: CoursePageProps) => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const values = getFormValues(formData);
-    let updatedUser = {
-      email: values.email,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      password: values.password,
-      profileImageUrl: values.profileImageUrl,
-      role: values.role,
-      birthDate: new Date(values.birthDate),
+
+    let updatedCourse = {
+      name: values.name,
+      slug: values.slug,
+      description: values.description,
+      moreInfo: values.moreInfo,
+      imageUrl: values.imageUrl,
+      enrollmentId: values.enrollmentId,
+      ownerId: values.owner,
+      settings: {
+        baseColor: values.color
+      },
     };
 
-    const result = await fetch(`/api/v1/user/${course.id}`, {
+    const result = await fetch(`/api/v1/course/${course.id}`, {
       method: "PUT",
-      body: JSON.stringify(updatedUser),
+      body: JSON.stringify(updatedCourse),
       headers: {
         "Content-Type": "application/json",
       },
     });
+    console.log(result);
 
     if (result.status == 200) {
       router.reload();
@@ -62,21 +71,24 @@ const CoursePage = ({ course }: CoursePageProps) => {
     <form onSubmit={handleSubmit}>
       <FormControl>
         <FormLabel>Name: </FormLabel>
-        <Input name="name"></Input>
+        <Input name="name" defaultValue={course.name}></Input>
         <FormLabel>Description: </FormLabel>
-        <Input name="description"></Input>
+        <Input name="description" defaultValue={course.description}></Input>
         <FormLabel>Slug: </FormLabel>
-        <Input name="slug"></Input>
+        <Input name="slug" defaultValue={course.slug}></Input>
         <FormLabel>More Info: </FormLabel>
-        <Input name="moreInfo"></Input>
+        <Input name="moreInfo" defaultValue={course.moreInfo}></Input>
         <FormLabel>Image Url: </FormLabel>
-        <Input name="imageUrl"></Input>
+        <Input name="imageUrl" defaultValue={course.imageUrl}></Input>
         <FormLabel>Enrollment ID: </FormLabel>
-        <Input name="enrollmentId"></Input>
+        <Input name="enrollmentId" defaultValue={course.enrollmentId}></Input>
         <FormLabel>Owner: </FormLabel>
-        <Input name="owner"></Input>
+        <RadioGroup name="owner" display={"flex"} flexDir={"column"}>
+          {users.map((user: any) => (<Radio key={user.id} value={user.id}>{`${user.id} - ${user.lastName}, ${user.firstName}`}</Radio>))}
+        </RadioGroup>
+        {course.owner.id}
         <FormLabel>Color: </FormLabel>
-        <Input name="baseColor"></Input>
+        <Input name="baseColor" defaultValue={course.settings.baseColor}></Input>
       </FormControl>
       <Button type="submit">Update</Button>
       <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
@@ -87,14 +99,31 @@ const CoursePage = ({ course }: CoursePageProps) => {
 };
 
 export const getServerSideProps = async (context: any) => {
-  let course: any = await prisma.course.findUnique({
+  const course: any = await prisma.course.findUnique({
     where: {
       id: context.params.id,
+    },
+    include: {
+      settings: true,
+      owner: {
+        select: {
+          firstName: true,
+          lastName: true,
+          id: true,
+        }
+      }
+    }
+  });
+  const users = await prisma.user.findMany({
+    select: {
+      firstName: true,
+      lastName: true,
+      id: true,
     },
   });
 
   return {
-    props: { course },
+    props: { course, users },
   };
 };
 
