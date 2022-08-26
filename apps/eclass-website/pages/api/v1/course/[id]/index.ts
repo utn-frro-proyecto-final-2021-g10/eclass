@@ -8,6 +8,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       return getCourse();
     case "PUT":
       return updateCourse();
+    case "DELETE":
+      return deleteCourse();
     default:
       return res.status(405).json({
         success: false,
@@ -35,6 +37,27 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       return res.status(400).json({
         success: false,
         message: "Error al modificar campo",
+      });
+    }
+  }
+  async function deleteCourse() {
+    try {
+      const course = await prisma.course.delete({
+        where: {
+          id: req.query.id.toString(),
+        },
+      });
+      if (course) {
+        return res.status(200).json({
+          success: true,
+          field: course,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({
+        success: false,
+        message: "Error al eliminar curso",
       });
     }
   }

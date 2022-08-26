@@ -104,7 +104,7 @@ model Course {
 model CourseMember {
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId   String
-  course   Course @relation(fields: [courseId], references: [id])
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId String
 
   @@id([userId, courseId])
@@ -112,7 +112,7 @@ model CourseMember {
 
 model CourseSettings {
   baseColor Color  @default(primary)
-  course    Course @relation(fields: [courseId], references: [id])
+  course    Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId  String @unique
 }
 

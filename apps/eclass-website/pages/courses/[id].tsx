@@ -12,7 +12,7 @@ import { getFormValues } from "../../utils/getFormValues";
 
 interface CoursePageProps {
   course: any;
-  users: User[]
+  users: User[];
 }
 
 const CoursePage = ({ course, users }: CoursePageProps) => {
@@ -33,7 +33,7 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
       enrollmentId: values.enrollmentId,
       ownerId: values.owner,
       settings: {
-        baseColor: values.color
+        baseColor: values.color,
       },
     };
 
@@ -54,7 +54,7 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
   const handleDelete = async (e: any) => {
     e.preventDefault();
 
-    const result = await fetch(`/api/v1/user/${course.id}`, {
+    const result = await fetch(`/api/v1/course/${course.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -84,11 +84,19 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
         <Input name="enrollmentId" defaultValue={course.enrollmentId}></Input>
         <FormLabel>Owner: </FormLabel>
         <RadioGroup name="owner" display={"flex"} flexDir={"column"}>
-          {users.map((user: any) => (<Radio key={user.id} value={user.id}>{`${user.id} - ${user.lastName}, ${user.firstName}`}</Radio>))}
+          {users.map((user: any) => (
+            <Radio
+              key={user.id}
+              value={user.id}
+            >{`${user.id} - ${user.lastName}, ${user.firstName}`}</Radio>
+          ))}
         </RadioGroup>
         {course.owner.id}
         <FormLabel>Color: </FormLabel>
-        <Input name="baseColor" defaultValue={course.settings.baseColor}></Input>
+        <Input
+          name="baseColor"
+          defaultValue={course.settings.baseColor}
+        ></Input>
       </FormControl>
       <Button type="submit">Update</Button>
       <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
@@ -110,11 +118,14 @@ export const getServerSideProps = async (context: any) => {
           firstName: true,
           lastName: true,
           id: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
   const users = await prisma.user.findMany({
+    where: {
+      role: "professor",
+    },
     select: {
       firstName: true,
       lastName: true,

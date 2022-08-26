@@ -4,8 +4,10 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Radio,
+  RadioGroup,
 } from "@chakra-ui/react";
-import { Course } from "@prisma/client";
+import { Course, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
@@ -13,8 +15,9 @@ import { getFormValues } from "../../utils/getFormValues";
 
 interface CoursesPageProps {
   courses: Course[];
+  users: User[];
 }
-const CoursesPage = ({ courses }: CoursesPageProps) => {
+const CoursesPage = ({ courses, users }: CoursesPageProps) => {
   const me = useCurrentUser();
   const router = useRouter();
 
@@ -25,19 +28,17 @@ const CoursesPage = ({ courses }: CoursesPageProps) => {
     const formData = new FormData(form);
     const values = getFormValues(formData);
 
-    
     let course = {
-      name : values.name,
-      slug : values.slug,
-      description : values.description,
-      moreInfo : values.moreInfo,
-      imageUrl : values.imageUrl,
-      enrollmentId : values.enrollmentId,
-      ownerId : values.ownerId,
-      settings : {
-        baseColor: values.color
+      name: values.name,
+      slug: values.slug,
+      description: values.description,
+      moreInfo: values.moreInfo,
+      imageUrl: values.imageUrl,
+      enrollmentId: values.enrollmentId,
+      ownerId: values.ownerId,
+      settings: {
+        baseColor: values.color,
       },
-      
     };
 
     const result = await fetch(`/api/v1/course`, {
@@ -49,7 +50,6 @@ const CoursesPage = ({ courses }: CoursesPageProps) => {
     });
 
     console.log(JSON.stringify(result, null, 2));
-    
   };
 
   useEffect(() => {
@@ -75,10 +75,16 @@ const CoursesPage = ({ courses }: CoursesPageProps) => {
           <FormLabel>Enrollment ID: </FormLabel>
           <Input name="enrollmentId"></Input>
           <FormLabel>Owner: </FormLabel>
-          <Input name="owner"></Input>
+          <RadioGroup name="owner" display={"flex"} flexDir={"column"}>
+            {users.map((user: any) => (
+              <Radio
+                key={user.id}
+                value={user.id}
+              >{`${user.id} - ${user.lastName}, ${user.firstName}`}</Radio>
+            ))}
+          </RadioGroup>
           <FormLabel>Color: </FormLabel>
           <Input name="baseColor"></Input>
-          
         </FormControl>
         <Button type="submit">Create</Button>
       </form>
@@ -103,9 +109,21 @@ export const getServerSideProps = async () => {
       id: true,
     },
   });
+  const users = await prisma.user.findMany({
+    where: {
+      role: "professor",
+    },
+    select: {
+      firstName: true,
+      lastName: true,
+      id: true,
+    },
+  });
+
   return {
     props: {
       courses,
+      users,
     },
   };
 };
