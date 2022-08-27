@@ -83,7 +83,7 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
         <FormLabel>Enrollment ID: </FormLabel>
         <Input name="enrollmentId" defaultValue={course.enrollmentId}></Input>
         <FormLabel>Owner: </FormLabel>
-        <RadioGroup name="owner" display={"flex"} flexDir={"column"}>
+        <RadioGroup name="owner" defaultValue={course.owner.id} display={"flex"} flexDir={"column"}>
           {users.map((user: any) => (
             <Radio
               key={user.id}
@@ -91,7 +91,6 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
             >{`${user.id} - ${user.lastName}, ${user.firstName}`}</Radio>
           ))}
         </RadioGroup>
-        {course.owner.id}
         <FormLabel>Color: </FormLabel>
         <Input
           name="baseColor"
