@@ -7,7 +7,7 @@ import {
   Radio,
   RadioGroup,
 } from "@chakra-ui/react";
-import { Course, User } from "@prisma/client";
+import { Color, Course, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
@@ -84,7 +84,15 @@ const CoursesPage = ({ courses, users }: CoursesPageProps) => {
             ))}
           </RadioGroup>
           <FormLabel>Color: </FormLabel>
-          <Input name="baseColor"></Input>
+          <RadioGroup name="color" display={"flex"} flexDir={"column"}>
+            <Radio value={Color.blue}>{Color.blue}</Radio>
+            <Radio value={Color.green}>{Color.green}</Radio>
+            <Radio value={Color.orange}>{Color.orange}</Radio>
+            <Radio value={Color.pink}>{Color.pink}</Radio>
+            <Radio value={Color.purple}>{Color.purple}</Radio>
+            <Radio value={Color.red}>{Color.red}</Radio>
+            <Radio value={Color.yellow}>{Color.yellow}</Radio>
+          </RadioGroup>
         </FormControl>
         <Button type="submit">Create</Button>
       </form>
