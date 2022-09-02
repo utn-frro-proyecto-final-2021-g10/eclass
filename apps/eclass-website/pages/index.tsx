@@ -1,72 +1,28 @@
 import type { NextPage } from "next";
-import { GridItem } from "@chakra-ui/layout";
 import { Header } from "../components/Header";
-import { GridContainer } from "../components/GridContainer";
-import { CourseCard } from "../components/pages/home/CourseCard";
-import { Enrollment } from "../components/pages/home/Enrollment";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useInstitution } from "../hooks/useInstitution";
-import { Loader } from "../components/Loader";
-import { Box, Link } from "@chakra-ui/react";
+import { AdminDashboard } from "../components/pages/home/AdminDashboard";
+import { Dashboard } from "../components/pages/home/Dashboard";
 
 const Home: NextPage = () => {
   const institution = useInstitution();
   const me = useCurrentUser();
 
-  if (me?.role === "admin") {
-    return (
-      <>
-        {institution !== null &&
-          <Header
-            title={institution.name}
-            subtitle={institution.description}
-            imageUrl={institution.imageUrl}
-          />
-        }
-        <Box>
-          <Link href="users">Users</Link>
-          <Link href="courses">Courses</Link>
-          <Link href="institution">Institution</Link>
-          <Link href="novelties">Novelties</Link>
-        </Box>
-      </>
-    )
-  }
-
-  if (!institution) {
-    return <Loader />;
-  }
   return (
     <>
-      <Header
+      {institution && <Header
         title={institution.name}
         subtitle={institution.description}
         imageUrl={institution.imageUrl}
-      />
-      <Enrollment />
-      <GridContainer>
-        {
-          me?.role === "professor" &&
-          me?.ownedCourses &&
-          me.ownedCourses.map((course, i) => (
-            <GridItem key={i} colSpan={[12, 12, 6, 4]}>
-              <CourseCard course={course} />
-            </GridItem>
-          ))
-        }
-        {
-          me?.role === "student" &&
-          me?.courses &&
-          me.courses.map((enrollment, i) => (
-            <GridItem key={i} colSpan={[12, 12, 6, 4]}>
-              <CourseCard course={enrollment.course} />
-            </GridItem>
-          ))
-        }
+      />}
 
-      </GridContainer>
+      {me?.role === "admin" && <AdminDashboard />}
+      {me?.role === "student" && me.courses && <Dashboard courses={me.courses?.map((enrollment) => enrollment.course)} />}
+      {me?.role === "professor" && me.ownedCourses && <Dashboard courses={me.ownedCourses} />}
     </>
-  );
-};
+  )
+}
+
 
 export default Home;
