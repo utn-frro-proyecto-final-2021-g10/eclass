@@ -1,10 +1,10 @@
 import { NextApiResponse } from "next";
+import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
 
 async function handler(req: reqWithUser, res: NextApiResponse) {
   if (req.method !== "PUT") {
     return res.status(401).json({
-      success: false,
       message: "Metodo no permitido",
     });
   }
@@ -18,7 +18,7 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
     try {
       const user = await prisma.user.update({
         where: {
-          id: req.query.id.toString(),
+          id: req.body.id.toString(),
         },
         data: req.body,
       });
@@ -36,3 +36,5 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
     }
   }
 }
+
+export default protect(handler);
