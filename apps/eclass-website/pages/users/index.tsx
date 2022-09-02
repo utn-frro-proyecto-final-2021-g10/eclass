@@ -11,6 +11,7 @@ import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { generate } from "../../lib/bcrypt";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface UsersPageProps {
@@ -31,7 +32,7 @@ const UsersPage = ({ users }: UsersPageProps) => {
       email: values.email,
       firstName: values.firstName,
       lastName: values.lastName,
-      password: values.password,
+      password: await generate(values.password),
       profileImageUrl: values.profileImageUrl,
       role: values.role,
       birthDate: new Date(values.birthDate),

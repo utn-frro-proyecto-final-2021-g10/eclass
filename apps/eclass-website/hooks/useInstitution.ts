@@ -9,12 +9,15 @@ export const useInstitution = () => {
       const response = await fetch("/api/v1/institution", {
         method: "GET",
       });
-      const data = await response.json();
-      data.success && setInstitution(data.institution);
+      if (response.status === 200) {
+        const data = await response.json();
+        setInstitution(data.institution);
+      }
     };
 
     fetchInstitution();
   }, []);
+  console.log(institution);
 
   return institution;
 };
