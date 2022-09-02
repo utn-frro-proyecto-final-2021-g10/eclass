@@ -33,8 +33,10 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
       enrollmentId: values.enrollmentId,
       ownerId: values.owner,
       settings: {
-        baseColor: values.color,
-      },
+        update: {
+          baseColor: values.color
+        }
+      }
     };
 
     const result = await fetch(`/api/v1/course/${course.id}`, {

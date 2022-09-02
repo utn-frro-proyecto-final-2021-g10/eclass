@@ -165,40 +165,10 @@ model Task {
   course      Course    @relation(fields: [courseId], references: [id])
   answers     Answer[]
   fields      Field[]
-  // fullForm    FullForm    @relation(fields: [fullFormId], references: [id])
-  // fullFormId  String      @unique
 }
-
-// model Form {
-//   id     String  @id @default(cuid())
-//   fields Field[]
-//   task   Task    @relation(fields: [taskId], references: [id])
-//   taskId String  @unique
-// }
-
-// model FullForm {
-//   id     String      @id @default(cuid())
-//   fields FullField[]
-//   userId String
-//   taskId String
-//   answer Answer?     @relation(fields: [userId, taskId], references: [userId, taskId])
-//   Task   Task?
-// }
-
-// model Field {
-//   id            String @id @default(cuid())
-//   formId        String
-//   form          Form   @relation(fields: [formId], references: [id])
-//   type          String
-//   question      String
-//   correctAnswer String
-//   value         Float
-// }
 
 model Field {
   id            String    @id @default(cuid())
-  // formId        String
-  // form          FullForm  @relation(fields: [formId], references: [id])
   type          String
   question      String
   correctAnswer String?

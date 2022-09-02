@@ -6,4 +6,5 @@ interface FullCourseMember extends CourseMember {
 
 export interface FullUser extends User {
   courses?: FullCourseMember[];
+  ownedCourses?: Course[];
 }

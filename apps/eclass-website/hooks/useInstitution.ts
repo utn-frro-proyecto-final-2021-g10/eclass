@@ -17,7 +17,6 @@ export const useInstitution = () => {
 
     fetchInstitution();
   }, []);
-  console.log(institution);
 
   return institution;
 };

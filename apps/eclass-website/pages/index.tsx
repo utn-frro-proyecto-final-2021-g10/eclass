@@ -7,7 +7,7 @@ import { Enrollment } from "../components/pages/home/Enrollment";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useInstitution } from "../hooks/useInstitution";
 import { Loader } from "../components/Loader";
-import { Box, Link, Text } from "@chakra-ui/react";
+import { Box, Link } from "@chakra-ui/react";
 
 const Home: NextPage = () => {
   const institution = useInstitution();
@@ -23,10 +23,12 @@ const Home: NextPage = () => {
             imageUrl={institution.imageUrl}
           />
         }
-        <Link href="users">Users</Link>
-        <Link href="courses">Courses</Link>
-        <Link href="institution">Institution</Link>
-        <Link href="novelties">Novelties</Link>
+        <Box>
+          <Link href="users">Users</Link>
+          <Link href="courses">Courses</Link>
+          <Link href="institution">Institution</Link>
+          <Link href="novelties">Novelties</Link>
+        </Box>
       </>
     )
   }
@@ -43,12 +45,25 @@ const Home: NextPage = () => {
       />
       <Enrollment />
       <GridContainer>
-        {me?.courses &&
+        {
+          me?.role === "professor" &&
+          me?.ownedCourses &&
+          me.ownedCourses.map((course, i) => (
+            <GridItem key={i} colSpan={[12, 12, 6, 4]}>
+              <CourseCard course={course} />
+            </GridItem>
+          ))
+        }
+        {
+          me?.role === "student" &&
+          me?.courses &&
           me.courses.map((enrollment, i) => (
             <GridItem key={i} colSpan={[12, 12, 6, 4]}>
               <CourseCard course={enrollment.course} />
             </GridItem>
-          ))}
+          ))
+        }
+
       </GridContainer>
     </>
   );

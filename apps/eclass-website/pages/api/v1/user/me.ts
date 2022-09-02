@@ -28,6 +28,7 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
             },
           },
         },
+        ownedCourses: true,
       },
     });
     return res.status(200).json({
