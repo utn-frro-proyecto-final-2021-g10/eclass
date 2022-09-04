@@ -6,20 +6,23 @@ import {
   Input,
   Radio,
   RadioGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { generate } from "../../lib/bcrypt";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface UsersPageProps {
-  users: User[];
+  initialUsers: User[];
 }
-const UsersPage = ({ users }: UsersPageProps) => {
+const UsersPage = ({ initialUsers }: UsersPageProps) => {
   const me = useCurrentUser();
   const router = useRouter();
+  const toast = useToast();
+  const [users, setUsers] = useState(initialUsers);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,11 +31,11 @@ const UsersPage = ({ users }: UsersPageProps) => {
     const formData = new FormData(form);
     const values = getFormValues(formData);
 
-    let user = {
+    const user = {
       email: values.email,
       firstName: values.firstName,
       lastName: values.lastName,
-      password: await generate(values.password),
+      password: values.password,
       profileImageUrl: values.profileImageUrl,
       role: values.role,
       birthDate: new Date(values.birthDate),
@@ -45,6 +48,33 @@ const UsersPage = ({ users }: UsersPageProps) => {
         "Content-Type": "application/json",
       },
     });
+
+    if (result.status === 200) {
+      toast({
+        title: "Created",
+        description: "User created succesfully",
+        status: "success",
+        isClosable: true,
+      });
+      const result = await fetch(`/api/v1/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result.status === 200) {
+        const data = await result.json();
+        setUsers(data.users);
+      }
+    } else {
+      toast({
+        title: "Error",
+        description: "Error creating user",
+        status: "error",
+        isClosable: true,
+      });
+    }
   };
 
   useEffect(() => {
@@ -70,7 +100,7 @@ const UsersPage = ({ users }: UsersPageProps) => {
           <FormLabel>Password: </FormLabel>
           <Input name="password" type={"password"}></Input>
           <FormLabel>Role: </FormLabel>
-          <RadioGroup name="role">
+          <RadioGroup name="role" defaultValue={"student"}>
             <Radio value={"student"}>Student</Radio>
             <Radio value={"professor"}>Professor</Radio>
             <Radio value={"admin"}>Admin</Radio>
@@ -106,7 +136,7 @@ export const getServerSideProps = async (context: any) => {
   });
   return {
     props: {
-      users,
+      initialUsers: users,
     },
   };
 };
