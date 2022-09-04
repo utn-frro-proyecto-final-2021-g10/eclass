@@ -48,7 +48,7 @@ const UserPage = ({ user }: UsersPageProps) => {
     }
   };
 
-  const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleDelete = async (e: any) => {
     e.preventDefault();
 
     const result = await fetch(`/api/v1/user/${user.id}`, {
