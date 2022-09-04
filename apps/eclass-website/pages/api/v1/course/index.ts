@@ -20,12 +20,12 @@ function handler(req: reqWithUser, res: NextApiResponse) {
 
   // gets all courses
   async function getCourses() {
-    // if (req.user.role !== Role.admin) {
-    //   res.status(401).json({
-    //     success: false,
-    //     message: "Unauthorized",
-    //   });
-    // }
+    if (req.user.role !== Role.admin) {
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
     const courses = await prisma.course.findMany({});
     if (courses)
       return res.status(200).json({

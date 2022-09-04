@@ -6,20 +6,23 @@ import {
   Input,
   Radio,
   RadioGroup,
+  useToast,
 } from "@chakra-ui/react";
 import { Color, Course, User } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface CoursesPageProps {
-  courses: Course[];
+  initialCourses: Course[];
   users: User[];
 }
-const CoursesPage = ({ courses, users }: CoursesPageProps) => {
+const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
   const me = useCurrentUser();
   const router = useRouter();
+  const [courses, setCourses] = useState<Course[]>(initialCourses);
+  const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +40,9 @@ const CoursesPage = ({ courses, users }: CoursesPageProps) => {
       enrollmentId: values.enrollmentId,
       ownerId: values.ownerId,
       settings: {
-        baseColor: values.color,
+        create: {
+          baseColor: values.color,
+        },
       },
     };
 
@@ -49,7 +54,33 @@ const CoursesPage = ({ courses, users }: CoursesPageProps) => {
       },
     });
 
-    console.log(JSON.stringify(result, null, 2));
+    if (result.status === 200) {
+      toast({
+        title: "Created",
+        description: "Course created succesfully",
+        status: "success",
+        isClosable: true,
+      });
+
+      const result = await fetch(`/api/v1/course`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result.status === 200) {
+        const data = await result.json();
+        setCourses(data.courses);
+      }
+    } else {
+      toast({
+        title: "Error",
+        description: "Error creating course",
+        status: "error",
+        isClosable: true,
+      });
+    }
   };
 
   useEffect(() => {
@@ -130,7 +161,7 @@ export const getServerSideProps = async () => {
 
   return {
     props: {
-      courses,
+      initialCourses: courses,
       users,
     },
   };
