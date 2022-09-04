@@ -31,7 +31,7 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
     const formData = new FormData(form);
     const values = getFormValues(formData);
 
-    let course = {
+    const course = {
       name: values.name,
       slug: values.slug,
       description: values.description,
