@@ -1,16 +1,11 @@
 import {
   Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Radio,
-  RadioGroup,
   useToast,
 } from "@chakra-ui/react";
-import { Color, Course, User } from "@prisma/client";
+import { Course, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import CourseForm from "../../components/Forms/CourseForm";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { getFormValues } from "../../utils/getFormValues";
 
@@ -91,42 +86,7 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <FormControl>
-          <FormLabel>Name: </FormLabel>
-          <Input name="name"></Input>
-          <FormLabel>Description: </FormLabel>
-          <Input name="description"></Input>
-          <FormLabel>Slug: </FormLabel>
-          <Input name="slug"></Input>
-          <FormLabel>More Info: </FormLabel>
-          <Input name="moreInfo"></Input>
-          <FormLabel>Image Url: </FormLabel>
-          <Input name="imageUrl"></Input>
-          <FormLabel>Enrollment ID: </FormLabel>
-          <Input name="enrollmentId"></Input>
-          <FormLabel>Owner: </FormLabel>
-          <RadioGroup name="owner" display={"flex"} flexDir={"column"}>
-            {users.map((user: any) => (
-              <Radio
-                key={user.id}
-                value={user.id}
-              >{`${user.id} - ${user.lastName}, ${user.firstName}`}</Radio>
-            ))}
-          </RadioGroup>
-          <FormLabel>Color: </FormLabel>
-          <RadioGroup name="color" display={"flex"} flexDir={"column"}>
-            <Radio value={Color.blue}>{Color.blue}</Radio>
-            <Radio value={Color.green}>{Color.green}</Radio>
-            <Radio value={Color.orange}>{Color.orange}</Radio>
-            <Radio value={Color.pink}>{Color.pink}</Radio>
-            <Radio value={Color.purple}>{Color.purple}</Radio>
-            <Radio value={Color.red}>{Color.red}</Radio>
-            <Radio value={Color.yellow}>{Color.yellow}</Radio>
-          </RadioGroup>
-        </FormControl>
-        <Button type="submit">Create</Button>
-      </form>
+      <CourseForm users={users} handleSubmit={handleSubmit} />
       {me !== null &&
         courses &&
         courses.map((course: Course) => (
@@ -148,7 +108,7 @@ export const getServerSideProps = async () => {
       id: true,
     },
   });
-  const users = await prisma.user.findMany({
+  const professors = await prisma.user.findMany({
     where: {
       role: "professor",
     },
@@ -162,7 +122,7 @@ export const getServerSideProps = async () => {
   return {
     props: {
       initialCourses: courses,
-      users,
+      users: professors,
     },
   };
 };
