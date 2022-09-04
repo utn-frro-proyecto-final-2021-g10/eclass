@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import UserForm from "../../components/Forms/UserForm";
@@ -10,6 +10,7 @@ interface UsersPageProps {
 
 const UserPage = ({ initialUser }: UsersPageProps) => {
   const router = useRouter();
+  const toast = useToast();
   const [user, setUser] = useState(initialUser);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,6 +35,12 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
     });
 
     if (result.status == 200) {
+      toast({
+        title: "Updated",
+        description: "User updated",
+        status: "success",
+        isClosable: true,
+      });
       const result = await fetch(`/api/v1/user/${user.id}`, {
         method: "GET",
         headers: {
@@ -43,6 +50,13 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
 
       const data = await result.json();
       setUser(data.user);
+    } else {
+      toast({
+        title: "Error",
+        description: "Error updating user",
+        status: "error",
+        isClosable: true,
+      });
     }
   };
 
