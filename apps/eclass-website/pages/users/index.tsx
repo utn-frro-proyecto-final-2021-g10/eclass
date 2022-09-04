@@ -11,8 +11,9 @@ import {
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import UserForm from "../../components/Forms/UserForm";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { generate } from "../../lib/bcrypt";
+import { eventToFormValues } from "../../utils/eventToFormValues";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface UsersPageProps {
@@ -26,10 +27,7 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const values = getFormValues(formData);
+    const values = eventToFormValues(e);
 
     const user = {
       email: values.email,
@@ -85,31 +83,8 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
-        <FormControl>
-          <FormLabel>First Name: </FormLabel>
-          <Input name="firstName"></Input>
-          <FormLabel>Last Name: </FormLabel>
-          <Input name="lastName"></Input>
-          <FormLabel>Birth Date: </FormLabel>
-          <Input name="birthDate" type={"date"}></Input>
-          <FormLabel>Email: </FormLabel>
-          <Input name="email" type={"email"}></Input>
-          <FormLabel>Image Url: </FormLabel>
-          <Input name="profileImageUrl"></Input>
-          <FormLabel>Password: </FormLabel>
-          <Input name="password" type={"password"}></Input>
-          <FormLabel>Role: </FormLabel>
-          <RadioGroup name="role" defaultValue={"student"}>
-            <Radio value={"student"}>Student</Radio>
-            <Radio value={"professor"}>Professor</Radio>
-            <Radio value={"admin"}>Admin</Radio>
-          </RadioGroup>
-        </FormControl>
-        <Button type="submit">Create</Button>
-      </form>
-      {me !== null &&
-        users &&
+      <UserForm handleSubmit={handleSubmit} buttonText={"Create"} />
+      {users &&
         users.map((user: User) => (
           <Box key={user.id}>
             <a
