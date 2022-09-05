@@ -7,12 +7,20 @@ import {
   IconButton,
   Badge,
   Checkbox,
-  Fade,
-  Box,
 } from "@chakra-ui/react";
 import { EmailIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
 import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
+
+interface Props {
+  heading: any;
+  pluralHeading: any;
+  users: any;
+  selectState: any;
+  onEnableSelect: any;
+  checkedEmails: any;
+  setCheckedEmails: any;
+}
 
 export const MemberList = ({
   heading,
@@ -22,7 +30,7 @@ export const MemberList = ({
   onEnableSelect,
   checkedEmails,
   setCheckedEmails,
-}) => {
+}: Props) => {
   const me = useCurrentUser();
 
   const allChecked = Object.values(checkedEmails).every((value) => value);
@@ -62,9 +70,9 @@ export const MemberList = ({
           </Badge>
         </HStack>
       </CardHeader>
-      <CardBody px={0} py={0}>
+      <CardBody>
         <VStack align="left" spacing={0} divider={<Divider />}>
-          {users.map((user, i: number) => (
+          {users.map((user: any, i: number) => (
             <HStack
               key={i}
               py={3}

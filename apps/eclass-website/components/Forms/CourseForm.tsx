@@ -1,8 +1,5 @@
 import { FormControl, FormLabel, Input, RadioGroup, Radio, Button } from "@chakra-ui/react"
-import { Color, Course } from "@prisma/client"
-import course from "../../pages/api/v1/course"
-import users from "../../pages/users"
-
+import { Color } from "@prisma/client"
 
 interface Props {
     course?: any;

@@ -1,3 +1,4 @@
+import { Course } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../../middleware/protect";
 import { reqWithUser } from "../../../../../types/reqWithUser";

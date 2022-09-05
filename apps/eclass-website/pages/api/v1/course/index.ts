@@ -1,4 +1,4 @@
-import { Forum, Role } from "@prisma/client";
+import { Course, Role } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
@@ -60,7 +60,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       }
 
       try {
-        const course = await prisma.course.create({
+        const course: Course = await prisma.course.create({
           data: req.body,
         });
         return res.status(200).json({

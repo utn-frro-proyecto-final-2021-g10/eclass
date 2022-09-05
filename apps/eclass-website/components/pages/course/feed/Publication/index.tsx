@@ -19,7 +19,10 @@ import { useQueryClient } from "react-query";
 import { Response } from "./response";
 import { parseDate } from "../../../../../utils/parseDate";
 
-export const Publication = ({ message }) => {
+interface Props {
+  message: any
+}
+export const Publication = ({ message }: Props) => {
   const [showComments, setShowcomment] = useBoolean();
   const [InputValue, setInputValue] = useState("");
 

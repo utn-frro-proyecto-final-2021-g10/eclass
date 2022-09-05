@@ -1,9 +1,14 @@
-import { Reply } from "@prisma/client";
+import { Reply, User } from "@prisma/client";
 import { Text, VStack, HStack, Avatar, Heading, Badge } from "@chakra-ui/react";
 import { Card, CardBody } from "../../../../Card";
 import { parseDate } from "../../../../../utils/parseDate";
 
-export const Response = ({ response }: { response: Reply }) => {
+
+interface Props {
+  response: any
+}
+
+export const Response = ({ response }: Props) => {
   return (
     <Card baseColor="light" hasShadow={false}>
       <CardBody>
@@ -11,7 +16,7 @@ export const Response = ({ response }: { response: Reply }) => {
           <Avatar size="sm" src={response.user.profileImageUrl} />
           <VStack align="left" spacing={1} w="100%">
             <HStack justifyContent="space-between" w="100%">
-              <Heading fontSize={["sm", "md","lg"]}>
+              <Heading fontSize={["sm", "md", "lg"]}>
                 {response.user.firstName} {response.user.lastName}
               </Heading>
               <Badge colorScheme="blackAlpha" variant="outline">

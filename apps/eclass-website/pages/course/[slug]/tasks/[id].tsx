@@ -9,47 +9,46 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { Answer, Field } from "@prisma/client";
-import type { NextPage } from "next";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Card } from "../../../../components/Card";
-import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
-import { CourseLayout } from "../../../../layouts/course-layout";
 import { FullTask } from "../../../../types/Task";
+import { eventToFormValues } from "../../../../utils/eventToFormValues";
 import { getFormValues } from "../../../../utils/getFormValues";
 
-const Task: NextPage<{ task: FullTask; courseId: string }> = (
-  fullTask,
-  courseId
-) => {
+interface Props {
+  fullTask: FullTask;
+  courseId: string;
+}
+
+const Task = ({ fullTask }: Props) => {
   const me = useCurrentUser();
-  const courseData = useCurrentCourse(courseId);
-  const [answer, setAnswer] = useState<Answer | null>(null);
+  const router = useRouter()
+  const [answer, setAnswer] = useState<any | null>(null);
+
   useEffect(() => {
-    let studentAnswers = fullTask.task.answers.filter(
+    let studentAnswers = fullTask.answers.filter(
       (a: any) => a.user.id == me?.id
     );
     if (studentAnswers.length > 0) setAnswer(studentAnswers[0]);
     else setAnswer(null);
-  }, [fullTask, fullTask.task, me]);
+  }, [fullTask, me]);
+
   const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const values = getFormValues(formData);
+    const values = eventToFormValues(e)
 
-    let answer: any = fullTask.task.answers[values.AnswerIndex];
-    console.log(`index: ${values.AnswerIndex}`);
+    const answer: any = fullTask.answers[values.AnswerIndex];
 
     for (let index = 0; index < answer.fields.length; index++) {
       const field = answer.fields[index];
       field.qualification = parseFloat(values[`${index}-score`]);
     }
 
-    let insert = {
+    const insert = {
       userId: answer.user.id,
-      taskId: fullTask.task.id,
+      taskId: fullTask.id,
       dateSubmitted: new Date(),
       qualification: null,
       fields: {
@@ -69,7 +68,7 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
     };
 
     const result = await fetch(
-      `/api/v1/answer/${answer.user.id}/${fullTask.task.id}/changeAnswer`,
+      `/api/v1/answer/${answer.user.id}/${fullTask.id}/changeAnswer`,
       {
         method: "POST",
         body: JSON.stringify(insert),
@@ -90,7 +89,7 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
     const values = getFormValues(formData);
 
     if (me) {
-      fullTask.task.fields = fullTask.task.fields.map((field: Field, index) => {
+      fullTask.fields = fullTask.fields.map((field: Field, index: number) => {
         let newField = field;
 
         newField.studentAnswer = values[index];
@@ -100,11 +99,11 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
 
       let answer = {
         userId: me?.id,
-        taskId: fullTask.task.id,
+        taskId: fullTask.id,
         dateSubmitted: new Date(),
         qualification: null,
         fields: {
-          create: fullTask.task.fields.map((field) => {
+          create: fullTask.fields.map((field: Field) => {
             return {
               type: field.type,
               question: field.question,
@@ -120,7 +119,7 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
       };
 
       const result = await fetch(
-        `/api/v1/answer/${me.id}/${fullTask.task.id}/changeAnswer`,
+        `/api/v1/answer/${me.id}/${fullTask.id}/changeAnswer`,
         {
           method: "POST",
           body: JSON.stringify(answer),
@@ -139,14 +138,14 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
   if (me?.role == "professor") {
     return (
       <>
-        <Text> {fullTask.task.name} </Text>
-        <Text> {fullTask.task.description} </Text>
-        {fullTask.task.dateEnd !== null && (
-          <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
+        <Text> {fullTask.name} </Text>
+        <Text> {fullTask.description} </Text>
+        {fullTask.dateEnd !== null && (
+          <Text> Fecha de entrega: {fullTask.dateEnd} </Text>
         )}
 
-        {fullTask.task.answers.map((answer, index) => (
-          <form onSubmit={handleCorrection}>
+        {fullTask.answers.map((answer: any, index: number) => (
+          <form key={index} onSubmit={handleCorrection}>
             <>
               <Card>
                 <Input
@@ -157,7 +156,7 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
                   height={0}
                 />
 
-                {answer.fields.map((field, index) => (
+                {answer.fields.map((field: any, index: number) => (
                   <>
                     <pre>{answer.user.lastName}</pre>
                     <FormControl>
@@ -190,7 +189,7 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
     );
   }
 
-  if (fullTask.task.dateEnd !== null && fullTask.task.dateEnd < new Date()) {
+  if (fullTask.dateEnd !== null && fullTask.dateEnd < new Date()) {
     return (
       <>
         <Box>
@@ -203,13 +202,13 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
     <>
       {answer !== null ? (
         <>
-          <Text> {fullTask.task.name} </Text>
-          <Text> {fullTask.task.description} </Text>
-          {fullTask.task.dateEnd !== null ?? (
-            <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
+          <Text> {fullTask.name} </Text>
+          <Text> {fullTask.description} </Text>
+          {fullTask.dateEnd !== null ?? (
+            <Text> Fecha de entrega: {fullTask.dateEnd} </Text>
           )}
           <form onSubmit={handleSubmit}>
-            {answer.fields.map((field, index) => (
+            {answer.fields.map((field: any, index: number) => (
               <>
                 <FormControl>
                   <FormLabel>{field.question}</FormLabel>
@@ -225,13 +224,13 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
         </>
       ) : (
         <>
-          <Text> {fullTask.task.name} </Text>
-          <Text> {fullTask.task.description} </Text>
-          {fullTask.task.dateEnd !== null ?? (
-            <Text> Fecha de entrega: {fullTask.task.dateEnd} </Text>
+          <Text> {fullTask.name} </Text>
+          <Text> {fullTask.description} </Text>
+          {fullTask.dateEnd !== null ?? (
+            <Text> Fecha de entrega: {fullTask.dateEnd} </Text>
           )}
           <form onSubmit={handleSubmit}>
-            {fullTask.task.fields.map((field, index) => (
+            {fullTask.fields.map((field, index) => (
               <>
                 <FormControl>
                   <FormLabel>{field.question}</FormLabel>
@@ -248,7 +247,7 @@ const Task: NextPage<{ task: FullTask; courseId: string }> = (
 };
 
 export const getServerSideProps = async (context: any) => {
-  const task = await prisma.task.findUnique({
+  const task: any = await prisma.task.findUnique({
     where: {
       id: context.params.id,
     },
@@ -296,9 +295,13 @@ export const getServerSideProps = async (context: any) => {
     if (task.dateStart !== null) {
       task.dateStart = task.dateStart?.toString();
     }
-    task.answers.sort((a, b) => a.user.lastName.localeCompare(b.user.lastName));
+    task.answers.sort((a: any, b: any) => a.user.lastName.localeCompare(b.user.lastName));
 
-    return { props: { task } };
+    return {
+      props: {
+        task
+      }
+    };
   }
   return { props: {} };
 };
