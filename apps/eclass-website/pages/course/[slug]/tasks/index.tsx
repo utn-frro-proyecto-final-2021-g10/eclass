@@ -9,10 +9,12 @@ import { TasksList } from "../../../../components/pages/course/tasks/TasksList";
 import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 import { Loader } from "../../../../components/Loader";
 
-const Tasks: NextPage<{
+
+interface Props {
   courseId: string;
   tasks: any[];
-}> = ({ courseId, tasks }) => {
+}
+const Tasks = ({ courseId, tasks }: Props) => {
   const me = useCurrentUser();
   const courseData = useCurrentCourse(courseId);
 
@@ -51,6 +53,7 @@ export const getServerSideProps = async (context: any) => {
       slug: context.params.slug,
     },
   });
+  if (!course) return { props: {} }
 
   const fetchCourseTasks = async (): Promise<any[]> => {
     const tasks = await prisma.task.findMany({

@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "npx prisma db push && npx prisma generate && npx prisma db seed && next dev -p 3000",
+    "start": "npx prisma db push && npx prisma generate && npx prisma db seed && next build &&next start",
     "setup": "yarn docker:down && docker volume rm eclass-website_database-data --force && yarn run docker:up",
     "build": "next build",
-    "start": "next start",
     "lint": "next lint",
     "db": "npx prisma studio",
     "docker:up": "docker compose up -d --remove-orphans",
