@@ -5,10 +5,11 @@ interface Props {
     course?: any;
     users: any[];
     buttonText?: string;
+    professorId?: any;
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-const CourseForm = ({ users, handleSubmit, course = null, buttonText = "Create" }: Props) => {
+const CourseForm = ({ users, handleSubmit, professorId = null, course = null, buttonText = "Create" }: Props) => {
 
     return (
         <form onSubmit={handleSubmit}>
@@ -28,7 +29,7 @@ const CourseForm = ({ users, handleSubmit, course = null, buttonText = "Create" 
                 <FormLabel>Owner: </FormLabel>
                 <RadioGroup
                     name="owner"
-                    defaultValue={course?.owner.id}
+                    defaultValue={professorId !== null ? professorId : course?.owner.id}
                     display={"flex"}
                     flexDir={"column"}
                 >

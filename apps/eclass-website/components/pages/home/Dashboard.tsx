@@ -1,4 +1,4 @@
-import { GridItem, useToast } from "@chakra-ui/react"
+import { GridItem, Modal, useToast } from "@chakra-ui/react"
 import { Course } from "@prisma/client"
 import { useState } from "react"
 import { useCurrentUser } from "../../../hooks/useCurrentUser"
@@ -77,7 +77,6 @@ export const Dashboard = ({ initialCourses }: Props) => {
     return (
         <>
             {me?.role == "student" && <Enrollment />}
-            {me?.role == "professor" && <CourseForm users={[me]} handleSubmit={handleSubmit} />}
             <GridContainer>
                 {courses &&
                     courses.map((course, i) => (
@@ -87,6 +86,8 @@ export const Dashboard = ({ initialCourses }: Props) => {
                     ))}
 
             </GridContainer>
+
+            {me?.role == "professor" && <CourseForm users={[me]} handleSubmit={handleSubmit} professorId={me.id.toString()} />}
         </>
     )
 }
