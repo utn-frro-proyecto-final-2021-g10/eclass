@@ -18,8 +18,8 @@ const Home: NextPage = () => {
       />}
 
       {me?.role === "admin" && <AdminDashboard />}
-      {me?.role === "student" && me.courses && <Dashboard courses={me.courses?.map((enrollment) => enrollment.course)} />}
-      {me?.role === "professor" && me.ownedCourses && <Dashboard courses={me.ownedCourses} />}
+      {me?.role === "student" && me.courses && <Dashboard initialCourses={me.courses?.map((enrollment) => enrollment.course)} />}
+      {me?.role === "professor" && me.ownedCourses && <Dashboard initialCourses={me.ownedCourses} />}
     </>
   )
 }

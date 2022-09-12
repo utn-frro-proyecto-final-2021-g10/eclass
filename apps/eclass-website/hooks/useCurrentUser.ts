@@ -6,7 +6,7 @@ import { useQuery } from "react-query";
 
 // TODO: use context to avoid multiple calls to /api/v1/user/me
 const getCurrentUser = async () => {
-  const response = await await fetch("/api/v1/user/me", {
+  const response = await fetch("/api/v1/user/me", {
     method: "GET",
   });
   const data = await response.json();

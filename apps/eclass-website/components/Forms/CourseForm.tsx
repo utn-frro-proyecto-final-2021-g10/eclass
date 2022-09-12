@@ -4,10 +4,11 @@ import { Color } from "@prisma/client"
 interface Props {
     course?: any;
     users: any[];
+    buttonText?: string;
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }
 
-const CourseForm = ({ course = null, users, handleSubmit }: Props) => {
+const CourseForm = ({ users, handleSubmit, course = null, buttonText = "Create" }: Props) => {
 
     return (
         <form onSubmit={handleSubmit}>
@@ -54,7 +55,7 @@ const CourseForm = ({ course = null, users, handleSubmit }: Props) => {
                     <Radio value={Color.yellow}>{Color.yellow}</Radio>
                 </RadioGroup>
             </FormControl>
-            <Button type="submit">Update</Button>
+            <Button type="submit">{buttonText}</Button>
         </form>
     )
 }
