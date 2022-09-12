@@ -19,7 +19,7 @@ export const useCurrentUserQuery = () => {
   return useQuery(["current-user"], () => getCurrentUser());
 };
 
-export const useCurrentUser = () => {
+export const useCurrentUser = (role?: string) => {
   const router = useRouter();
   const session = useSession();
   const [me, setMe] = useState<FullUser | null>(null);
@@ -28,10 +28,15 @@ export const useCurrentUser = () => {
   useEffect(() => {
     if (session.status === "authenticated") {
       setMe(query.data);
+      console.log(me?.role);
+
+      if (role && me && me.role.toString() !== role) {
+        router.replace("/api/auth/signin");
+      }
     } else if (session.status === "unauthenticated") {
       router.replace("/api/auth/signin");
     }
-  }, [session, router, query]);
+  }, [session, router, query, role, me]);
 
   return me;
 };

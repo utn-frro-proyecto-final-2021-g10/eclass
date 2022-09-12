@@ -3,23 +3,26 @@ import {
 } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import CourseForm from "../../components/Forms/CourseForm";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../utils/eventToFormValues";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface CoursePageProps {
-  course: any;
+  initialCourse: any;
   users: User[];
 }
 
-const CoursePage = ({ course, users }: CoursePageProps) => {
+const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
   const router = useRouter();
+  const [course, setCourse] = useState(initialCourse)
+
+  const me = useCurrentUser("admin");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const values = getFormValues(formData);
+    const values = eventToFormValues(e)
 
     const updatedCourse = {
       name: values.name,
@@ -36,7 +39,7 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
       },
     };
 
-    const result = await fetch(`/api/v1/course/${course.id}`, {
+    const result = await fetch(`/api/v1/course/${initialCourse.id}`, {
       method: "PUT",
       body: JSON.stringify(updatedCourse),
       headers: {
@@ -45,14 +48,15 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
     });
 
     if (result.status == 200) {
-      router.reload();
+      const data = await result.json()
+      setCourse(data.course)
     }
   };
 
   const handleDelete = async (e: any) => {
     e.preventDefault();
 
-    const result = await fetch(`/api/v1/course/${course.id}`, {
+    const result = await fetch(`/api/v1/course/${initialCourse.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +71,7 @@ const CoursePage = ({ course, users }: CoursePageProps) => {
 
   return (
     <>
-      <CourseForm course={course} users={users} handleSubmit={handleSubmit} />
+      <CourseForm course={course} users={users} handleSubmit={handleSubmit} buttonText="Update" />
       <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>Delete</Button>
     </>
   )
@@ -101,7 +105,7 @@ export const getServerSideProps = async (context: any) => {
   });
 
   return {
-    props: { course, users: professors },
+    props: { initialCourse: course, users: professors },
   };
 };
 

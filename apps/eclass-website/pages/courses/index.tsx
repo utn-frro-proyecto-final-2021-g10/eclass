@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import CourseForm from "../../components/Forms/CourseForm";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../utils/eventToFormValues";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface CoursesPageProps {
@@ -14,17 +15,13 @@ interface CoursesPageProps {
   users: User[];
 }
 const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
-  const me = useCurrentUser();
-  const router = useRouter();
+  const me = useCurrentUser("admin");
   const [courses, setCourses] = useState<Course[]>(initialCourses);
   const toast = useToast();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const values = getFormValues(formData);
+    const values = eventToFormValues(e)
 
     const course = {
       name: values.name,
@@ -78,11 +75,6 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
     }
   };
 
-  useEffect(() => {
-    if (me && me.role !== "admin") {
-      router.replace("/api/auth/signin");
-    }
-  }, [me, router]);
 
   return (
     <>
