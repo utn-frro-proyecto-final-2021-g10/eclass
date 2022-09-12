@@ -2,7 +2,6 @@ import type { NextApiResponse } from "next";
 import { reqWithUser } from "../../../../types/reqWithUser";
 import { prisma } from "../../../../lib/prisma";
 import { protect } from "../../../../middleware/protect";
-import { Role } from "@prisma/client";
 
 const me = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "GET") {
@@ -28,7 +27,11 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
             },
           },
         },
-        ownedCourses: true,
+        ownedCourses: {
+          include: {
+            settings: true,
+          },
+        },
       },
     });
     return res.status(200).json({

@@ -39,7 +39,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
   // creates a course
   async function createCourse() {
-    if (req.user.role !== Role.admin) {
+    if (req.user.role === Role.student) {
       res.status(401).json({
         success: false,
         message: "Unauthorized",
