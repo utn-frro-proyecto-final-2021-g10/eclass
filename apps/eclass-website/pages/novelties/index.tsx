@@ -6,7 +6,9 @@ import {
   Input,
   useToast,
 } from "@chakra-ui/react";
+import { Role } from "@prisma/client";
 import { useState } from "react";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { getFormValues } from "../../utils/getFormValues";
 
 interface Props {
@@ -15,6 +17,7 @@ interface Props {
 const NoveltiesPage = ({ initialNovelties }: Props) => {
   const toast = useToast();
   const [novelties, setNovelties] = useState<any[]>(initialNovelties);
+  useCurrentUser(Role.admin);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

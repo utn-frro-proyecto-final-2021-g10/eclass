@@ -10,6 +10,7 @@ interface UsersPageProps {
 
 const UserPage = ({ initialUser }: UsersPageProps) => {
   const router = useRouter();
+  const me = useCurrentUser(Role.admin);
   const toast = useToast();
   const [user, setUser] = useState(initialUser);
 

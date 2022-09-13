@@ -1,13 +1,10 @@
 import {
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
   useToast,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Role } from "@prisma/client";
+import { useState } from "react";
 import InstitutionForm from "../../components/Forms/InstitutionForm";
-import { Loader } from "../../components/Loader";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../utils/eventToFormValues";
 
 interface Props {
@@ -17,6 +14,7 @@ interface Props {
 const InstitutionPage = ({ initialInstitution }: Props) => {
   const toast = useToast();
   const [institution, setInstitution] = useState(initialInstitution);
+  useCurrentUser(Role.admin);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

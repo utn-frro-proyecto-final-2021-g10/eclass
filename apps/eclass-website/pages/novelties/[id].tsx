@@ -1,24 +1,23 @@
 import { FormControl, FormLabel, Input, Button, useToast } from "@chakra-ui/react";
+import { Role } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { getFormValues } from "../../utils/getFormValues";
+import { useState } from "react";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../utils/eventToFormValues";
 
 interface NoveltyPageProps {
-    noveltyData: any;
+    initialNovelties: any;
 }
 
-const NoveltyPage = ({ noveltyData }: NoveltyPageProps) => {
+const NoveltyPage = ({ initialNovelties }: NoveltyPageProps) => {
     const toast = useToast()
     const router = useRouter()
-    const [novelty, setNovelty] = useState<any | null>(null)
-
-    useEffect(() => setNovelty(noveltyData), [noveltyData])
+    const [novelty, setNovelty] = useState<any | null>(initialNovelties)
+    useCurrentUser(Role.admin);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        const form = e.currentTarget
-        const data = new FormData(form)
-        const values = getFormValues(data)
+        const values = eventToFormValues(e)
 
         const updatedNovelty = {
             description: values.description,
@@ -113,7 +112,7 @@ export const getServerSideProps = async (context: any) => {
         },
     });
     return {
-        props: { noveltyData: novelty },
+        props: { initialNovelties: novelty },
     };
 };
 
