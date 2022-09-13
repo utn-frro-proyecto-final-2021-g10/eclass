@@ -17,8 +17,7 @@ interface CoursePageProps {
 const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
   const router = useRouter();
   const [course, setCourse] = useState(initialCourse)
-
-  const me = useCurrentUser("admin");
+  useCurrentUser("admin");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

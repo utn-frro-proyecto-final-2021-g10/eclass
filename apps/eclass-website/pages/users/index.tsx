@@ -8,7 +8,7 @@ import {
   RadioGroup,
   useToast,
 } from "@chakra-ui/react";
-import { User } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import UserForm from "../../components/Forms/UserForm";
@@ -20,10 +20,11 @@ interface UsersPageProps {
   initialUsers: User[];
 }
 const UsersPage = ({ initialUsers }: UsersPageProps) => {
-  const me = useCurrentUser();
+  const me = useCurrentUser(Role.admin);
   const router = useRouter();
   const toast = useToast();
   const [users, setUsers] = useState(initialUsers);
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
