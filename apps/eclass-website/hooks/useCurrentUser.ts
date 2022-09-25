@@ -28,7 +28,6 @@ export const useCurrentUser = (role?: string) => {
   useEffect(() => {
     if (session.status === "authenticated") {
       setMe(query.data);
-      console.log(me?.role);
 
       if (role && me && me.role.toString() !== role) {
         router.replace("/api/auth/signin");

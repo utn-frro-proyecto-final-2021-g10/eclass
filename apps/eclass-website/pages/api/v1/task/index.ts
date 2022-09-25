@@ -50,12 +50,6 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   // creates an task
   async function createTask() {
     if (req.body) {
-      // if (!(await userOwnsCourse(req.user.id, req.body.courseId))) {
-      //   return res.status(401).json({
-      //     success: false,
-      //     message: "El usuario no es dueño del curso",
-      //   });
-      // }
       try {
         const task = await prisma.task.create({
           data: req.body,
@@ -65,6 +59,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
           task: task,
         });
       } catch (error: any) {
+        console.log(error);
+
         return res.status(400).json({
           success: false,
           message:

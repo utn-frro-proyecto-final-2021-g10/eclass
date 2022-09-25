@@ -95,7 +95,7 @@ model Course {
   ownerId      String?
   forumId      String          @unique
   forum        Forum           @relation(fields: [forumId], references: [id])
-  Task         Task[]
+  tasks        Task[]
 }
 
 model CourseMember {

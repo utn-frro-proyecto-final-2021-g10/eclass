@@ -1,41 +1,83 @@
-import type { NextPage } from "next";
 import { prisma } from "../../../../lib/prisma";
 import { CourseLayout } from "../../../../layouts/course-layout";
-import { GridItem } from "@chakra-ui/react";
+import { GridItem, useToast } from "@chakra-ui/react";
 import { Role } from "@prisma/client";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { TaskForm } from "../../../../components/pages/course/tasks/TaskForm";
 import { TasksList } from "../../../../components/pages/course/tasks/TasksList";
-import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
-import { Loader } from "../../../../components/Loader";
+import { eventToFormValues } from "../../../../utils/eventToFormValues";
+import { useState } from "react";
 
 
 interface Props {
-  courseId: string;
-  tasks: any[];
+  course: any;
 }
-const Tasks = ({ courseId, tasks }: Props) => {
+const Tasks = ({ course }: Props) => {
   const me = useCurrentUser();
-  const courseData = useCurrentCourse(courseId);
+  const toast = useToast()
+  const [tasks, setTasks] = useState(course.tasks)
 
-  if (courseData.status === "loading") {
-    return (
-      <GridItem colSpan={12}>
-        <Loader />
-      </GridItem>
-    );
-  }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const values = eventToFormValues(e)
+    const task = {
+      name: values.name,
+      description: values.description,
+      dateStart: new Date(values.dateStart) || null,
+      dateEnd: new Date(values.dateEnd),
+      course: {
+        connect: {
+          id: course.id
+        }
+      }
+    }
+    const result = await fetch(`/api/v1/task`, {
+      method: "POST",
+      body: JSON.stringify(task),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (result.status === 200) {
+      toast({
+        title: 'Created',
+        description: 'Task created succesfully',
+        status: 'success',
+        isClosable: true
+      })
+      const tasksResult = await fetch(`/api/v1/course/${course.id}/tasks`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (tasksResult.status === 200) {
+        const tasksData = await tasksResult.json()
+        setTasks(tasksData.tasks)
+      }
+    }
+    else {
+      toast({
+        title: 'Error',
+        description: 'Error creating task',
+        status: 'error',
+        isClosable: true
+      })
+    }
+
+  };
 
   return (
     <>
       {me?.role == Role.professor && (
         <GridItem colSpan={12}>
-          <TaskForm course={courseData.data} />
+          <TaskForm handleSubmit={handleSubmit} />
         </GridItem>
       )}
 
       <GridItem colSpan={12}>
-        <TasksList tasks={tasks} course={courseData.data} />
+        <TasksList tasks={tasks} course={course} />
       </GridItem>
     </>
   );
@@ -47,32 +89,29 @@ Tasks.getLayout = function getLayout(page: ReactElement) {
 };
 
 export const getServerSideProps = async (context: any) => {
-  // TODD: check if the user belongs to the course
-  const course = await prisma.course.findUnique({
+  const course: any = await prisma.course.findUnique({
     where: {
       slug: context.params.slug,
     },
+    include: {
+      tasks: true
+    }
   });
-  if (!course) return { props: {} }
 
-  const fetchCourseTasks = async (): Promise<any[]> => {
-    const tasks = await prisma.task.findMany({
-      where: {
-        courseId: course.id.toString(),
+  if (!course) {
+    return {
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
       },
-    });
-    return tasks;
-  };
-  let tasks = await fetchCourseTasks();
-  // Todo: parse datetime
-  tasks = tasks.map((task) => ({
-    id: task.id,
-    courseId: task.courseId,
-    description: task.description,
-    name: task.name,
-  }));
+    }
+  }
+  course.tasks.forEach((task: any) => {
+    task.dateStart = task.dateStart.toISOString().substring(0, 10);
+    task.dateEnd = task.dateEnd.toISOString().substring(0, 10);
+  });
   return {
-    props: { courseId: context.params.slug, tasks },
+    props: { course },
   };
 };
 
