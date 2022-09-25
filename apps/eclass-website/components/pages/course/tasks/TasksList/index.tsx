@@ -1,6 +1,6 @@
 import { Text, VStack, HStack, Divider, IconButton } from "@chakra-ui/react";
 import { Task, Course } from "@prisma/client";
-import { ArrowForwardIcon } from "@chakra-ui/icons";
+import { ArrowForwardIcon, EditIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
 
 export const TasksList = ({
@@ -28,6 +28,12 @@ export const TasksList = ({
                   </Text>
                   <Text fontSize="sm">{task.description}</Text>
                 </VStack>
+                <IconButton
+                  aria-label="Ver tarea"
+                  as="a"
+                  icon={<EditIcon />}
+                  href={`/course/${course.slug}/tasks/edit/${task.id}`}
+                />
                 <IconButton
                   aria-label="Ver tarea"
                   as="a"

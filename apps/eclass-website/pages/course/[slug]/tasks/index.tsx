@@ -94,7 +94,24 @@ export const getServerSideProps = async (context: any) => {
       slug: context.params.slug,
     },
     include: {
-      tasks: true
+      tasks: {
+        where: {
+          dateEnd: {
+            gt: new Date()
+          },
+          OR: [
+            {
+              dateStart: {
+                lt: new Date()
+              },
+            },
+            {
+              dateStart: null
+            }
+          ]
+        }
+      }
+
     }
   });
 
@@ -107,7 +124,7 @@ export const getServerSideProps = async (context: any) => {
     }
   }
   course.tasks.forEach((task: any) => {
-    task.dateStart = task.dateStart.toISOString().substring(0, 10);
+    task.dateStart = task.dateStart?.toISOString().substring(0, 10) || null;
     task.dateEnd = task.dateEnd.toISOString().substring(0, 10);
   });
   return {

@@ -6,9 +6,6 @@ import userIsInCourse from "../../../../utils/db-querys/userIsInCourse";
 import userOwnsCourse from "../../../../utils/db-querys/userOwnsCourse";
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
-  const unauthorized = res
-    .status(401)
-    .json({ success: false, message: "Unauthorized" });
   switch (req.method) {
     case "GET":
       return getTaskById();
@@ -57,7 +54,9 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
   /// updates an task given an task in the body of the request
   async function updateTask() {
-    if (req.user.role === Role.student) return unauthorized;
+    if (req.user.role === Role.student) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
     if (req.body) {
       try {
         const task = await prisma.task.findUnique({
@@ -98,7 +97,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
 
   // deletes an task given an id
   async function deleteTask() {
-    if (req.user.role === Role.student) return unauthorized;
+    if (req.user.role === Role.student)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     try {
       const task = await prisma.task.findUnique({
         where: {
