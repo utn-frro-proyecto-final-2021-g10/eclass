@@ -25,6 +25,18 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       where: {
         id: req.query.id.toString(),
       },
+      include: {
+        fields: {
+          select: {
+            type: true,
+            question: true,
+            possibleAnswers: true,
+            correctAnswer: true,
+            value: true,
+            id: true,
+          },
+        },
+      },
     });
 
     if (task) {
@@ -87,6 +99,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
           });
         }
       } catch (error) {
+        console.log(error);
+
         return res.status(400).json({
           success: false,
           message: "Error al modificar tarea",
