@@ -11,7 +11,7 @@ interface Props {
 const TaskEditPage = ({ initialTask }: Props) => {
   const toast = useToast()
   const [task, setTask] = useState(initialTask)
-  const [questionType, setQuestionType] = useState("text")
+  
   const handleCreateField = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e)
@@ -77,7 +77,6 @@ const TaskEditPage = ({ initialTask }: Props) => {
   const handleUpdateField = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e)
-    console.log("🚀 ~ file: [id].tsx ~ line 79 ~ handleUpdateField ~ values", values)
 
     let possibleAnswers;
     if (questionType === "text") possibleAnswers = null
@@ -85,7 +84,7 @@ const TaskEditPage = ({ initialTask }: Props) => {
     else if (questionType === "truth-or-false") possibleAnswers = "v,f"
 
 
-    task.fields = task.fields.filter((field: any) => field.id !== values.questionId)
+    task.fields = task.fields.filter((field: any) => field.id !== values.id)
     const field = {
       type: questionType,
       question: values.question,
@@ -140,7 +139,6 @@ const TaskEditPage = ({ initialTask }: Props) => {
       })
     }
   }
-
   const handleTaskSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e)
@@ -211,40 +209,9 @@ const TaskEditPage = ({ initialTask }: Props) => {
       </form>
       <pre>{JSON.stringify(task.fields, null, 2)}</pre>
       {task.fields.length > 0 && task.fields.map((field: any, index: number) => (
-        <TaskFieldForm buttonText="Update" handleSubmit={handleUpdateField} index={index} field={field} key={index} />
+        <TaskFieldForm buttonText="Update" handleSubmit={handleUpdateField} field={field} key={index} />
       ))}
-      <form onSubmit={handleCreateField}>
-        <FormControl>
-          <RadioGroup
-            name="type"
-            defaultValue={"text"}
-            onChange={(e) => setQuestionType(e)}
-          >
-            <Radio value={"text"}>Text</Radio>
-            <Radio value={"multiple-choice"}>Multiple Choice</Radio>
-            <Radio value={"truth-or-false"}>Truth or False</Radio>
-          </RadioGroup>
-          <FormLabel>Question</FormLabel>
-          <Input name="question" placeholder="Write your question here. Include options and descriptions if necessary"></Input>
-          {questionType !== "text" &&
-            <>
-              {questionType === "multiple-choice" &&
-                <>
-                  <FormLabel>Posible Answers</FormLabel>
-                  <Input name="possibleAnswers" placeholder="Comma separated list of posible answers (a,b,c,d,...)"></Input>
-                </>
-              }
-              <FormLabel>Answer</FormLabel>
-              <Input name="correctAnswer"></Input>
-            </>
-          }
-          <FormLabel>Value</FormLabel>
-          <NumberInput name="value" min={0}>
-            <NumberInputField />
-          </NumberInput>
-        </FormControl>
-        <Button type="submit">Create</Button>
-      </form>
+      <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
     </>
   )
 };
