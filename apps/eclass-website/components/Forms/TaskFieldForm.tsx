@@ -10,7 +10,7 @@ interface Props {
 const TaskFieldForm = ({ buttonText, field, index, handleSubmit }: Props) => {
     const [questionType, setQuestionType] = useState("text")
     return (
-        <form key={index} onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
             <FormControl>
                 <Input name="questionId" value={field.id} visibility={"hidden"}></Input>
                 <RadioGroup
