@@ -11,21 +11,72 @@ interface Props {
 const TaskEditPage = ({ initialTask }: Props) => {
   const toast = useToast()
   const [task, setTask] = useState(initialTask)
-  
+
+  const handleDelete = async (e: any, id: string) => {
+    e.preventDefault();
+
+    task.fields = task.fields.filter((field: any) => field.id !== id)
+
+    const insert = {
+      dateStart: new Date(task.dateStart),
+      dateEnd: new Date(task.dateEnd),
+      name: task.name,
+      description: task.description,
+      courseId: task.courseId,
+      fields: {
+        deleteMany: {},
+        createMany: {
+          skipDuplicates: true,
+          data: task.fields,
+        }
+      }
+    }
+    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
+      method: "PUT",
+      body: JSON.stringify(insert),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (result.status === 200) {
+      toast({
+        title: 'Deleted',
+        description: 'Field deleted sucesfully',
+        status: "success"
+      })
+      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (taskResult.status === 200) {
+        const data = await taskResult.json()
+        setTask(data.task)
+      }
+    }
+    else {
+      toast({
+        title: 'Error',
+        description: JSON.stringify(await result.json(), null, 2),
+        status: "error"
+      })
+    }
+  }
   const handleCreateField = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e)
 
     let possibleAnswers;
-    if (questionType === "text") possibleAnswers = null
-    else if (questionType === "multiple-choice") possibleAnswers = values.possibleAnswers
-    else if (questionType === "truth-or-false") possibleAnswers = "v,f"
+    if (values.type === "text") possibleAnswers = null
+    else if (values.type === "multiple-choice") possibleAnswers = values.possibleAnswers
+    else if (values.type === "truth-or-false") possibleAnswers = "v,f"
 
     const field = {
-      type: questionType,
+      type: values.type,
       question: values.question,
       possibleAnswers: possibleAnswers,
-      correctAnswer: questionType !== "text" ? values.correctAnswer : null,
+      correctAnswer: values.type !== "text" ? values.correctAnswer : null,
       value: parseInt(values.value, 10),
     }
     task.fields.push(field)
@@ -79,17 +130,17 @@ const TaskEditPage = ({ initialTask }: Props) => {
     const values = eventToFormValues(e)
 
     let possibleAnswers;
-    if (questionType === "text") possibleAnswers = null
-    else if (questionType === "multiple-choice") possibleAnswers = values.possibleAnswers
-    else if (questionType === "truth-or-false") possibleAnswers = "v,f"
+    if (values.type === "text") possibleAnswers = null
+    else if (values.type === "multiple-choice") possibleAnswers = values.possibleAnswers
+    else if (values.type === "truth-or-false") possibleAnswers = "v,f"
 
 
     task.fields = task.fields.filter((field: any) => field.id !== values.id)
     const field = {
-      type: questionType,
+      type: values.type,
       question: values.question,
       possibleAnswers: possibleAnswers,
-      correctAnswer: questionType !== "text" ? values.correctAnswer : null,
+      correctAnswer: values.type !== "text" ? values.correctAnswer : null,
       value: parseInt(values.value, 10),
     }
     task.fields.push(field)
@@ -207,9 +258,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
           <Button type="submit">Update</Button>
         </FormControl>
       </form>
-      <pre>{JSON.stringify(task.fields, null, 2)}</pre>
       {task.fields.length > 0 && task.fields.map((field: any, index: number) => (
-        <TaskFieldForm buttonText="Update" handleSubmit={handleUpdateField} field={field} key={index} />
+        <TaskFieldForm buttonText="Update" handleSubmit={handleUpdateField} handleDelete={(e: any) => handleDelete(e, field.id)} field={field} key={index} />
       ))}
       <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
     </>
