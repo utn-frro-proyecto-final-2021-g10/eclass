@@ -73,6 +73,73 @@ const TaskEditPage = ({ initialTask }: Props) => {
       })
     }
   }
+  const handleUpdateField = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const values = eventToFormValues(e)
+    console.log("🚀 ~ file: [id].tsx ~ line 79 ~ handleUpdateField ~ values", values)
+
+    let possibleAnswers;
+    if (questionType === "text") possibleAnswers = null
+    else if (questionType === "multiple-choice") possibleAnswers = values.possibleAnswers
+    else if (questionType === "truth-or-false") possibleAnswers = "v,f"
+
+
+    task.fields = task.fields.filter((field: any) => field.id !== values.questionId)
+    const field = {
+      type: questionType,
+      question: values.question,
+      possibleAnswers: possibleAnswers,
+      correctAnswer: questionType !== "text" ? values.correctAnswer : null,
+      value: parseInt(values.value, 10),
+    }
+    task.fields.push(field)
+    const insert = {
+      dateStart: new Date(task.dateStart),
+      dateEnd: new Date(task.dateEnd),
+      name: task.name,
+      description: task.description,
+      courseId: task.courseId,
+      fields: {
+        deleteMany: {},
+        createMany: {
+          skipDuplicates: true,
+          data: task.fields,
+        }
+      }
+    }
+    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
+      method: "PUT",
+      body: JSON.stringify(insert),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (result.status === 200) {
+      toast({
+        title: 'Updated',
+        description: 'Task updated sucesfully',
+        status: "success"
+      })
+      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (taskResult.status === 200) {
+        const data = await taskResult.json()
+        setTask(data.task)
+      }
+    }
+    else {
+      toast({
+        title: 'Error',
+        description: JSON.stringify(await result.json(), null, 2),
+        status: "error"
+      })
+    }
+  }
+
   const handleTaskSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e)
@@ -142,6 +209,40 @@ const TaskEditPage = ({ initialTask }: Props) => {
         </FormControl>
       </form>
       <pre>{JSON.stringify(task.fields, null, 2)}</pre>
+      {task.fields.length > 0 && task.fields.map((field: any, index: number) => (
+        <form key={index} onSubmit={handleUpdateField}>
+          <FormControl>
+            <Input name="questionId" value={field.id} visibility={"hidden"}></Input>
+            <RadioGroup
+              name="type"
+              defaultValue={field.type}
+            >
+              <Radio value={"text"}>Text</Radio>
+              <Radio value={"multiple-choice"}>Multiple Choice</Radio>
+              <Radio value={"truth-or-false"}>Truth or False</Radio>
+            </RadioGroup>
+            <FormLabel>Question</FormLabel>
+            <Input name="question" defaultValue={field.question} placeholder="Write your question here. Include options and descriptions if necessary"></Input>
+            {questionType !== "text" &&
+              <>
+                {questionType === "multiple-choice" &&
+                  <>
+                    <FormLabel>Posible Answers</FormLabel>
+                    <Input name="possibleAnswers" defaultValue={field.possibleAnswers} placeholder="Comma separated list of posible answers (a,b,c,d,...)"></Input>
+                  </>
+                }
+                <FormLabel>Answer</FormLabel>
+                <Input name="correctAnswer" defaultValue={field.correctAnswer}></Input>
+              </>
+            }
+            <FormLabel>Value</FormLabel>
+            <NumberInput name="value" min={0} defaultValue={field.value}>
+              <NumberInputField />
+            </NumberInput>
+          </FormControl>
+          <Button type="submit">Update</Button>
+        </form>
+      ))}
       <form onSubmit={handleCreateField}>
         <FormControl>
           <RadioGroup

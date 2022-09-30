@@ -91,6 +91,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             id: req.query.id.toString(),
           },
           data: req.body,
+         
         });
         if (updatedTask) {
           return res.status(200).json({
