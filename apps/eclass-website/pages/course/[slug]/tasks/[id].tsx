@@ -1,6 +1,7 @@
 import { Button, FormControl, FormLabel, Input, Radio, RadioGroup, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import StudentAnswerForm from "../../../../components/Forms/StudentAnswerForm";
+import StudentTaskFormWrapper from "../../../../components/Forms/StudentTaskFormWrapper";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
 import toLocaleISOString from "../../../../utils/toLocaleISOString";
@@ -111,22 +112,7 @@ const Task = ({ initialTask }: Props) => {
 
   if (me?.role === "student") {
     return (
-      <>
-        <form onSubmit={handleAnswer}>
-          <FormControl>
-            {myAnswer ?
-              myAnswer.fields.map((field: any, index: number) => (
-                <StudentAnswerForm key={`f-${index}`} field={field} answer={field.studentAnswer} />
-              )) :
-              task.fields.map((field: any, index: number) => (
-                <>
-                  <StudentAnswerForm key={`f-${index}`} field={field} />
-                </>
-              ))}
-            <Button type="submit">Aceptar</Button>
-          </FormControl>
-        </form>
-      </>
+      <StudentTaskFormWrapper handleSubmit={handleAnswer} task={task} myAnswer={myAnswer} />
     )
   }
   return <p>error</p>
