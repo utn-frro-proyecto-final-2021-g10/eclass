@@ -1,5 +1,6 @@
 import { Button, FormControl, FormLabel, Input, Radio, RadioGroup, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import StudentAnswerForm from "../../../../components/Forms/StudentAnswerForm";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
 import toLocaleISOString from "../../../../utils/toLocaleISOString";
@@ -12,14 +13,6 @@ const Task = ({ initialTask }: Props) => {
   const toast = useToast()
   const [task, setTask] = useState(initialTask)
   const [myAnswer, setMyAnswer] = useState<any>(null)
-
-  useEffect(() => {
-    if (!task || !task.answers) return
-    const myAnswer = task.answers.filter((answer: any) => answer.userId == me?.id)[0]
-    console.log("🚀 ~ file: [id].tsx ~ line 19 ~ useEffect ~ myAnswer", myAnswer)
-
-    setMyAnswer(myAnswer)
-  }, [me?.id, task])
 
   const handleAnswer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -108,6 +101,14 @@ const Task = ({ initialTask }: Props) => {
     }
   }
 
+  useEffect(() => {
+    if (!task || !task.answers) return
+    const myAnswer = task.answers.filter((answer: any) => answer.userId == me?.id)[0]
+
+    setMyAnswer(myAnswer)
+  }, [me?.id, task])
+
+
   if (me?.role === "student") {
     return (
       <>
@@ -115,31 +116,11 @@ const Task = ({ initialTask }: Props) => {
           <FormControl>
             {myAnswer ?
               myAnswer.fields.map((field: any, index: number) => (
-                <>
-                  <FormLabel key={index}>{field.question}</FormLabel>
-                  {field.type === "text" && <Input name={field.id} key={index} defaultValue={field.studentAnswer} ></Input>}
-                  {field.type !== "text" &&
-                    <>
-                      <RadioGroup name={field.id} defaultValue={field.studentAnswer}>
-                        {field.possibleAnswers.split(',').map((answer: string, index: number) => (
-                          <Radio key={index} value={answer}>{answer}</Radio>
-                        ))}
-                      </RadioGroup>
-                    </>
-                  }
-                </>
+                <StudentAnswerForm key={`f-${index}`} field={field} answer={field.studentAnswer} />
               )) :
               task.fields.map((field: any, index: number) => (
                 <>
-                  <FormLabel key={index}>{field.question}</FormLabel>
-                  {field.type === "text" && <Input name={field.id} key={index} ></Input>}
-                  {field.type !== "text" &&
-                    <RadioGroup name={field.id}>
-                      {field.possibleAnswers.split(',').map((answer: string, index: number) => (
-                        <Radio key={index} value={answer}>{answer}</Radio>
-                      ))}
-                    </RadioGroup>
-                  }
+                  <StudentAnswerForm key={`f-${index}`} field={field} />
                 </>
               ))}
             <Button type="submit">Aceptar</Button>
