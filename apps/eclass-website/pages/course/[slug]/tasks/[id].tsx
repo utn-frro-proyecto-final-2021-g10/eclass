@@ -4,6 +4,7 @@ import ProfessorCorrectionForm from "../../../../components/Forms/ProfessorCorre
 import StudentTaskFormWrapper from "../../../../components/Forms/StudentTaskFormWrapper";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
+import { getFormValues } from "../../../../utils/getFormValues";
 import toLocaleISOString from "../../../../utils/toLocaleISOString";
 
 interface Props {
@@ -161,6 +162,74 @@ const Task = ({ initialTask }: Props) => {
       })
     }
   }
+  const handleAutoCorrection = async (e: any, formName: string) => {
+    e.preventDefault()
+    const form = document.forms.namedItem(formName)
+    if (!form) return
+    const data = new FormData(form);
+    const values = getFormValues(data);
+    const answer = task.answers.filter((answer: any) => answer.userId == values.studentId)[0]
+    answer.fields.forEach((field: any) => {
+      if (field.type !== "text") {
+        console.log(field);
+
+        field.qualification = field.studentAnswer === field.correctAnswer ? field.value : 0
+      }
+    });
+    const update = {
+      answers: {
+        update: {
+          where: {
+            userId_taskId: {
+              taskId: task.id,
+              userId: values.studentId
+            }
+          },
+          data: {
+            fields: {
+              deleteMany: {
+              },
+              createMany: {
+                data: answer.fields
+              }
+            },
+          },
+        }
+      }
+    }
+    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
+      method: "PUT",
+      body: JSON.stringify(update),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (result.status === 200) {
+      toast({
+        title: 'Updated',
+        description: 'Task answered sucesfully',
+        status: "success"
+      })
+      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (taskResult.status === 200) {
+        const data = await taskResult.json()
+        console.log("🚀 ~ file: [id].tsx ~ line 229 ~ handleAutoCorrection ~ data", data)
+        setTask(data.task)
+      }
+    }
+    else {
+      toast({
+        title: 'Error',
+        description: JSON.stringify(await result.json(), null, 2),
+        status: "error"
+      })
+    }
+  }
 
   useEffect(() => {
     if (!task || !task.answers) return
@@ -172,13 +241,21 @@ const Task = ({ initialTask }: Props) => {
 
   if (me?.role === "student") {
     return (
-      <StudentTaskFormWrapper handleSubmit={handleAnswer} task={task} myAnswer={myAnswer} />
+      <StudentTaskFormWrapper
+        handleSubmit={handleAnswer}
+        task={task}
+        myAnswer={myAnswer}
+      />
     )
   }
 
   if (me?.role === "professor") {
     return (
-      <ProfessorCorrectionForm handleSubmit={handleCorrection} task={task} />
+      <ProfessorCorrectionForm
+        handleSubmit={handleCorrection}
+        handleAutoCorrection={handleAutoCorrection}
+        task={task}
+      />
     )
   }
   return <p>error</p>

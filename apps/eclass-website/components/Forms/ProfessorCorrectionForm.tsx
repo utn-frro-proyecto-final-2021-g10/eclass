@@ -1,17 +1,26 @@
-import { FormControl, Input, FormLabel, RadioGroup, Radio, NumberInput, NumberInputField, Button } from "@chakra-ui/react"
-import task from "../../pages/api/v1/task"
+import {
+    FormControl,
+    Input,
+    FormLabel,
+    RadioGroup,
+    Radio,
+    NumberInput,
+    NumberInputField,
+    Button
+} from "@chakra-ui/react"
 
 interface Props {
     task: any
     handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+    handleAutoCorrection: (e: any, formName: string) => Promise<void>;
 }
-const ProfessorCorrectionForm = ({ handleSubmit, task }: Props) => {
+const ProfessorCorrectionForm = ({ handleSubmit, handleAutoCorrection, task }: Props) => {
     return (
         <>
             {task.answers.map((answer: any, index: number) => (
                 <>
                     {`Student: ${answer?.user.firstName} ${answer?.user.lastName}`}
-                    <form key={index} onSubmit={handleSubmit}>
+                    <form name={`form-${index}`} key={index} onSubmit={handleSubmit}>
                         <FormControl>
                             <Input visibility={"hidden"} readOnly={true} name="studentId" value={answer.userId}></Input>
                             {answer.fields.map((field: any) => (
@@ -26,12 +35,13 @@ const ProfessorCorrectionForm = ({ handleSubmit, task }: Props) => {
                                         </>
                                     }
                                     <FormLabel>Score</FormLabel>
-                                    <NumberInput name={`${field.id}-qualification`} min={0} max={field.value} defaultValue={field?.qualification || ""}>
+                                    <NumberInput name={`${field.id}-qualification`} min={0} max={field.value} defaultValue={field?.qualification}>
                                         <NumberInputField placeholder={`0 - ${field.value}`} />
                                     </NumberInput>
                                 </>
                             ))}
                             <Button type="submit">Submit</Button>
+                            <Button onClick={(e) => handleAutoCorrection(e, `form-${index}`)}>AutoCorrect</Button>
                         </FormControl>
                     </form>
                 </>
