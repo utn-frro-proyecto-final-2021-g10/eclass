@@ -1,5 +1,6 @@
 import { Button, FormControl, FormLabel, Input, NumberInput, NumberInputField, Radio, RadioGroup, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import ProfessorCorrectionForm from "../../../../components/Forms/ProfessorCorrectionForm";
 import StudentTaskFormWrapper from "../../../../components/Forms/StudentTaskFormWrapper";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
@@ -103,16 +104,12 @@ const Task = ({ initialTask }: Props) => {
   const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const values = eventToFormValues(e)
-
-
     const answer = task.answers.filter((answer: any) => answer.userId == values.studentId)[0]
     answer.fields.forEach((field: any) => {
       field.qualification = parseInt(values[`${field.id}-qualification`])
     });
-    console.log(JSON.stringify(answer, null, 2));
 
-
-    const insert = {
+    const update = {
       answers: {
         update: {
           where: {
@@ -134,7 +131,7 @@ const Task = ({ initialTask }: Props) => {
     }
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
-      body: JSON.stringify(insert),
+      body: JSON.stringify(update),
       headers: {
         "Content-Type": "application/json",
       },
@@ -181,37 +178,7 @@ const Task = ({ initialTask }: Props) => {
 
   if (me?.role === "professor") {
     return (
-      <>
-        {task.answers.map((answer: any, index: number) => (
-          <>
-            {`Student: ${answer?.user.firstName} ${answer?.user.lastName}`}
-            <form key={index} onSubmit={handleCorrection}>
-              <FormControl>
-                <Input visibility={"hidden"} readOnly={true} name="studentId" value={answer.userId}></Input>
-                {answer.fields.map((field: any) => (
-                  <>
-                    <FormLabel>{field.question}</FormLabel>
-                    {field.type === "text" && <Input name={field.id} value={field.studentAnswer}></Input>}
-                    {field.type !== "text" &&
-                      <>
-                        <RadioGroup name={field.id} value={answer}>
-                          {field.possibleAnswers.split(',').map((answer: string, index: number) => <Radio key={index} value={answer}>{answer}</Radio>)}
-                        </RadioGroup>
-                      </>
-                    }
-                    <FormLabel>Score</FormLabel>
-                    <NumberInput name={`${field.id}-qualification`} min={0} max={field.value} defaultValue={field?.qualification || ""}>
-                      <NumberInputField />
-                    </NumberInput>
-                    <Button type="submit">Submit</Button>
-                  </>
-                ))}
-              </FormControl>
-            </form>
-          </>
-        ))
-        }
-      </>
+      <ProfessorCorrectionForm handleSubmit={handleCorrection} task={task} />
     )
   }
   return <p>error</p>
