@@ -6,9 +6,6 @@ import userIsInCourse from "../../../../utils/db-querys/userIsInCourse";
 import userOwnsCourse from "../../../../utils/db-querys/userOwnsCourse";
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
-  const unauthorized = res
-    .status(401)
-    .json({ success: false, message: "Unauthorized" });
   switch (req.method) {
     case "GET":
       return getTaskById();
@@ -27,6 +24,18 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     const task = await prisma.task.findUnique({
       where: {
         id: req.query.id.toString(),
+      },
+      include: {
+        fields: {
+          select: {
+            type: true,
+            question: true,
+            possibleAnswers: true,
+            correctAnswer: true,
+            value: true,
+            id: true,
+          },
+        },
       },
     });
 
@@ -57,7 +66,9 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   }
   /// updates an task given an task in the body of the request
   async function updateTask() {
-    if (req.user.role === Role.student) return unauthorized;
+    if (req.user.role === Role.student) {
+      return res.status(401).json({ success: false, message: "Unauthorized" });
+    }
     if (req.body) {
       try {
         const task = await prisma.task.findUnique({
@@ -80,6 +91,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             id: req.query.id.toString(),
           },
           data: req.body,
+         
         });
         if (updatedTask) {
           return res.status(200).json({
@@ -88,6 +100,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
           });
         }
       } catch (error) {
+        console.log(error);
+
         return res.status(400).json({
           success: false,
           message: "Error al modificar tarea",
@@ -98,7 +112,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
 
   // deletes an task given an id
   async function deleteTask() {
-    if (req.user.role === Role.student) return unauthorized;
+    if (req.user.role === Role.student)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
     try {
       const task = await prisma.task.findUnique({
         where: {

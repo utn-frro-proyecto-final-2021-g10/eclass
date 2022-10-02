@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 import UserForm from "../../components/Forms/UserForm";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../utils/eventToFormValues";
-import { getFormValues } from "../../utils/getFormValues";
 
 interface UsersPageProps {
   initialUsers: User[];

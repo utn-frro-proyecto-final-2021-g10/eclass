@@ -95,7 +95,7 @@ model Course {
   ownerId      String?
   forumId      String          @unique
   forum        Forum           @relation(fields: [forumId], references: [id])
-  Task         Task[]
+  tasks        Task[]
 }
 
 model CourseMember {
@@ -168,19 +168,20 @@ model Task {
 }
 
 model Field {
-  id            String    @id @default(cuid())
-  type          String
-  question      String
-  correctAnswer String?
-  value         Float?
-  studentAnswer String?
-  dateSubmitted DateTime?
-  qualification Float?
-  Task          Task?     @relation(fields: [taskId], references: [id])
-  taskId        String?
-  Answer        Answer?   @relation(fields: [answerUserId, answerTaskId], references: [userId, taskId])
-  answerUserId  String?
-  answerTaskId  String?
+  id              String    @id @default(cuid())
+  type            String
+  question        String
+  possibleAnswers String?
+  correctAnswer   String?
+  value           Float?
+  studentAnswer   String?
+  dateSubmitted   DateTime?
+  qualification   Float?
+  Task            Task?     @relation(fields: [taskId], references: [id])
+  taskId          String?
+  Answer          Answer?   @relation(fields: [answerUserId, answerTaskId], references: [userId, taskId])
+  answerUserId    String?
+  answerTaskId    String?
 }
 
 model Answer {

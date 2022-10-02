@@ -10,6 +10,7 @@ import { Novelty } from "@prisma/client";
 interface Props {
   novelties: Novelty[]
 }
+
 const Home: NextPage<Props> = ({ novelties }: Props) => {
   const institution = useInstitution();
   const me = useCurrentUser();
@@ -32,9 +33,7 @@ const Home: NextPage<Props> = ({ novelties }: Props) => {
 }
 
 export const getServerSideProps = async () => {
-
   const novelties = await prisma.novelty.findMany({})
-
   return {
     props: {
       novelties
