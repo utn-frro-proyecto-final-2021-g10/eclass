@@ -1,256 +1,154 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  GridItem,
-  Input,
-  NumberInput,
-  NumberInputField,
-  Text,
-} from "@chakra-ui/react";
-import { Answer, Field } from "@prisma/client";
-import { NextPage } from "next";
-import { useRouter } from "next/router";
+import { Button, FormControl, FormLabel, Input, Radio, RadioGroup, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Card } from "../../../../components/Card";
-import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
-import { CourseLayout } from "../../../../layouts/course-layout";
-import { FullTask } from "../../../../types/Task";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
-import { getFormValues } from "../../../../utils/getFormValues";
+import toLocaleISOString from "../../../../utils/toLocaleISOString";
 
 interface Props {
-  fullTask: FullTask;
-  courseId: string;
+  initialTask: any
 }
-
-const Task = ({ fullTask, courseId }: Props) => {
-  const courseData = useCurrentCourse(courseId);
-  const me = useCurrentUser();
-  const router = useRouter();
-  const [answer, setAnswer] = useState<any | null>(null);
+const Task = ({ initialTask }: Props) => {
+  const me = useCurrentUser()
+  const toast = useToast()
+  const [task, setTask] = useState(initialTask)
+  const [myAnswer, setMyAnswer] = useState<any>(null)
 
   useEffect(() => {
-    let studentAnswers = fullTask.answers.filter(
-      (a: any) => a.user.id == me?.id
-    );
-    if (studentAnswers.length > 0) setAnswer(studentAnswers[0]);
-    else setAnswer(null);
-  }, [fullTask, me]);
+    if (!task || !task.answers) return
+    const myAnswer = task.answers.filter((answer: any) => answer.userId == me?.id)[0]
+    console.log("🚀 ~ file: [id].tsx ~ line 19 ~ useEffect ~ myAnswer", myAnswer)
 
-  const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const values = eventToFormValues(e);
+    setMyAnswer(myAnswer)
+  }, [me?.id, task])
 
-    const answer: any = fullTask.answers[values.AnswerIndex];
-    let score = 0
-    for (let index = 0; index < answer.fields.length; index++) {
-      const field = answer.fields[index];
+  const handleAnswer = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const values = eventToFormValues(e)
 
-      field.qualification = parseFloat(values[`${index}-score`]);
-      score = score + field.qualification
+    const fields = new Array()
+    for (const [key, value] of Object.entries(values)) {
+      let field = myAnswer ?
+        myAnswer.fields.filter((field: any) => field.id === key)[0] :
+        task.fields.filter((field: any) => field.id === key)[0]
+
+      field.studentAnswer = value
+      field.dateSubmitted = new Date()
+      delete field.id
+      fields.push(field)
     }
-
     const insert = {
-      userId: answer.user.id,
-      taskId: fullTask.id,
-      dateSubmitted: new Date(),
-      qualification: score,
-      fields: {
-        create: answer.fields.map((field: any) => {
-          return {
-            type: field.type,
-            question: field.question,
-            correctAnswer: field.correctAnswer,
-            value: field.value,
-            studentAnswer: field.studentAnswer,
-            dateSubmitted: field.dateSubmitted,
-            qualification: field.qualification,
-            taskId: field.taskId,
-          };
-        }),
+      answers: {
+        upsert: {
+          where: {
+            userId_taskId: {
+              taskId: task.id,
+              userId: me?.id
+            }
+          },
+          create: {
+            fields: {
+              createMany: {
+                data: fields
+              }
+            },
+            dateSubmitted: new Date(),
+            user: {
+              connect: {
+                id: me?.id
+              }
+            }
+          },
+          update: {
+            fields: {
+              deleteMany: {},
+              createMany: {
+                data: fields
+              }
+            },
+            dateSubmitted: new Date(),
+            user: {
+              connect: {
+                id: me?.id
+              }
+            }
+          },
+        }
+      }
+    }
+    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
+      method: "PUT",
+      body: JSON.stringify(insert),
+      headers: {
+        "Content-Type": "application/json",
       },
-    };
-
-    const result = await fetch(
-      `/api/v1/answer/${answer.user.id}/${fullTask.id}/changeAnswer`,
-      {
-        method: "POST",
-        body: JSON.stringify(insert),
+    });
+    if (result.status === 200) {
+      toast({
+        title: 'Updated',
+        description: 'Task answered sucesfully',
+        status: "success"
+      })
+      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-      }
-    );
-    const response = await result.json();
-    if (response.success) {
-      router.reload();
-    }
-  };
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const values = getFormValues(formData);
-
-    if (me) {
-      fullTask.fields = fullTask.fields.map((field: Field, index: number) => {
-        let newField = field;
-
-        newField.studentAnswer = values[index];
-        newField.dateSubmitted = new Date();
-        return newField;
       });
-
-      let answer = {
-        userId: me?.id,
-        taskId: fullTask.id,
-        dateSubmitted: new Date(),
-        qualification: null,
-        fields: {
-          create: fullTask.fields.map((field: Field) => {
-            return {
-              type: field.type,
-              question: field.question,
-              correctAnswer: field.correctAnswer,
-              value: field.value,
-              studentAnswer: field.studentAnswer,
-              dateSubmitted: field.dateSubmitted,
-              qualification: field.qualification,
-              taskId: field.taskId,
-            };
-          }),
-        },
-      };
-
-      const result = await fetch(
-        `/api/v1/answer/${me.id}/${fullTask.id}/changeAnswer`,
-        {
-          method: "POST",
-          body: JSON.stringify(answer),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const res = await result.json();
-      if (res.success) {
-        router.reload();
+      if (taskResult.status === 200) {
+        const data = await taskResult.json()
+        setTask(data.task)
       }
     }
-  };
-
-  if (me?.role == "professor") {
-    return (
-      <GridItem colSpan={12}>
-        <Text> {fullTask.name} </Text>
-        <Text> {fullTask.description} </Text>
-        {fullTask.dateEnd !== null && (
-          <Text> Fecha de entrega: {fullTask.dateEnd} </Text>
-        )}
-
-        {fullTask.answers.map((answer: any, index: number) => (
-          <form key={index} onSubmit={handleCorrection}>
-            <>
-              <Card>
-                <Input
-                  name={`AnswerIndex`}
-                  value={index}
-                  visibility={"hidden"}
-                  width={0}
-                  height={0}
-                />
-
-                {answer.fields.map((field: any, index: number) => (
-                  <>
-                    <pre>{answer.user.lastName}</pre>
-                    <FormControl>
-                      <FormLabel>{field.question}</FormLabel>
-                      <Input
-                        name={`${index}`}
-                        defaultValue={field.studentAnswer?.toString()}
-                        readOnly={true}
-                        disabled={true}
-                      />
-                      <NumberInput
-                        min={0}
-                        max={field.value}
-                        name={`${index}-score`}
-                        defaultValue={field.qualification}
-                      >
-                        <NumberInputField
-                          placeholder={`Max score: ${field.value}`}
-                        />
-                      </NumberInput>
-                    </FormControl>
-                  </>
-                ))}
-                <Button type="submit">Submit</Button>
-              </Card>
-            </>
-          </form>
-        ))}
-      </GridItem>
-    );
+    else {
+      toast({
+        title: 'Error',
+        description: JSON.stringify(await result.json(), null, 2),
+        status: "error"
+      })
+    }
   }
 
-  if (fullTask.dateEnd !== null && fullTask.dateEnd < new Date()) {
+  if (me?.role === "student") {
     return (
       <>
-        <Box>
-          <Text> Esta tarea ya ha terminado </Text>
-        </Box>
+        <form onSubmit={handleAnswer}>
+          <FormControl>
+            {myAnswer ?
+              myAnswer.fields.map((field: any, index: number) => (
+                <>
+                  <FormLabel key={index}>{field.question}</FormLabel>
+                  {field.type === "text" && <Input name={field.id} key={index} defaultValue={field.studentAnswer} ></Input>}
+                  {field.type !== "text" &&
+                    <>
+                      <RadioGroup name={field.id} defaultValue={field.studentAnswer}>
+                        {field.possibleAnswers.split(',').map((answer: string, index: number) => (
+                          <Radio key={index} value={answer}>{answer}</Radio>
+                        ))}
+                      </RadioGroup>
+                    </>
+                  }
+                </>
+              )) :
+              task.fields.map((field: any, index: number) => (
+                <>
+                  <FormLabel key={index}>{field.question}</FormLabel>
+                  {field.type === "text" && <Input name={field.id} key={index} ></Input>}
+                  {field.type !== "text" &&
+                    <RadioGroup name={field.id}>
+                      {field.possibleAnswers.split(',').map((answer: string, index: number) => (
+                        <Radio key={index} value={answer}>{answer}</Radio>
+                      ))}
+                    </RadioGroup>
+                  }
+                </>
+              ))}
+            <Button type="submit">Aceptar</Button>
+          </FormControl>
+        </form>
       </>
-    );
+    )
   }
-  return (
-    <GridItem colSpan={12}>
-      {answer !== null ? (
-        <>
-          <Text> {fullTask.name} </Text>
-          <Text> {fullTask.description} </Text>
-          {fullTask.dateEnd !== null ?? (
-            <Text> Fecha de entrega: {fullTask.dateEnd} </Text>
-          )}
-          <form onSubmit={handleSubmit}>
-            {answer.fields.map((field: any, index: number) => (
-              <>
-                <FormControl>
-                  <FormLabel>{field.question}</FormLabel>
-                  <Input
-                    name={`${index}`}
-                    defaultValue={field.studentAnswer?.toString()}
-                  />
-                </FormControl>
-              </>
-            ))}
-            <Button type="submit">Submit</Button>
-          </form>
-        </>
-      ) : (
-        <>
-          <Text> {fullTask.name} </Text>
-          <Text> {fullTask.description} </Text>
-          {fullTask.dateEnd !== null ?? (
-            <Text> Fecha de entrega: {fullTask.dateEnd} </Text>
-          )}
-          <form onSubmit={handleSubmit}>
-            {fullTask.fields.map((field, index) => (
-              <>
-                <FormControl>
-                  <FormLabel>{field.question}</FormLabel>
-                  <Input name={`${index}`} />
-                </FormControl>
-              </>
-            ))}
-            <Button type="submit">Submit</Button>
-          </form>
-        </>
-      )}
-    </GridItem>
-  );
+  return <p>error</p>
 };
 
 Task.getLayout = function getLayout(page: NextPage) {
@@ -258,66 +156,57 @@ Task.getLayout = function getLayout(page: NextPage) {
 };
 
 export const getServerSideProps = async (context: any) => {
-  const task: any = await prisma.task.findUnique({
+  const taskId = context.params.id
+  let task: any = await prisma.task.findUnique({
     where: {
-      id: context.params.id,
+      id: taskId
     },
     include: {
       fields: {
         select: {
-          studentAnswer: true,
-          question: true,
-          id: true,
           type: true,
+          question: true,
+          possibleAnswers: true,
+          correctAnswer: true,
           value: true,
-        },
+          id: true,
+        }
       },
       answers: {
         select: {
           fields: {
             select: {
-              studentAnswer: true,
-              question: true,
-              id: true,
               type: true,
+              question: true,
+              possibleAnswers: true,
+              studentAnswer: true,
+              correctAnswer: true,
               value: true,
-              qualification: true,
-            },
-          },
-          user: {
-            select: {
-              firstName: true,
-              lastName: true,
-              role: true,
-              profileImageUrl: true,
-              email: true,
               id: true,
-            },
+            }
           },
-        },
-      },
-    },
+          taskId: true,
+          userId: true,
+        }
+      }
+    }
   });
-
-  if (task) {
-    if (task.dateEnd !== null) {
-      task.dateEnd = task.dateEnd?.toString();
-    }
-    if (task.dateStart !== null) {
-      task.dateStart = task.dateStart?.toString();
-    }
-    task.answers.sort((a: any, b: any) =>
-      a.user.lastName.localeCompare(b.user.lastName)
-    );
-
+  if (!task) {
     return {
-      props: {
-        fullTask: task,
-        courseId: context.params.slug
+      redirect: {
+        destination: '/api/auth/signin',
+        permanent: false,
       },
-    };
+    }
   }
-  return { props: {} };
+  task.dateStart = task.dateStart !== null ? toLocaleISOString(task.dateStart).substring(0, 16) : null;
+  task.dateEnd = toLocaleISOString(task.dateEnd).substring(0, 16) || null;
+
+  return {
+    props: {
+      initialTask: task
+    }
+  };
 };
 
 export default Task;
