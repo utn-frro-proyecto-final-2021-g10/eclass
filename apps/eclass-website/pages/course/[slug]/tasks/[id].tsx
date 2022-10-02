@@ -1,6 +1,5 @@
-import { Button, FormControl, FormLabel, Input, Radio, RadioGroup, useToast } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, Input, NumberInput, NumberInputField, Radio, RadioGroup, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import StudentAnswerForm from "../../../../components/Forms/StudentAnswerForm";
 import StudentTaskFormWrapper from "../../../../components/Forms/StudentTaskFormWrapper";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
@@ -101,6 +100,70 @@ const Task = ({ initialTask }: Props) => {
       })
     }
   }
+  const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const values = eventToFormValues(e)
+
+
+    const answer = task.answers.filter((answer: any) => answer.userId == values.studentId)[0]
+    answer.fields.forEach((field: any) => {
+      field.qualification = parseInt(values[`${field.id}-qualification`])
+    });
+    console.log(JSON.stringify(answer, null, 2));
+
+
+    const insert = {
+      answers: {
+        update: {
+          where: {
+            userId_taskId: {
+              taskId: task.id,
+              userId: values.studentId
+            }
+          },
+          data: {
+            fields: {
+              deleteMany: {},
+              createMany: {
+                data: answer.fields
+              }
+            },
+          },
+        }
+      }
+    }
+    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
+      method: "PUT",
+      body: JSON.stringify(insert),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (result.status === 200) {
+      toast({
+        title: 'Updated',
+        description: 'Task answered sucesfully',
+        status: "success"
+      })
+      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (taskResult.status === 200) {
+        const data = await taskResult.json()
+        setTask(data.task)
+      }
+    }
+    else {
+      toast({
+        title: 'Error',
+        description: JSON.stringify(await result.json(), null, 2),
+        status: "error"
+      })
+    }
+  }
 
   useEffect(() => {
     if (!task || !task.answers) return
@@ -113,6 +176,42 @@ const Task = ({ initialTask }: Props) => {
   if (me?.role === "student") {
     return (
       <StudentTaskFormWrapper handleSubmit={handleAnswer} task={task} myAnswer={myAnswer} />
+    )
+  }
+
+  if (me?.role === "professor") {
+    return (
+      <>
+        {task.answers.map((answer: any, index: number) => (
+          <>
+            {`Student: ${answer?.user.firstName} ${answer?.user.lastName}`}
+            <form key={index} onSubmit={handleCorrection}>
+              <FormControl>
+                <Input visibility={"hidden"} readOnly={true} name="studentId" value={answer.userId}></Input>
+                {answer.fields.map((field: any) => (
+                  <>
+                    <FormLabel>{field.question}</FormLabel>
+                    {field.type === "text" && <Input name={field.id} value={field.studentAnswer}></Input>}
+                    {field.type !== "text" &&
+                      <>
+                        <RadioGroup name={field.id} value={answer}>
+                          {field.possibleAnswers.split(',').map((answer: string, index: number) => <Radio key={index} value={answer}>{answer}</Radio>)}
+                        </RadioGroup>
+                      </>
+                    }
+                    <FormLabel>Score</FormLabel>
+                    <NumberInput name={`${field.id}-qualification`} min={0} max={field.value} defaultValue={field?.qualification || ""}>
+                      <NumberInputField />
+                    </NumberInput>
+                    <Button type="submit">Submit</Button>
+                  </>
+                ))}
+              </FormControl>
+            </form>
+          </>
+        ))
+        }
+      </>
     )
   }
   return <p>error</p>
@@ -150,10 +249,17 @@ export const getServerSideProps = async (context: any) => {
               correctAnswer: true,
               value: true,
               id: true,
+              qualification: true
             }
           },
           taskId: true,
           userId: true,
+          user: {
+            select: {
+              firstName: true,
+              lastName: true,
+            }
+          }
         }
       }
     }

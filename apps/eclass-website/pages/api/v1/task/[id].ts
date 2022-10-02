@@ -47,10 +47,17 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
                 correctAnswer: true,
                 value: true,
                 id: true,
+                qualification: true,
               },
             },
             taskId: true,
             userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         },
       },
