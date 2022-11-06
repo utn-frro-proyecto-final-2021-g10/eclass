@@ -13,14 +13,18 @@ export const protect =
     return res.status(401).json({ success: false, message: "Unauthorized" });
   };
 
-  export const protectWithRoles =
-  (handler: any, rolesAllowed: Role[]) => async (req: reqWithUser, res: NextApiResponse) => {
+export const protectWithRoles =
+  (handler: any, rolesAllowed: Role[]) =>
+  async (req: reqWithUser, res: NextApiResponse) => {
     const session = await getSession({ req });
     if (session?.user) {
       req.user = session.user;
 
       if (rolesAllowed.includes(req.user.role)) return handler(req, res);
-      else return res.status(401).json({ success: false, message: "Unauthorized" }); 
+      else
+        return res
+          .status(401)
+          .json({ success: false, message: "Unauthorized" });
     }
     return res.status(401).json({ success: false, message: "Unauthorized" });
-  }; 
+  };

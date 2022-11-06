@@ -20,7 +20,7 @@ import { Response } from "./response";
 import { parseDate } from "../../../../../utils/parseDate";
 
 interface Props {
-  message: any
+  message: any;
 }
 export const Publication = ({ message }: Props) => {
   const [showComments, setShowcomment] = useBoolean();

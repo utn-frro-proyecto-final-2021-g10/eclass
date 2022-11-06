@@ -24,7 +24,7 @@ interface Props {
 
 const Task = ({ fullTask }: Props) => {
   const me = useCurrentUser();
-  const router = useRouter()
+  const router = useRouter();
   const [answer, setAnswer] = useState<any | null>(null);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const Task = ({ fullTask }: Props) => {
 
   const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = eventToFormValues(e)
+    const values = eventToFormValues(e);
 
     const answer: any = fullTask.answers[values.AnswerIndex];
 
@@ -295,12 +295,14 @@ export const getServerSideProps = async (context: any) => {
     if (task.dateStart !== null) {
       task.dateStart = task.dateStart?.toString();
     }
-    task.answers.sort((a: any, b: any) => a.user.lastName.localeCompare(b.user.lastName));
+    task.answers.sort((a: any, b: any) =>
+      a.user.lastName.localeCompare(b.user.lastName)
+    );
 
     return {
       props: {
-        task
-      }
+        task,
+      },
     };
   }
   return { props: {} };

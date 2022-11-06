@@ -1,6 +1,4 @@
-import {
-  Button,
-} from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -16,12 +14,12 @@ interface CoursePageProps {
 
 const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
   const router = useRouter();
-  const [course, setCourse] = useState(initialCourse)
+  const [course, setCourse] = useState(initialCourse);
   useCurrentUser("admin");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = eventToFormValues(e)
+    const values = eventToFormValues(e);
 
     const updatedCourse = {
       name: values.name,
@@ -47,8 +45,8 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
     });
 
     if (result.status == 200) {
-      const data = await result.json()
-      setCourse(data.course)
+      const data = await result.json();
+      setCourse(data.course);
     }
   };
 
@@ -70,10 +68,17 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
 
   return (
     <>
-      <CourseForm course={course} users={users} handleSubmit={handleSubmit} buttonText="Update" />
-      <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>Delete</Button>
+      <CourseForm
+        course={course}
+        users={users}
+        handleSubmit={handleSubmit}
+        buttonText="Update"
+      />
+      <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
+        Delete
+      </Button>
     </>
-  )
+  );
 };
 
 export const getServerSideProps = async (context: any) => {

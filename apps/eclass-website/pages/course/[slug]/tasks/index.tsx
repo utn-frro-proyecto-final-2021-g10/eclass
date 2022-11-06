@@ -8,18 +8,17 @@ import { TasksList } from "../../../../components/pages/course/tasks/TasksList";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
 import { useState } from "react";
 
-
 interface Props {
   course: any;
 }
 const Tasks = ({ course }: Props) => {
   const me = useCurrentUser();
-  const toast = useToast()
-  const [tasks, setTasks] = useState(course.tasks)
+  const toast = useToast();
+  const [tasks, setTasks] = useState(course.tasks);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = eventToFormValues(e)
+    const values = eventToFormValues(e);
     const task = {
       name: values.name,
       description: values.description,
@@ -27,10 +26,10 @@ const Tasks = ({ course }: Props) => {
       dateEnd: new Date(values.dateEnd),
       course: {
         connect: {
-          id: course.id
-        }
-      }
-    }
+          id: course.id,
+        },
+      },
+    };
     const result = await fetch(`/api/v1/task`, {
       method: "POST",
       body: JSON.stringify(task),
@@ -41,11 +40,11 @@ const Tasks = ({ course }: Props) => {
 
     if (result.status === 200) {
       toast({
-        title: 'Created',
-        description: 'Task created succesfully',
-        status: 'success',
-        isClosable: true
-      })
+        title: "Created",
+        description: "Task created succesfully",
+        status: "success",
+        isClosable: true,
+      });
       const tasksResult = await fetch(`/api/v1/course/${course.id}/tasks`, {
         method: "GET",
         headers: {
@@ -53,19 +52,17 @@ const Tasks = ({ course }: Props) => {
         },
       });
       if (tasksResult.status === 200) {
-        const tasksData = await tasksResult.json()
-        setTasks(tasksData.tasks)
+        const tasksData = await tasksResult.json();
+        setTasks(tasksData.tasks);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
-        description: 'Error creating task',
-        status: 'error',
-        isClosable: true
-      })
+        title: "Error",
+        description: "Error creating task",
+        status: "error",
+        isClosable: true,
+      });
     }
-
   };
 
   return (
@@ -97,31 +94,30 @@ export const getServerSideProps = async (context: any) => {
       tasks: {
         where: {
           dateEnd: {
-            gt: new Date()
+            gt: new Date(),
           },
           OR: [
             {
               dateStart: {
-                lt: new Date()
+                lt: new Date(),
               },
             },
             {
-              dateStart: null
-            }
-          ]
-        }
-      }
-
-    }
+              dateStart: null,
+            },
+          ],
+        },
+      },
+    },
   });
 
   if (!course) {
     return {
       redirect: {
-        destination: '/api/auth/signin',
+        destination: "/api/auth/signin",
         permanent: false,
       },
-    }
+    };
   }
   course.tasks.forEach((task: any) => {
     task.dateStart = task.dateStart?.toISOString().substring(0, 10) || null;

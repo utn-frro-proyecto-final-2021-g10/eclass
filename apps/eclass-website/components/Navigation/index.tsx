@@ -136,7 +136,7 @@ export const Navigation = () => {
               variant="ghost"
             />
             <MenuList>
-              <Link href={'/profile'} passHref>
+              <Link href={"/profile"} passHref>
                 <MenuItem icon={<AtSignIcon />}>Profile</MenuItem>
               </Link>
               <Link href="/api/auth/signout" passHref>

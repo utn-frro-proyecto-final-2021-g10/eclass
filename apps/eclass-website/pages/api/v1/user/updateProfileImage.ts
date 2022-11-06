@@ -44,7 +44,6 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
     unique_filename: false,
   });
 
-
   try {
     const user = await prisma.user.update({
       where: {

@@ -1,11 +1,5 @@
 import {
   Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Radio,
-  RadioGroup,
   useToast,
 } from "@chakra-ui/react";
 import { Role, User } from "@prisma/client";
@@ -23,7 +17,6 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
   const router = useRouter();
   const toast = useToast();
   const [users, setUsers] = useState(initialUsers);
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

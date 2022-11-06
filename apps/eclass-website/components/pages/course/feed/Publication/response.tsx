@@ -3,9 +3,8 @@ import { Text, VStack, HStack, Avatar, Heading, Badge } from "@chakra-ui/react";
 import { Card, CardBody } from "../../../../Card";
 import { parseDate } from "../../../../../utils/parseDate";
 
-
 interface Props {
-  response: any
+  response: any;
 }
 
 export const Response = ({ response }: Props) => {

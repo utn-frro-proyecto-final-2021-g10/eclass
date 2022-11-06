@@ -1,21 +1,31 @@
-import { FormControl, FormLabel, Input, Button, useToast, Radio, RadioGroup, NumberInput, NumberInputField } from "@chakra-ui/react";
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  useToast,
+  Radio,
+  RadioGroup,
+  NumberInput,
+  NumberInputField,
+} from "@chakra-ui/react";
 import { useState } from "react";
 import TaskFieldForm from "../../../../../components/Forms/TaskFieldForm";
 import { eventToFormValues } from "../../../../../utils/eventToFormValues";
 import toLocaleISOString from "../../../../../utils/toLocaleISOString";
 
 interface Props {
-  initialTask: any
+  initialTask: any;
 }
 
 const TaskEditPage = ({ initialTask }: Props) => {
-  const toast = useToast()
-  const [task, setTask] = useState(initialTask)
+  const toast = useToast();
+  const [task, setTask] = useState(initialTask);
 
   const handleDelete = async (e: any, id: string) => {
     e.preventDefault();
 
-    task.fields = task.fields.filter((field: any) => field.id !== id)
+    task.fields = task.fields.filter((field: any) => field.id !== id);
 
     const insert = {
       dateStart: new Date(task.dateStart),
@@ -28,9 +38,9 @@ const TaskEditPage = ({ initialTask }: Props) => {
         createMany: {
           skipDuplicates: true,
           data: task.fields,
-        }
-      }
-    }
+        },
+      },
+    };
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(insert),
@@ -40,10 +50,10 @@ const TaskEditPage = ({ initialTask }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: 'Deleted',
-        description: 'Field deleted sucesfully',
-        status: "success"
-      })
+        title: "Deleted",
+        description: "Field deleted sucesfully",
+        status: "success",
+      });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
         headers: {
@@ -51,26 +61,26 @@ const TaskEditPage = ({ initialTask }: Props) => {
         },
       });
       if (taskResult.status === 200) {
-        const data = await taskResult.json()
-        setTask(data.task)
+        const data = await taskResult.json();
+        setTask(data.task);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
+        title: "Error",
         description: JSON.stringify(await result.json(), null, 2),
-        status: "error"
-      })
+        status: "error",
+      });
     }
-  }
+  };
   const handleCreateField = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = eventToFormValues(e)
+    const values = eventToFormValues(e);
 
     let possibleAnswers;
-    if (values.type === "text") possibleAnswers = null
-    else if (values.type === "multiple-choice") possibleAnswers = values.possibleAnswers
-    else if (values.type === "truth-or-false") possibleAnswers = "v,f"
+    if (values.type === "text") possibleAnswers = null;
+    else if (values.type === "multiple-choice")
+      possibleAnswers = values.possibleAnswers;
+    else if (values.type === "truth-or-false") possibleAnswers = "v,f";
 
     const field = {
       type: values.type,
@@ -78,8 +88,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
       possibleAnswers: possibleAnswers,
       correctAnswer: values.type !== "text" ? values.correctAnswer : null,
       value: parseInt(values.value, 10),
-    }
-    task.fields.push(field)
+    };
+    task.fields.push(field);
     const insert = {
       dateStart: new Date(task.dateStart),
       dateEnd: new Date(task.dateEnd),
@@ -90,9 +100,9 @@ const TaskEditPage = ({ initialTask }: Props) => {
         createMany: {
           skipDuplicates: true,
           data: task.fields,
-        }
-      }
-    }
+        },
+      },
+    };
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(insert),
@@ -102,10 +112,10 @@ const TaskEditPage = ({ initialTask }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: 'Updated',
-        description: 'Task updated sucesfully',
-        status: "success"
-      })
+        title: "Updated",
+        description: "Task updated sucesfully",
+        status: "success",
+      });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
         headers: {
@@ -113,37 +123,36 @@ const TaskEditPage = ({ initialTask }: Props) => {
         },
       });
       if (taskResult.status === 200) {
-        const data = await taskResult.json()
-        setTask(data.task)
+        const data = await taskResult.json();
+        setTask(data.task);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
+        title: "Error",
         description: JSON.stringify(await result.json(), null, 2),
-        status: "error"
-      })
+        status: "error",
+      });
     }
-  }
+  };
   const handleUpdateField = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = eventToFormValues(e)
+    const values = eventToFormValues(e);
 
     let possibleAnswers;
-    if (values.type === "text") possibleAnswers = null
-    else if (values.type === "multiple-choice") possibleAnswers = values.possibleAnswers
-    else if (values.type === "truth-or-false") possibleAnswers = "v,f"
+    if (values.type === "text") possibleAnswers = null;
+    else if (values.type === "multiple-choice")
+      possibleAnswers = values.possibleAnswers;
+    else if (values.type === "truth-or-false") possibleAnswers = "v,f";
 
-
-    task.fields = task.fields.filter((field: any) => field.id !== values.id)
+    task.fields = task.fields.filter((field: any) => field.id !== values.id);
     const field = {
       type: values.type,
       question: values.question,
       possibleAnswers: possibleAnswers,
       correctAnswer: values.type !== "text" ? values.correctAnswer : null,
       value: parseInt(values.value, 10),
-    }
-    task.fields.push(field)
+    };
+    task.fields.push(field);
     const insert = {
       dateStart: new Date(task.dateStart),
       dateEnd: new Date(task.dateEnd),
@@ -155,9 +164,9 @@ const TaskEditPage = ({ initialTask }: Props) => {
         createMany: {
           skipDuplicates: true,
           data: task.fields,
-        }
-      }
-    }
+        },
+      },
+    };
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(insert),
@@ -167,10 +176,10 @@ const TaskEditPage = ({ initialTask }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: 'Updated',
-        description: 'Task updated sucesfully',
-        status: "success"
-      })
+        title: "Updated",
+        description: "Task updated sucesfully",
+        status: "success",
+      });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
         headers: {
@@ -178,27 +187,26 @@ const TaskEditPage = ({ initialTask }: Props) => {
         },
       });
       if (taskResult.status === 200) {
-        const data = await taskResult.json()
-        setTask(data.task)
+        const data = await taskResult.json();
+        setTask(data.task);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
+        title: "Error",
         description: JSON.stringify(await result.json(), null, 2),
-        status: "error"
-      })
+        status: "error",
+      });
     }
-  }
+  };
   const handleTaskSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = eventToFormValues(e)
+    const values = eventToFormValues(e);
     const updatedTask = {
       name: values.name,
       description: values.description,
       dateStart: new Date(values.dateStart) || null,
       dateEnd: new Date(values.dateEnd),
-    }
+    };
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(updatedTask),
@@ -209,10 +217,10 @@ const TaskEditPage = ({ initialTask }: Props) => {
 
     if (result.status === 200) {
       toast({
-        title: 'Updated',
-        description: 'Task updated sucesfully',
-        status: "success"
-      })
+        title: "Updated",
+        description: "Task updated sucesfully",
+        status: "success",
+      });
 
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
@@ -221,18 +229,16 @@ const TaskEditPage = ({ initialTask }: Props) => {
         },
       });
       if (taskResult.status === 200) {
-        const data = await taskResult.json()
-        setTask(data.task)
+        const data = await taskResult.json();
+        setTask(data.task);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
+        title: "Error",
         description: JSON.stringify(await result.json(), null, 2),
-        status: "error"
-      })
+        status: "error",
+      });
     }
-
   };
 
   return (
@@ -242,7 +248,10 @@ const TaskEditPage = ({ initialTask }: Props) => {
           <FormLabel>Name: </FormLabel>
           <Input name="name" defaultValue={initialTask.name}></Input>
           <FormLabel>Description: </FormLabel>
-          <Input name="description" defaultValue={initialTask.description}></Input>
+          <Input
+            name="description"
+            defaultValue={initialTask.description}
+          ></Input>
           <FormLabel>Date Start: </FormLabel>
           <Input
             name="dateStart"
@@ -258,19 +267,26 @@ const TaskEditPage = ({ initialTask }: Props) => {
           <Button type="submit">Update</Button>
         </FormControl>
       </form>
-      {task.fields.length > 0 && task.fields.map((field: any, index: number) => (
-        <TaskFieldForm buttonText="Update" handleSubmit={handleUpdateField} handleDelete={(e: any) => handleDelete(e, field.id)} field={field} key={index} />
-      ))}
+      {task.fields.length > 0 &&
+        task.fields.map((field: any, index: number) => (
+          <TaskFieldForm
+            buttonText="Update"
+            handleSubmit={handleUpdateField}
+            handleDelete={(e: any) => handleDelete(e, field.id)}
+            field={field}
+            key={index}
+          />
+        ))}
       <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
     </>
-  )
+  );
 };
 
 export const getServerSideProps = async (context: any) => {
-  const taskId = context.params.id
+  const taskId = context.params.id;
   let task: any = await prisma.task.findUnique({
     where: {
-      id: taskId
+      id: taskId,
     },
     include: {
       fields: {
@@ -281,25 +297,28 @@ export const getServerSideProps = async (context: any) => {
           correctAnswer: true,
           value: true,
           id: true,
-        }
-      }
-    }
+        },
+      },
+    },
   });
   if (!task) {
     return {
       redirect: {
-        destination: '/api/auth/signin',
+        destination: "/api/auth/signin",
         permanent: false,
       },
-    }
+    };
   }
-  task.dateStart = task.dateStart !== null ? toLocaleISOString(task.dateStart).substring(0, 16) : null;
+  task.dateStart =
+    task.dateStart !== null
+      ? toLocaleISOString(task.dateStart).substring(0, 16)
+      : null;
   task.dateEnd = toLocaleISOString(task.dateEnd).substring(0, 16) || null;
 
   return {
     props: {
-      initialTask: task
-    }
+      initialTask: task,
+    },
   };
 };
 

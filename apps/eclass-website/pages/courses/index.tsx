@@ -1,7 +1,4 @@
-import {
-  Box,
-  useToast,
-} from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import { Course, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -21,7 +18,7 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const values = eventToFormValues(e)
+    const values = eventToFormValues(e);
 
     const course = {
       name: values.name,
@@ -74,7 +71,6 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
       });
     }
   };
-
 
   return (
     <>

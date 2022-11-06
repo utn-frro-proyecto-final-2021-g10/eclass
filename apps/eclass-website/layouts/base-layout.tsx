@@ -10,7 +10,7 @@ export interface BaseLayoutProps {
 
 export const BaseLayout = ({ children }: BaseLayoutProps) => {
   const me = useCurrentUser();
-  
+
   return (
     <>
       <Head>
@@ -21,10 +21,14 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Flex as="main" direction="column" minH="100vh" pb={5}>
-        {me ? <>
-          <Navigation />
-        {children}
-        </> : <Loader />}
+        {me ? (
+          <>
+            <Navigation />
+            {children}
+          </>
+        ) : (
+          <Loader />
+        )}
       </Flex>
     </>
   );

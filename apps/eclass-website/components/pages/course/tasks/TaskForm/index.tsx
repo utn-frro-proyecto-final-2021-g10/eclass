@@ -20,9 +20,9 @@ interface Props {
 }
 export const TaskForm = ({ handleSubmit }: Props) => {
   const [showForm, setShowForm] = useState(false);
-  const today = new Date()
-  let tomorrow = new Date()
-  tomorrow.setDate(today.getDate() + 1)
+  const today = new Date();
+  let tomorrow = new Date();
+  tomorrow.setDate(today.getDate() + 1);
 
   return (
     <>
@@ -47,10 +47,7 @@ export const TaskForm = ({ handleSubmit }: Props) => {
                   <FormLabel>Description: </FormLabel>
                   <Input name="description"></Input>
                   <FormLabel>Date Start: </FormLabel>
-                  <Input
-                    name="dateStart"
-                    type={"date"}
-                  ></Input>
+                  <Input name="dateStart" type={"date"}></Input>
                   <FormLabel>Date End: </FormLabel>
                   <Input
                     name="dateEnd"
