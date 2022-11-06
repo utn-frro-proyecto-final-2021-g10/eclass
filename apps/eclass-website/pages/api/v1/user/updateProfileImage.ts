@@ -39,7 +39,7 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
   });
 
   const response = await cloudinary.uploader.upload(data.files.image.filepath, {
-    folder: "eclass",
+    folder: "eclass/profile-images",
     use_filename: true,
     unique_filename: false,
   });
