@@ -1,8 +1,16 @@
+import { ReactNode } from "react";
 import { Avatar, GridItem, Heading, HStack, VStack } from "@chakra-ui/react";
 import { Skeleton } from "../Skeleton";
 import { GridContainer } from "../GridContainer";
 import { Card, CardHeader } from "../Card";
 
+const HeaderContainer = ({ children }: { children: ReactNode }) => (
+  <GridContainer bgGradient="linear(to-b, gray.200 50%, gray.300 1px, white 50%)">
+    <GridItem colSpan={12} my={5}>
+      {children}
+    </GridItem>
+  </GridContainer>
+);
 interface HeaderProps {
   title?: string;
   subtitle?: string;
@@ -10,32 +18,58 @@ interface HeaderProps {
 }
 
 export const Header = ({ title, subtitle, imageUrl }: HeaderProps) => {
-  const Wrapper = ({ children }: { children: React.ReactNode }) =>
+  const Wrapper = ({ children }: { children: ReactNode }) =>
     title && subtitle ? <>{children}</> : <Skeleton>{children}</Skeleton>;
 
   return (
-    <GridContainer bgGradient="linear(to-b, gray.200 50%, gray.300 1px, white 50%)">
-      <GridItem colSpan={12} my={5}>
-        <Wrapper>
-          <Card baseColor="dark">
-            <CardHeader>
-              <HStack spacing="4" py={[2, 3, 4]}>
-                {imageUrl && <Avatar size="lg" name={title} src={imageUrl} />}
-                <VStack align="left">
-                  <Heading fontWeight="300" fontSize={["2xl", "4xl", "6xl"]}>
-                    {title || "eClass"}
+    <HeaderContainer>
+      <Wrapper>
+        <Card baseColor="dark">
+          <CardHeader>
+            <HStack spacing="4" py={[2, 3, 4]}>
+              {imageUrl && <Avatar size="lg" name={title} src={imageUrl} />}
+              <VStack align="left">
+                <Heading fontWeight="300" fontSize={["2xl", "4xl", "6xl"]}>
+                  {title || "eClass"}
+                </Heading>
+                {subtitle && (
+                  <Heading fontWeight="300" fontSize={["md", "lg", "xl"]}>
+                    {subtitle || "eClass"}
                   </Heading>
-                  {subtitle && (
-                    <Heading fontWeight="300" fontSize={["md", "lg", "xl"]}>
-                      {subtitle || "eClass"}
-                    </Heading>
-                  )}
-                </VStack>
-              </HStack>
-            </CardHeader>
-          </Card>
-        </Wrapper>
-      </GridItem>
-    </GridContainer>
+                )}
+              </VStack>
+            </HStack>
+          </CardHeader>
+        </Card>
+      </Wrapper>
+    </HeaderContainer>
+  );
+};
+
+interface AvatarHeaderProps {
+  children?: ReactNode;
+  imageUrl?: string;
+  name?: string;
+}
+
+export const AvatarHeader = ({
+  imageUrl,
+  name,
+  children,
+}: AvatarHeaderProps) => {
+  return (
+    <HeaderContainer>
+      <HStack spacing="4" py={[2, 3, 4]} justify="center">
+        <Avatar
+          width="260px"
+          height="260px"
+          name={name}
+          src={imageUrl}
+          borderWidth="10px"
+        >
+          {children}
+        </Avatar>
+      </HStack>
+    </HeaderContainer>
   );
 };

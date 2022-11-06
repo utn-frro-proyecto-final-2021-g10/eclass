@@ -8,11 +8,17 @@ export const createUsers = async (
 ) => {
   const students: any[] = [];
 
+  const studentInitialID = 44000;
+
   await Promise.all(
-    users.map(async (user) => {
+    users.map(async (user, i) => {
       const { password, ...rest } = user;
       const userData = await prisma.user.create({
-        data: { ...rest, password: await generate(password) },
+        data: {
+          ...rest,
+          password: await generate(password),
+          institutionIdentifier: (studentInitialID + i).toString(),
+        },
       });
 
       console.log(

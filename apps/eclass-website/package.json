@@ -24,6 +24,8 @@
     "@types/bcrypt": "^5.0.0",
     "bcrypt": "^5.0.1",
     "chakra-ui-markdown-renderer": "^4.0.0",
+    "cloudinary": "^1.32.0",
+    "formidable": "^2.0.1",
     "framer-motion": "^4",
     "next": "11.1.2",
     "next-auth": "^4.0.5",

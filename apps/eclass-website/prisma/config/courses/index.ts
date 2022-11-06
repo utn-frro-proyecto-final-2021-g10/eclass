@@ -6,6 +6,8 @@ export const createCourses = async (prisma: PrismaClient) => {
   const coursesData: any[] = [];
   const enrollmentsData: any[] = [];
 
+  const InitialID = 45000;
+
   await Promise.all(
     courses.map(async (course, i) => {
       const { settings, ...rest } = course;
@@ -15,6 +17,7 @@ export const createCourses = async (prisma: PrismaClient) => {
           firstName: `Owner of ${course.name}`,
           lastName: `Professor ${i}`,
           birthDate: new Date("2000-01-01"),
+          institutionIdentifier: (InitialID + i).toString(),
           email: `professorowner${i}@eclass.com`,
           profileImageUrl: `https://avatars.dicebear.com/api/bottts/owner-${i}.svg`,
           role: "professor",
@@ -79,7 +82,7 @@ export const createCourses = async (prisma: PrismaClient) => {
     .map((course) => {
       console.table(course);
     });
-    console.log("\n");
+  console.log("\n");
   enrollmentsData.map((enrollment) => {
     console.log(
       `🎓 Enrolled "${enrollment.user.firstName} ${enrollment.user.lastName}" in "${enrollment.course.name}"`

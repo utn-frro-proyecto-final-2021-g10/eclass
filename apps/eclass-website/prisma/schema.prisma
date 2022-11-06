@@ -65,20 +65,21 @@ model Novelty {
 }
 
 model User {
-  id              String         @id @default(cuid())
-  firstName       String
-  lastName        String
-  birthDate       DateTime
-  email           String         @unique
-  profileImageUrl String
-  password        String
-  role            Role           @default(student)
-  courses         CourseMember[]
-  ownedCourses    Course[]
-  files           File[]
-  messages        Message[]
-  replies         Reply[]
-  answers         Answer[]
+  id                    String         @id @default(cuid())
+  firstName             String
+  lastName              String
+  birthDate             DateTime
+  email                 String         @unique
+  institutionIdentifier String         @unique
+  profileImageUrl       String
+  password              String
+  role                  Role           @default(student)
+  courses               CourseMember[]
+  ownedCourses          Course[]
+  files                 File[]
+  messages              Message[]
+  replies               Reply[]
+  answers               Answer[]
 }
 
 model Course {

@@ -1,6 +1,6 @@
 import { User, Role } from "@prisma/client";
 
-export const users: Omit<User, "id">[] = [
+export const users: Omit<User, "id" | "institutionIdentifier">[] = [
   // ------------------------------------------------------------
   // Admin
   // ------------------------------------------------------------

@@ -8,12 +8,14 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
       message: "Metodo no permitido",
     });
   }
+
   if (req.body.id !== req.user.id) {
     return res.status(401).json({
       success: false,
-      message: "Usuario no coincide con el usuario que se intenta modificar",
+      message: "El usuario no coincide con el usuario que se intenta modificar",
     });
   }
+
   if (req.body) {
     try {
       const user = await prisma.user.update({
@@ -31,7 +33,7 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
     } catch (error) {
       return res.status(400).json({
         success: false,
-        message: "Error al modificar usuario",
+        message: "Error al modificar el usuario",
       });
     }
   }
