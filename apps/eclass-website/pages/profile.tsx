@@ -15,10 +15,10 @@ import {
   ModalBody,
   ModalFooter,
   useBoolean,
+  Text,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
 import React from "react";
-import { Text } from "@chakra-ui/react";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { eventToFormValues } from "../utils/eventToFormValues";
 import { GridContainer } from "../components/GridContainer";

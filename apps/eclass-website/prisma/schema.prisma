@@ -59,9 +59,11 @@ model Institution {
 
 model Novelty {
   id          String @id @default(cuid())
+  title       String
   description String
   link        String
   imageUrl    String
+  date        DateTime
 }
 
 model User {

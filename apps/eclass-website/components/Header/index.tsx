@@ -15,9 +15,15 @@ interface HeaderProps {
   title?: string;
   subtitle?: string;
   imageUrl?: string;
+  children?: ReactNode;
 }
 
-export const Header = ({ title, subtitle, imageUrl }: HeaderProps) => {
+export const Header = ({
+  title,
+  subtitle,
+  imageUrl,
+  children,
+}: HeaderProps) => {
   const Wrapper = ({ children }: { children: ReactNode }) =>
     title && subtitle ? <>{children}</> : <Skeleton>{children}</Skeleton>;
 
@@ -28,15 +34,18 @@ export const Header = ({ title, subtitle, imageUrl }: HeaderProps) => {
           <CardHeader>
             <HStack spacing="4" py={[2, 3, 4]}>
               {imageUrl && <Avatar size="lg" name={title} src={imageUrl} />}
-              <VStack align="left">
+              <VStack align="left" w="100%">
                 <Heading fontWeight="300" fontSize={["2xl", "4xl", "6xl"]}>
                   {title || "eClass"}
                 </Heading>
-                {subtitle && (
-                  <Heading fontWeight="300" fontSize={["md", "lg", "xl"]}>
-                    {subtitle || "eClass"}
-                  </Heading>
-                )}
+                <HStack justify={subtitle ? "space-between" : "flex-end"}>
+                  {subtitle && (
+                    <Heading fontWeight="300" fontSize={["md", "lg", "xl"]}>
+                      {subtitle || "eClass"}
+                    </Heading>
+                  )}
+                  {children}
+                </HStack>
               </VStack>
             </HStack>
           </CardHeader>

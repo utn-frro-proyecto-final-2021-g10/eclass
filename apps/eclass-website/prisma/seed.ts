@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { createInstitution } from "./config/institution";
+import { createNovelties } from "./config/novelties";
 import { createCourses } from "./config/courses";
 import { createUsers } from "./config/users";
 
@@ -18,6 +19,9 @@ const main = async () => {
 
   logStep("🏫 Creating institution");
   await createInstitution(prisma);
+
+  logStep("ℹ️ Creating novelties");
+  await createNovelties(prisma);
 
   logStep("📚 Creating courses");
   const courseIds = await createCourses(prisma);

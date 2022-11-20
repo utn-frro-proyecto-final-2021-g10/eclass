@@ -16,7 +16,7 @@ import {
 import {
   CloseIcon,
   HamburgerIcon,
-  InfoIcon,
+  BellIcon,
   ArrowBackIcon,
   AtSignIcon,
 } from "@chakra-ui/icons";
@@ -117,7 +117,7 @@ export const Navigation = () => {
         <Stack spacing={6} align="center" direction="row">
           <Menu>
             <MenuButton
-              as={InfoIcon}
+              as={BellIcon}
               cursor="pointer"
               aria-label="Settings"
               boxSize="6"
