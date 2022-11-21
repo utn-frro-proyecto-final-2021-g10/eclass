@@ -1,6 +1,6 @@
 import { FormControl, FormLabel, Input, Button } from "@chakra-ui/react";
 import { Institution } from "@prisma/client";
-import institution from "../../pages/institution";
+import institution from "../../pages/admin/institution";
 
 interface Props {
   institution: Institution;

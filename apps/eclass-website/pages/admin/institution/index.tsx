@@ -1,9 +1,9 @@
 import { useToast } from "@chakra-ui/react";
 import { Role } from "@prisma/client";
 import { useState } from "react";
-import InstitutionForm from "../../components/Forms/InstitutionForm";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { eventToFormValues } from "../../utils/eventToFormValues";
+import InstitutionForm from "../../../components/Forms/InstitutionForm";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../../utils/eventToFormValues";
 
 interface Props {
   initialInstitution: any;

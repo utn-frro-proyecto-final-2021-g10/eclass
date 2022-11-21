@@ -71,6 +71,59 @@ const palette: IPalette = {
   },
 };
 
+const paletteLight: IPalette = {
+  primary: {
+    base: "teal.200",
+    shadow: "teal.100",
+    border: "teal.600",
+  },
+  dark: {
+    base: "gray.100",
+    shadow: "gray.50",
+    border: "gray.900",
+  },
+  light: {
+    base: "gray.100",
+    shadow: "gray.50",
+    border: "gray.500",
+  },
+  red: {
+    base: "red.100",
+    shadow: "red.50",
+    border: "red.500",
+  },
+  blue: {
+    base: "blue.100",
+    shadow: "blue.50",
+    border: "blue.500",
+  },
+  green: {
+    base: "green.100",
+    shadow: "green.50",
+    border: "green.500",
+  },
+  yellow: {
+    base: "yellow.100",
+    shadow: "yellow.50",
+    border: "yellow.500",
+  },
+  purple: {
+    base: "purple.100",
+    shadow: "purple.50",
+    border: "purple.500",
+  },
+  orange: {
+    base: "orange.100",
+    shadow: "orange.50",
+    border: "orange.500",
+  },
+  pink: {
+    base: "pink.100",
+    shadow: "pink.50",
+    border: "pink.500",
+  },
+};
+
 interface CardProps extends FlexProps {
   children: React.ReactNode;
   baseColor?: string;
@@ -78,6 +131,7 @@ interface CardProps extends FlexProps {
   onClick?: () => void;
   href?: string;
   borderColor?: string;
+  variation?: "primary" | "light";
 }
 
 export const stylesContext = createContext(palette.primary);
@@ -100,6 +154,7 @@ export const Card = ({
   onClick,
   href,
   borderColor,
+  variation = "primary",
   ...props
 }: CardProps) => {
   const [styles, setStyles] = useState(
@@ -109,10 +164,14 @@ export const Card = ({
   const actionable = onClick || href;
 
   useEffect(() => {
-    baseColor && palette[baseColor]
-      ? setStyles(palette[baseColor])
-      : setStyles(palette.primary);
-  }, [baseColor]);
+    if (baseColor) {
+      console.log("baseColor", baseColor);
+      const paletteToUse = variation === "light" ? paletteLight : palette;
+      setStyles(paletteToUse[baseColor]);
+    } else {
+      setStyles(palette.primary);
+    }
+  }, [baseColor, variation]);
 
   const cssShadow = useMemo(() => {
     return `0px 0.5px 0.6px rgba(${parseChakraColor(styles.base)} , 0.36),

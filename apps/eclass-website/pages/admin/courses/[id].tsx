@@ -2,10 +2,10 @@ import { Button } from "@chakra-ui/react";
 import { User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import CourseForm from "../../components/Forms/CourseForm";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { eventToFormValues } from "../../utils/eventToFormValues";
-import { getFormValues } from "../../utils/getFormValues";
+import CourseForm from "../../../components/Forms/CourseForm";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../../utils/eventToFormValues";
+import { getFormValues } from "../../../utils/getFormValues";
 
 interface CoursePageProps {
   initialCourse: any;

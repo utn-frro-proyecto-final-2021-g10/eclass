@@ -8,8 +8,8 @@ import {
 import { Role } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { eventToFormValues } from "../../utils/eventToFormValues";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../../utils/eventToFormValues";
 
 interface NoveltyPageProps {
   initialNovelties: any;

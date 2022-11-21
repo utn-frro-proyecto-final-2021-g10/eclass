@@ -8,8 +8,8 @@ import {
 } from "@chakra-ui/react";
 import { Role } from "@prisma/client";
 import { useState } from "react";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { getFormValues } from "../../utils/getFormValues";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { getFormValues } from "../../../utils/getFormValues";
 
 interface Props {
   initialNovelties: any[];
@@ -92,7 +92,10 @@ export const getServerSideProps = async () => {
   const novelties = await prisma.novelty.findMany();
   return {
     props: {
-      initialNovelties: novelties,
+      initialNovelties: novelties.map((novelty) => ({
+        ...novelty,
+        date: novelty.date.toISOString(),
+      })),
     },
   };
 };

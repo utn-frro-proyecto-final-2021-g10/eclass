@@ -5,9 +5,9 @@ import {
 import { Role, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import UserForm from "../../components/Forms/UserForm";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { eventToFormValues } from "../../utils/eventToFormValues";
+import UserForm from "../../../components/Forms/UserForm";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../../utils/eventToFormValues";
 
 interface UsersPageProps {
   initialUsers: User[];

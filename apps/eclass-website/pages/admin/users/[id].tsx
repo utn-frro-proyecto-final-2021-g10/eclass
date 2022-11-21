@@ -2,9 +2,9 @@ import { Box, Button, useToast } from "@chakra-ui/react";
 import { Role } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import UserForm from "../../components/Forms/UserForm";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { eventToFormValues } from "../../utils/eventToFormValues";
+import UserForm from "../../../components/Forms/UserForm";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { eventToFormValues } from "../../../utils/eventToFormValues";
 
 interface UsersPageProps {
   initialUser: any;
