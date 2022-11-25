@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { FormLabel, Button, Grid, Image } from "@chakra-ui/react";
 import { Institution } from "@prisma/client";
 import { GridContainer } from "../GridContainer";
 import { GridItem, Text, HStack } from "@chakra-ui/react";
 import { GridItemInput } from "./common/GridItemInput";
+import { ImageUploader } from "./common/ImageUploader";
 interface Props {
   institution: Institution;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -19,6 +21,7 @@ const InstitutionForm = ({ institution, handleSubmit }: Props) => {
     email,
     website,
   } = institution;
+  const [newImageUrl, setNewImageUrl] = useState(imageUrl);
 
   return (
     <GridContainer>
@@ -52,16 +55,9 @@ const InstitutionForm = ({ institution, handleSubmit }: Props) => {
             </GridItem>
             <GridItem colSpan={[12, 12, 6, 6]}>
               <FormLabel>Imagen</FormLabel>
-              <Image
-                src={imageUrl || ""}
-                alt="Logo de la institución"
-                h={"224"}
-                w={"100%"}
-                p={2}
-                borderRadius="lg"
-                objectFit="contain"
-                border={"1px solid"}
-                borderColor={"gray.200"}
+              <ImageUploader
+                setImageUrl={setNewImageUrl}
+                imageUrl={newImageUrl}
               />
             </GridItem>
             <GridItemInput
@@ -94,6 +90,7 @@ const InstitutionForm = ({ institution, handleSubmit }: Props) => {
               name="email"
               defaultValue={email || ""}
             />
+            <input type="hidden" name="imageUrl" value={newImageUrl} />
             <GridItem colSpan={12}>
               <HStack justify="end">
                 <Button type="submit" colorScheme="teal">

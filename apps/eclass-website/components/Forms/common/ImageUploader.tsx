@@ -17,7 +17,7 @@ import {getFormValues} from "../../../utils/getFormValues";
 
 interface ImageUploaderProps {
   imageUrl?: string;
-  setImageUrl: Dispatch<SetStateAction<undefined>>;
+  setImageUrl: Dispatch<SetStateAction<any>>;
 }
 
 export const ImageUploader = ({
