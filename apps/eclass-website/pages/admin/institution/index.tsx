@@ -4,6 +4,7 @@ import { useState } from "react";
 import InstitutionForm from "../../../components/Forms/InstitutionForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
+import { AdminLayout } from "../../../layouts/admin-layout";
 
 interface Props {
   initialInstitution: any;
@@ -21,7 +22,7 @@ const InstitutionPage = ({ initialInstitution }: Props) => {
       id: "institution",
       name: values.name,
       description: values.description,
-      imageUrl: values.imageUrl,
+      imageUrl: values.imageUrl || initialInstitution.imageUrl,
       address: values.address,
       city: values.city,
       state: values.state,
@@ -67,6 +68,11 @@ const InstitutionPage = ({ initialInstitution }: Props) => {
   return (
     <InstitutionForm handleSubmit={handleSubmit} institution={institution} />
   );
+};
+
+// @ts-ignore
+InstitutionPage.getLayout = function getLayout(page: NextPage) {
+  return <AdminLayout>{page}</AdminLayout>;
 };
 
 export const getServerSideProps = async () => {

@@ -165,7 +165,6 @@ export const Card = ({
 
   useEffect(() => {
     if (baseColor) {
-      console.log("baseColor", baseColor);
       const paletteToUse = variation === "light" ? paletteLight : palette;
       setStyles(paletteToUse[baseColor]);
     } else {

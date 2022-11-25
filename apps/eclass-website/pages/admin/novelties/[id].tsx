@@ -9,6 +9,7 @@ import { Role } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
 
 interface NoveltyPageProps {
@@ -112,6 +113,11 @@ const NoveltyPage = ({ initialNovelties }: NoveltyPageProps) => {
       )}
     </>
   );
+};
+
+// @ts-ignore
+NoveltyPage.getLayout = function getLayout(page: NextPage) {
+  return <AdminLayout>{page}</AdminLayout>;
 };
 
 export const getServerSideProps = async (context: any) => {

@@ -33,14 +33,30 @@ export const Header = ({
         <Card baseColor="dark">
           <CardHeader>
             <HStack spacing="4" py={[2, 3, 4]}>
-              {imageUrl && <Avatar size="lg" name={title} src={imageUrl} />}
+              {imageUrl && (
+                <Avatar
+                  w="32"
+                  h="32"
+                  p="2"
+                  bg="gray.600"
+                  name={title}
+                  src={imageUrl}
+                />
+              )}
               <VStack align="left" w="100%">
                 <Heading fontWeight="300" fontSize={["2xl", "4xl", "6xl"]}>
                   {title || "eClass"}
                 </Heading>
-                <HStack justify={subtitle ? "space-between" : "flex-end"}>
+                <HStack
+                  justify={subtitle ? "space-between" : "flex-end"}
+                  position="relative"
+                >
                   {subtitle && (
-                    <Heading fontWeight="300" fontSize={["md", "lg", "xl"]}>
+                    <Heading
+                      fontWeight="300"
+                      fontSize={["md", "lg", "xl"]}
+                      mr="10"
+                    >
                       {subtitle || "eClass"}
                     </Heading>
                   )}

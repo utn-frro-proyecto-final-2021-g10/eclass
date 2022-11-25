@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import UserForm from "../../../components/Forms/UserForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
 
 interface UsersPageProps {
@@ -93,6 +94,11 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
       </Box>
     </>
   );
+};
+
+// @ts-ignore
+UserPage.getLayout = function getLayout(page: NextPage) {
+  return <AdminLayout>{page}</AdminLayout>;
 };
 
 export const getServerSideProps = async (context: any) => {

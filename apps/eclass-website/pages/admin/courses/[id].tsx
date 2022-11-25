@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import CourseForm from "../../../components/Forms/CourseForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
 import { getFormValues } from "../../../utils/getFormValues";
 
@@ -80,6 +81,12 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
     </>
   );
 };
+
+// @ts-ignore
+CoursePage.getLayout = function getLayout(page: NextPage) {
+  return <AdminLayout>{page}</AdminLayout>;
+};
+
 
 export const getServerSideProps = async (context: any) => {
   const course: any = await prisma.course.findUnique({

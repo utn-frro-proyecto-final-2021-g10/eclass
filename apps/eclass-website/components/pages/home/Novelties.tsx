@@ -13,7 +13,7 @@ import { Novelty } from "@prisma/client";
 import { NoveltyCard } from "./NoveltyCard";
 
 interface Props {
-  novelties: Novelty[];
+  novelties?: Novelty[];
   onClose: () => void;
   isOpen: boolean;
 }

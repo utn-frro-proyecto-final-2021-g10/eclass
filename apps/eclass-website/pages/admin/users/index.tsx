@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import UserForm from "../../../components/Forms/UserForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
+import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
 
 interface UsersPageProps {
@@ -89,11 +90,11 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
   );
 };
 
-interface UserDTO {
-  firstName: string;
-  lastName: string;
-  id: true;
-}
+// @ts-ignore
+UsersPage.getLayout = function getLayout(page: NextPage) {
+  return <AdminLayout>{page}</AdminLayout>;
+};
+
 export const getServerSideProps = async (context: any) => {
   const users = await prisma.user.findMany({
     select: {
