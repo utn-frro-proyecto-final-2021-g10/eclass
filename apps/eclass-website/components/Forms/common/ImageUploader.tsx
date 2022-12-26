@@ -13,7 +13,7 @@ import {
   useBoolean,
 } from "@chakra-ui/react";
 import { Dispatch, SetStateAction } from "react";
-import {getFormValues} from "../../../utils/getFormValues";
+import { getFormValues } from "../../../utils/getFormValues";
 
 interface ImageUploaderProps {
   imageUrl?: string;
@@ -33,20 +33,23 @@ export const ImageUploader = ({
 
     const data = new FormData(form);
     const values = getFormValues(data);
-    
+
     const formData = new FormData();
     formData.append("image", values.image);
 
-    const result = await fetch(`/api/v1/cloudinary/upload?folder=novelty-images`, {
-      method: "PUT",
-      body: formData,
-    });
+    const result = await fetch(
+      `/api/v1/cloudinary/upload?folder=novelty-images`,
+      {
+        method: "PUT",
+        body: formData,
+      }
+    );
 
     setModalOpen.off();
 
     if (result.status === 200) {
       const { filepath } = await result.json();
-      
+
       setImageUrl(filepath);
     } else {
       toast({

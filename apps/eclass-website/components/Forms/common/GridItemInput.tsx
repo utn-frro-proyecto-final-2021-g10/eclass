@@ -1,4 +1,10 @@
-import { GridItem, FormControl, FormLabel, Input } from "@chakra-ui/react";
+import {
+  GridItem,
+  FormControl,
+  FormLabel,
+  Input,
+  Select,
+} from "@chakra-ui/react";
 
 const InputContainer = ({
   colSpan,
@@ -20,7 +26,9 @@ interface GridItemInputProps {
   defaultValue?: string;
   name: string;
   type?: string;
+  options?: string[];
   isRequired?: boolean;
+  mb?: number;
 }
 export const GridItemInput = ({
   colSpan,
@@ -28,13 +36,24 @@ export const GridItemInput = ({
   defaultValue,
   name,
   type,
+  options,
   isRequired = true,
   ...props
 }: GridItemInputProps) => (
   <InputContainer colSpan={colSpan}>
     <FormControl isRequired={isRequired} {...props}>
       <FormLabel>{label}</FormLabel>
-      <Input defaultValue={defaultValue} name={name} type={type} />
+      {type !== "select" ? (
+        <Input defaultValue={defaultValue} name={name} type={type} />
+      ) : (
+        <Select defaultValue={defaultValue} name={name}>
+          {options?.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </Select>
+      )}
     </FormControl>
   </InputContainer>
 );
