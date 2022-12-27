@@ -1,9 +1,11 @@
 import { Box, Button, useToast } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { Role } from "@prisma/client";
 import UserForm from "../../../components/Forms/UserForm";
 import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
+import { useCurrentUser } from "../../../hooks/useCurrentUser";
 
 interface UsersPageProps {
   initialUser: any;
@@ -13,6 +15,7 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
   const router = useRouter();
   const toast = useToast();
   const [user, setUser] = useState(initialUser);
+  useCurrentUser(Role.admin);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

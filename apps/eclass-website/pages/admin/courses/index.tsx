@@ -1,5 +1,5 @@
 import { useToast } from "@chakra-ui/react";
-import { Course, User } from "@prisma/client";
+import { Course, User, Role } from "@prisma/client";
 import { useState } from "react";
 import CourseForm from "../../../components/Forms/CourseForm";
 import { Courses } from "../../../components/Listings/Courses";
@@ -12,7 +12,7 @@ interface CoursesPageProps {
   users: User[];
 }
 const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
-  const me = useCurrentUser("admin");
+  useCurrentUser(Role.admin);
   const [courses, setCourses] = useState<Course[]>(initialCourses);
   const toast = useToast();
 

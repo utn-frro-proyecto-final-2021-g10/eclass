@@ -1,10 +1,5 @@
 export default function toLocaleISOString(date: Date) {
-  function pad(number: number) {
-    if (number < 10) {
-      return "0" + number;
-    }
-    return number;
-  }
+  const pad = (number: number) => (number < 10 ? "0" + number : number);
 
   return (
     date.getFullYear() +

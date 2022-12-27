@@ -1,12 +1,11 @@
 import { Button } from "@chakra-ui/react";
-import { User } from "@prisma/client";
+import { User, Role } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import CourseForm from "../../../components/Forms/CourseForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
-import { getFormValues } from "../../../utils/getFormValues";
 
 interface CoursePageProps {
   initialCourse: any;
@@ -16,7 +15,7 @@ interface CoursePageProps {
 const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
   const router = useRouter();
   const [course, setCourse] = useState(initialCourse);
-  useCurrentUser("admin");
+  useCurrentUser(Role.admin);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
