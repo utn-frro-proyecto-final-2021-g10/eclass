@@ -1,9 +1,7 @@
 import { Box, Button, useToast } from "@chakra-ui/react";
-import { Role } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import UserForm from "../../../components/Forms/UserForm";
-import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
 
@@ -13,7 +11,6 @@ interface UsersPageProps {
 
 const UserPage = ({ initialUser }: UsersPageProps) => {
   const router = useRouter();
-  const me = useCurrentUser(Role.admin);
   const toast = useToast();
   const [user, setUser] = useState(initialUser);
 
@@ -85,12 +82,13 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
       <Box>
         <UserForm
           handleSubmit={handleSubmit}
-          buttonText={"Update"}
+          buttonText="Actualizar"
           user={user}
-        />
-        <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
-          Delete
-        </Button>
+        >
+          <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
+            Eliminar
+          </Button>
+        </UserForm>
       </Box>
     </>
   );

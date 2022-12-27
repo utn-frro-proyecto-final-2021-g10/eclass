@@ -73,11 +73,12 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
         course={course}
         users={users}
         handleSubmit={handleSubmit}
-        buttonText="Update"
-      />
-      <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
-        Delete
-      </Button>
+        buttonText="Actualizar"
+      >
+        <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
+          Eliminar
+        </Button>
+      </CourseForm>
     </>
   );
 };
@@ -86,7 +87,6 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
 CoursePage.getLayout = function getLayout(page: NextPage) {
   return <AdminLayout>{page}</AdminLayout>;
 };
-
 
 export const getServerSideProps = async (context: any) => {
   const course: any = await prisma.course.findUnique({

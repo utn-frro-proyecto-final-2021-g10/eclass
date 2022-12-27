@@ -1,12 +1,11 @@
-import { Box, useToast } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { Course, User } from "@prisma/client";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CourseForm from "../../../components/Forms/CourseForm";
+import { Courses } from "../../../components/Listings/Courses";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
-import { getFormValues } from "../../../utils/getFormValues";
 
 interface CoursesPageProps {
   initialCourses: Course[];
@@ -76,15 +75,7 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
   return (
     <>
       <CourseForm users={users} handleSubmit={handleSubmit} />
-      {me !== null &&
-        courses &&
-        courses.map((course: Course) => (
-          <Box key={course.id}>
-            <a
-              href={`courses/${course.id}`}
-            >{`${course.name} - ${course.description}`}</a>
-          </Box>
-        ))}
+      <Courses courses={courses} />
     </>
   );
 };

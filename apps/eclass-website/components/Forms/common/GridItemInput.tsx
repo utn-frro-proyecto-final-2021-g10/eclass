@@ -26,7 +26,7 @@ interface GridItemInputProps {
   defaultValue?: string;
   name: string;
   type?: string;
-  options?: string[];
+  options?: string[] | { value: string; label: string }[];
   isRequired?: boolean;
   mb?: number;
 }
@@ -48,9 +48,17 @@ export const GridItemInput = ({
       ) : (
         <Select defaultValue={defaultValue} name={name}>
           {options?.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
+            <>
+              {typeof option === "string" ? (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ) : (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              )}
+            </>
           ))}
         </Select>
       )}

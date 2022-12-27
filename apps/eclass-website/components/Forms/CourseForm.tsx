@@ -1,11 +1,9 @@
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  RadioGroup,
-  Radio,
-  Button,
-} from "@chakra-ui/react";
+import { ReactChild, useState } from "react";
+import { FormLabel, Button, Grid } from "@chakra-ui/react";
+import { GridContainer } from "../GridContainer";
+import { GridItem, Text, HStack } from "@chakra-ui/react";
+import { GridItemInput } from "./common/GridItemInput";
+import { ImageUploader } from "./common/ImageUploader";
 import { Color } from "@prisma/client";
 
 interface Props {
@@ -14,6 +12,7 @@ interface Props {
   buttonText?: string;
   professorId?: any;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  children?: ReactChild;
 }
 
 const CourseForm = ({
@@ -21,61 +20,110 @@ const CourseForm = ({
   handleSubmit,
   professorId = null,
   course = null,
-  buttonText = "Create",
+  buttonText = "Añadir",
+  children,
 }: Props) => {
+  const {
+    name,
+    description,
+    slug,
+    moreInfo,
+    imageUrl,
+    enrollmentId,
+    settings,
+  } = course || {};
+
+  const [newImageUrl, setNewImageUrl] = useState(imageUrl);
+
   return (
-    <form onSubmit={handleSubmit}>
-      <FormControl>
-        <FormLabel>Name: </FormLabel>
-        <Input name="name" defaultValue={course?.name || ""}></Input>
-        <FormLabel>Description: </FormLabel>
-        <Input
-          name="description"
-          defaultValue={course?.description || ""}
-        ></Input>
-        <FormLabel>Slug: </FormLabel>
-        <Input name="slug" defaultValue={course?.slug || ""}></Input>
-        <FormLabel>More Info: </FormLabel>
-        <Input name="moreInfo" defaultValue={course?.moreInfo || ""}></Input>
-        <FormLabel>Image Url: </FormLabel>
-        <Input name="imageUrl" defaultValue={course?.imageUrl || ""}></Input>
-        <FormLabel>Enrollment ID: </FormLabel>
-        <Input
-          name="enrollmentId"
-          defaultValue={course?.enrollmentId || ""}
-        ></Input>
-        <FormLabel>Owner: </FormLabel>
-        <RadioGroup
-          name="owner"
-          defaultValue={professorId !== null ? professorId : course?.owner.id}
-          display={"flex"}
-          flexDir={"column"}
-        >
-          {users.map((user: any) => (
-            <Radio
-              key={user.id}
-              value={user.id}
-            >{`${user.id} - ${user.lastName}, ${user.firstName}`}</Radio>
-          ))}
-        </RadioGroup>
-        <FormLabel>Color: </FormLabel>
-        <RadioGroup
-          name="color"
-          defaultValue={course?.settings.baseColor}
-          display={"flex"}
-          flexDir={"column"}
-        >
-          <Radio value={Color.blue}>{Color.blue}</Radio>
-          <Radio value={Color.green}>{Color.green}</Radio>
-          <Radio value={Color.orange}>{Color.orange}</Radio>
-          <Radio value={Color.pink}>{Color.pink}</Radio>
-          <Radio value={Color.purple}>{Color.purple}</Radio>
-          <Radio value={Color.red}>{Color.red}</Radio>
-          <Radio value={Color.yellow}>{Color.yellow}</Radio>
-        </RadioGroup>
-      </FormControl>
-      <Button type="submit">{buttonText}</Button>
-    </form>
+    <GridContainer>
+      <GridItem colSpan={[0, 1, 1, 1]} />
+      <GridItem colSpan={[12, 10, 10, 10]}>
+        <form onSubmit={handleSubmit} autoComplete="off">
+          <Grid gap={5} w="100%">
+            <GridItem colSpan={12}>
+              <Text fontSize="2xl" fontWeight="bold">
+                Cursos
+              </Text>
+            </GridItem>
+            <GridItem colSpan={[12, 12, 6, 6]}>
+              <GridItemInput
+                label="Nombre"
+                defaultValue={name || ""}
+                name="name"
+                mb={5}
+              />
+              <GridItemInput
+                label="Descripción"
+                defaultValue={description || ""}
+                name="description"
+                mb={5}
+              />
+              <GridItemInput
+                label="Slug"
+                defaultValue={slug || ""}
+                name="slug"
+              />
+            </GridItem>
+            <GridItem colSpan={[12, 12, 6, 6]}>
+              <FormLabel>Imagen</FormLabel>
+              <ImageUploader
+                setImageUrl={setNewImageUrl}
+                imageUrl={newImageUrl}
+              />
+            </GridItem>
+            <GridItemInput
+              colSpan={[12, 12, 6, 6]}
+              label="Más información"
+              defaultValue={moreInfo || ""}
+              name="moreInfo"
+            />
+            <GridItemInput
+              colSpan={[12, 12, 6, 6]}
+              label="ID de inscripción"
+              defaultValue={enrollmentId || ""}
+              name="enrollmentId"
+            />
+            <GridItemInput
+              colSpan={[12, 12, 6, 6]}
+              type="select"
+              label="Dueño"
+              name="owner"
+              defaultValue={professorId !== null ? professorId : ""}
+              options={users.map((user: any) => ({
+                value: user.id,
+                label: `${user.lastName}, ${user.firstName}`,
+              }))}
+            />
+            <GridItemInput
+              colSpan={[12, 12, 6, 6]}
+              type="select"
+              label="Color"
+              name="color"
+              defaultValue={settings?.baseColor || Color.blue}
+              options={[
+                { value: Color.blue, label: Color.blue },
+                { value: Color.green, label: Color.green },
+                { value: Color.orange, label: Color.orange },
+                { value: Color.pink, label: Color.pink },
+                { value: Color.purple, label: Color.purple },
+                { value: Color.red, label: Color.red },
+                { value: Color.yellow, label: Color.yellow },
+              ]}
+            />
+            <input type="hidden" name="imageUrl" value={newImageUrl} />
+            <GridItem colSpan={12}>
+              <HStack justify="end">
+                {children}
+                <Button type="submit" colorScheme="teal">
+                  {buttonText}
+                </Button>
+              </HStack>
+            </GridItem>
+          </Grid>
+        </form>
+      </GridItem>
+    </GridContainer>
   );
 };
 

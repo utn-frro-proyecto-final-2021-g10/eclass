@@ -1,7 +1,4 @@
-import {
-  Box,
-  useToast,
-} from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import { Role, User } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -9,6 +6,7 @@ import UserForm from "../../../components/Forms/UserForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
+import { Users } from "../../../components/Listings/Users";
 
 interface UsersPageProps {
   initialUsers: User[];
@@ -30,6 +28,7 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
       password: values.password,
       profileImageUrl: values.profileImageUrl,
       role: values.role,
+      institutionIdentifier: values.institutionIdentifier,
       birthDate: new Date(values.birthDate),
     };
 
@@ -77,15 +76,8 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
 
   return (
     <>
-      <UserForm handleSubmit={handleSubmit} buttonText={"Create"} />
-      {users &&
-        users.map((user: User) => (
-          <Box key={user.id}>
-            <a
-              href={`users/${user.id}`}
-            >{`${user.lastName}, ${user.firstName}`}</a>
-          </Box>
-        ))}
+      <UserForm handleSubmit={handleSubmit} />
+      <Users users={users} />
     </>
   );
 };

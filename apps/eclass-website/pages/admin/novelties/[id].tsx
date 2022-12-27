@@ -4,10 +4,12 @@ import {
   Input,
   Button,
   useToast,
+  Box,
 } from "@chakra-ui/react";
 import { Role } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import NoveltyForm from "../../../components/Forms/NoveltyForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { AdminLayout } from "../../../layouts/admin-layout";
 import { eventToFormValues } from "../../../utils/eventToFormValues";
@@ -92,25 +94,17 @@ const NoveltyPage = ({ initialNovelties }: NoveltyPageProps) => {
   };
   return (
     <>
-      {novelty && (
-        <form onSubmit={handleSubmit}>
-          <FormControl>
-            <FormLabel>Description: </FormLabel>
-            <Input
-              name="description"
-              defaultValue={novelty.description}
-            ></Input>
-            <FormLabel>Link: </FormLabel>
-            <Input name="link" defaultValue={novelty.link}></Input>
-            <FormLabel>ImageUrl: </FormLabel>
-            <Input name="imageUrl" defaultValue={novelty.imageUrl}></Input>
-            <Button type="submit">Update</Button>
-          </FormControl>
-          <Button onClick={handleDelete} bg={"red.200"}>
-            Delete
+      <Box>
+        <NoveltyForm
+          handleSubmit={handleSubmit}
+          buttonText="Actualizar"
+          novelty={novelty}
+        >
+          <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
+            Eliminar
           </Button>
-        </form>
-      )}
+        </NoveltyForm>
+      </Box>
     </>
   );
 };
@@ -127,7 +121,12 @@ export const getServerSideProps = async (context: any) => {
     },
   });
   return {
-    props: { initialNovelties: novelty },
+    props: {
+      initialNovelties: {
+        ...novelty,
+        date: novelty.date.toISOString().substring(0, 10),
+      },
+    },
   };
 };
 

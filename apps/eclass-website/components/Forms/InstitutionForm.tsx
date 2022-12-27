@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FormLabel, Button, Grid, Image } from "@chakra-ui/react";
+import { FormLabel, Button, Grid } from "@chakra-ui/react";
 import { Institution } from "@prisma/client";
 import { GridContainer } from "../GridContainer";
 import { GridItem, Text, HStack } from "@chakra-ui/react";
