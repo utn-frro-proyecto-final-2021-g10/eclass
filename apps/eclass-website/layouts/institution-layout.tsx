@@ -24,7 +24,7 @@ export const InstitutionLayout = ({ children }: BaseLayoutProps) => {
             icon={<InfoOutlineIcon width="5" height="5" color="white" />}
             borderRadius="full"
             colorScheme="whiteAlpha"
-            pos={"absolute"}
+            pos="absolute"
             right={0}
             variant="ghost"
             onClick={() => setIsNoveltiesOpen(true)}

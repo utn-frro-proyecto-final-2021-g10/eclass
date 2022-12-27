@@ -111,7 +111,7 @@ export const AdminLayout = ({ children, hideDetails }: AdminLayoutProps) => {
             </GridItem>
             <GridItem colSpan={[12, 12, 12, 12]}>
               <Card w={"100%"} baseColor={currentLink?.color}>
-                <CardBody my="8">{children}</CardBody>
+                <CardBody my={8}>{children}</CardBody>
               </Card>
             </GridItem>
           </GridContainer>

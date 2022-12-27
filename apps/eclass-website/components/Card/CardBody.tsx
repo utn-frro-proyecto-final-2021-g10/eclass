@@ -2,6 +2,8 @@ import { Box } from "@chakra-ui/react";
 
 interface CardBodyProps {
   children: React.ReactNode;
+
+  my?: number;
 }
 
 export const CardBody = ({ children, ...props }: CardBodyProps) => (
