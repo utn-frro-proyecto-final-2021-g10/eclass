@@ -22,48 +22,50 @@ interface CoursesProps {
 export const Courses = ({ courses }: CoursesProps) => (
   <GridContainer>
     <GridItem colSpan={[0, 1, 1, 1]} />
-    <GridItem colSpan={[12, 10, 10, 10]}>
-      <Grid gap={5} w="100%">
-        <GridItem colSpan={12}>
-          <Text fontSize="2xl" fontWeight="bold">
-            Editar Cursos
-          </Text>
-        </GridItem>
-        <GridItem colSpan={12}>
-          <TableContainer>
-            <Table variant="striped">
-              <Thead>
-                <Tr>
-                  <Th>Nombre</Th>
-                  <Th>Acciones</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {courses &&
-                  courses.map((course: any, i: number) => (
-                    <Tr key={i}>
-                      <Td>{course.name}</Td>
-                      <Td>
-                        <Link
-                          colorScheme="teal"
-                          href={`/admin/courses/${course.id}`}
-                        >
-                          <Button
+    {courses?.length > 0 && (
+      <GridItem colSpan={[12, 10, 10, 10]}>
+        <Grid gap={5} w="100%">
+          <GridItem colSpan={12}>
+            <Text fontSize="2xl" fontWeight="bold">
+              Editar Cursos
+            </Text>
+          </GridItem>
+          <GridItem colSpan={12}>
+            <TableContainer>
+              <Table variant="striped">
+                <Thead>
+                  <Tr>
+                    <Th>Nombre</Th>
+                    <Th>Acciones</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {courses &&
+                    courses.map((course: any, i: number) => (
+                      <Tr key={i}>
+                        <Td>{course.name}</Td>
+                        <Td>
+                          <Link
                             colorScheme="teal"
-                            size="sm"
-                            variant="outline"
+                            href={`/admin/courses/${course.id}`}
                           >
-                            Editar
-                          </Button>
-                        </Link>
-                      </Td>
-                    </Tr>
-                  ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
-        </GridItem>
-      </Grid>
-    </GridItem>
+                            <Button
+                              colorScheme="teal"
+                              size="sm"
+                              variant="outline"
+                            >
+                              Editar
+                            </Button>
+                          </Link>
+                        </Td>
+                      </Tr>
+                    ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </GridItem>
+        </Grid>
+      </GridItem>
+    )}
   </GridContainer>
 );

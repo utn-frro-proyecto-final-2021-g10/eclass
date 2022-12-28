@@ -93,6 +93,7 @@ export const getServerSideProps = async (context: any) => {
       firstName: true,
       lastName: true,
       id: true,
+      role: true,
     },
   });
   return {
