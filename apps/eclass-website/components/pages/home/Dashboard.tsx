@@ -1,4 +1,4 @@
-import { GridItem, Modal, useToast } from "@chakra-ui/react";
+import { GridItem, useToast } from "@chakra-ui/react";
 import { Course } from "@prisma/client";
 import { useState } from "react";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
@@ -50,8 +50,8 @@ export const Dashboard = ({ initialCourses }: Props) => {
 
     if (result.status === 200) {
       toast({
-        title: "Created",
-        description: "Course created succesfully",
+        title: "Exito",
+        description: "Se ha creado el curso correctamente",
         status: "success",
         isClosable: true,
       });
@@ -84,7 +84,6 @@ export const Dashboard = ({ initialCourses }: Props) => {
             </GridItem>
           ))}
       </GridContainer>
-
       {me?.role == "professor" && (
         <CourseForm
           users={[me]}
@@ -92,6 +91,7 @@ export const Dashboard = ({ initialCourses }: Props) => {
           professorId={me.id.toString()}
         />
       )}
+     
     </>
   );
 };

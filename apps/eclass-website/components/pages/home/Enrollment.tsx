@@ -1,27 +1,14 @@
-import {
-  Button,
-  IconButton,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  useDisclosure,
-  FormControl,
-  FormLabel,
-  Input,
-} from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import { useFormToast } from "../../../hooks/useFormToast";
-import { getFormValues } from "../../../utils/getFormValues";
-import { useQueryClient } from "react-query";
+import { ModalForm } from '../../ModalForm';
+import { useDisclosure, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { useFormToast } from '../../../hooks/useFormToast';
+import { getFormValues } from '../../../utils/getFormValues';
+import { useQueryClient } from 'react-query';
 
 export const Enrollment = () => {
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { showToast } = useFormToast({
-    successMessage: "Successfully enrolled",
+    successMessage: 'Se inscribió al curso correctamente',
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,11 +16,11 @@ export const Enrollment = () => {
     const form = e.currentTarget;
     const formData = new FormData(form);
     const values = getFormValues(formData);
-    const result = await fetch("/api/v1/course/enroll", {
-      method: "POST",
+    const result = await fetch('/api/v1/course/enroll', {
+      method: 'POST',
       body: JSON.stringify(values),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     });
     const data = await result.json();
@@ -42,55 +29,22 @@ export const Enrollment = () => {
     e.target.reset();
     if (data.success) {
       onClose();
-      queryClient.invalidateQueries("current-user");
+      queryClient.invalidateQueries('current-user');
     }
   };
 
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <form onSubmit={handleSubmit}>
-            <ModalHeader>Enroll in a course</ModalHeader>
-            <ModalBody>
-              <FormControl>
-                <FormLabel>Enrollment Code</FormLabel>
-                <Input required name="enrollmentId" placeholder="PHYSICS-101" />
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <Button variant="ghost" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button colorScheme="teal" type="submit">
-                Enroll
-              </Button>
-            </ModalFooter>
-          </form>
-        </ModalContent>
-      </Modal>
-
-      <IconButton
-        position="fixed"
-        bottom={7}
-        right={7}
-        zIndex={1}
-        bg="gray.700"
-        color="white"
-        sx={{
-          "&:hover": {
-            bg: "gray.800",
-          },
-        }}
-        aria-label="Enroll in a course"
-        variant="outline"
-        w={16}
-        h={16}
-        borderRadius="full"
-        icon={<AddIcon />}
-        onClick={onOpen}
-      />
-    </>
+    <ModalForm
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
+      onSubmit={handleSubmit}
+      header={'Inscribirse a un curso'}
+      submit='Inscribirse'>
+      <FormControl>
+        <FormLabel>Código de inscripción</FormLabel>
+        <Input required name='enrollmentId' placeholder='FÍSICA-101' />
+      </FormControl>
+    </ModalForm>
   );
 };
