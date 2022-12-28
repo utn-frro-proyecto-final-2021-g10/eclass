@@ -13,11 +13,10 @@ interface Props {
 }
 
 export const Dashboard = ({ initialCourses }: Props) => {
-  const { onClose } = useDisclosure();
   const me = useCurrentUser();
   const toast = useToast();
   const [courses, setCourses] = useState(initialCourses);
-
+  const { onClose, onOpen, isOpen } = useDisclosure();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e);
@@ -50,13 +49,13 @@ export const Dashboard = ({ initialCourses }: Props) => {
     });
 
     if (result.status === 200) {
+      onClose();
       toast({
         title: 'Exito',
         description: 'Se ha creado el curso correctamente',
         status: 'success',
         isClosable: true,
       });
-      onClose();
 
       const response = await fetch('/api/v1/user/me', {
         method: 'GET',
@@ -91,6 +90,9 @@ export const Dashboard = ({ initialCourses }: Props) => {
           users={[me]}
           handleSubmit={handleSubmit}
           professorId={me.id.toString()}
+          isOpen={isOpen}
+          onClose={onClose}
+          onOpen={onOpen}
         />
       )}
     </>

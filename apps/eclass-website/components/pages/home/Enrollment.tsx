@@ -1,15 +1,15 @@
 import { ModalForm } from '../../ModalForm';
-import { useDisclosure, FormControl, FormLabel, Input } from '@chakra-ui/react';
+import { FormControl, FormLabel, Input, useDisclosure } from '@chakra-ui/react';
 import { useFormToast } from '../../../hooks/useFormToast';
 import { getFormValues } from '../../../utils/getFormValues';
 import { useQueryClient } from 'react-query';
 
 export const Enrollment = () => {
   const queryClient = useQueryClient();
-  const { onClose } = useDisclosure();
   const { showToast } = useFormToast({
     successMessage: 'Se inscribió al curso correctamente',
   });
+  const { onClose, onOpen, isOpen } = useDisclosure();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -37,7 +37,10 @@ export const Enrollment = () => {
     <ModalForm
       onSubmit={handleSubmit}
       header={'Inscribirse a un curso'}
-      submit='Inscribirse'>
+      submit='Inscribirse'
+      isOpen={isOpen}
+      onClose={onClose}
+      onOpen={onOpen}>
       <FormControl>
         <FormLabel>Código de inscripción</FormLabel>
         <Input required name='enrollmentId' placeholder='FÍSICA-101' />

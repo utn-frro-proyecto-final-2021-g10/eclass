@@ -1,5 +1,5 @@
 import { ReactChild, useState } from 'react';
-import { FormLabel, Grid, GridItem, Text, HStack } from '@chakra-ui/react';
+import { FormLabel, Grid, GridItem, Text, HStack, useDisclosure} from '@chakra-ui/react';
 import { GridContainer } from '../GridContainer';
 import { GridItemInput } from './common/GridItemInput';
 import { ImageUploader } from './common/ImageUploader';
@@ -13,6 +13,10 @@ interface Props {
   professorId?: any;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   children?: ReactChild;
+  isOpen: boolean;
+  onClose: () => void;
+  onOpen: () => void;
+
 }
 
 const CourseForm = ({
@@ -21,6 +25,9 @@ const CourseForm = ({
   professorId = null,
   course = null,
   children,
+  isOpen,
+  onClose,
+  onOpen,
 }: Props) => {
   const {
     name,
@@ -31,14 +38,17 @@ const CourseForm = ({
     enrollmentId,
     settings,
   } = course || {};
-
   const [newImageUrl, setNewImageUrl] = useState(imageUrl);
   return (
     <ModalForm
       size='xl'
       onSubmit={handleSubmit}
       header='Crear un curso'
-      submit='Crear'>
+      submit='Crear'
+      isOpen={isOpen}
+      onClose={onClose}
+      onOpen={onOpen}
+    >
       <GridContainer>
         <GridItem colSpan={[0, 1, 1, 1]} />
         <GridItem colSpan={[12, 10, 10, 10]}>
