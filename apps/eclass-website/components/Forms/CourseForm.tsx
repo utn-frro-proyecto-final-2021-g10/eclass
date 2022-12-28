@@ -1,12 +1,5 @@
 import { ReactChild, useState } from 'react';
-import {
-  FormLabel,
-  Grid,
-  useDisclosure,
-  GridItem,
-  Text,
-  HStack,
-} from '@chakra-ui/react';
+import { FormLabel, Grid, GridItem, Text, HStack } from '@chakra-ui/react';
 import { GridContainer } from '../GridContainer';
 import { GridItemInput } from './common/GridItemInput';
 import { ImageUploader } from './common/ImageUploader';
@@ -40,15 +33,12 @@ const CourseForm = ({
   } = course || {};
 
   const [newImageUrl, setNewImageUrl] = useState(imageUrl);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <ModalForm
+      size='xl'
       onSubmit={handleSubmit}
-      isOpen={isOpen}
-      onClose={onClose}
       header='Crear un curso'
-      submit='Crear'
-      onOpen={onOpen}>
+      submit='Crear'>
       <GridContainer>
         <GridItem colSpan={[0, 1, 1, 1]} />
         <GridItem colSpan={[12, 10, 10, 10]}>

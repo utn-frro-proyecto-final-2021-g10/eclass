@@ -7,31 +7,29 @@ import {
   ModalHeader,
   ModalFooter,
   ModalBody,
+  useDisclosure,
 } from '@chakra-ui/react';
 
 import { AddIcon } from '@chakra-ui/icons';
 interface Props {
-  isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
   header: string;
   submit: string;
   children: React.ReactNode;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
 export const ModalForm = ({
-  isOpen,
-  onOpen,
-  onClose,
   header,
   submit,
   children,
   onSubmit,
+  size,
 }: Props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size={size}>
         <ModalOverlay />
         <ModalContent>
           <form onSubmit={onSubmit}>
@@ -61,7 +59,7 @@ export const ModalForm = ({
             bg: 'gray.800',
           },
         }}
-        aria-label='Enroll in a course'
+        aria-label={header}
         variant='outline'
         w={16}
         h={16}

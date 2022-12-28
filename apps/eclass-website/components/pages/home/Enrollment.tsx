@@ -6,7 +6,7 @@ import { useQueryClient } from 'react-query';
 
 export const Enrollment = () => {
   const queryClient = useQueryClient();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { onClose } = useDisclosure();
   const { showToast } = useFormToast({
     successMessage: 'Se inscribió al curso correctamente',
   });
@@ -35,9 +35,6 @@ export const Enrollment = () => {
 
   return (
     <ModalForm
-      isOpen={isOpen}
-      onOpen={onOpen}
-      onClose={onClose}
       onSubmit={handleSubmit}
       header={'Inscribirse a un curso'}
       submit='Inscribirse'>
