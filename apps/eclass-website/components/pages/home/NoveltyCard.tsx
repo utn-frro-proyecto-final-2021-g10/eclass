@@ -17,17 +17,19 @@ export const NoveltyCard = ({ novelty }: { novelty: Novelty }) => {
         <CardHeader>
           <AspectRatio ratio={1.75} width="100%">
             <Box spacing={0}>
-              <Image
-                src={novelty.imageUrl}
-                alt={novelty.title}
-                width="50%"
-                height="100%"
-                objectFit="cover"
-                borderRadius="lg"
-                position="absolute"
-                top={0}
-                right={0}
-              />
+              {novelty.imageUrl && (
+                <Image
+                  src={novelty.imageUrl}
+                  alt={novelty.title}
+                  width="50%"
+                  height="100%"
+                  objectFit="cover"
+                  borderRadius="lg"
+                  position="absolute"
+                  top={0}
+                  right={0}
+                />
+              )}
               <Box
                 width="100%"
                 height="100%"

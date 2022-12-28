@@ -1,18 +1,17 @@
 import { useToast } from "@chakra-ui/react";
 import { Role } from "@prisma/client";
-import { useState } from "react";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { AdminLayout } from "../../../layouts/admin-layout";
 import { getFormValues } from "../../../utils/getFormValues";
 import { Novelties } from "../../../components/Listings/Novelties";
 import NoveltyForm from "../../../components/Forms/NoveltyForm";
+import { useQueryClient } from "react-query";
+import { useInstitution } from "../../../hooks/useInstitution";
 
-interface Props {
-  initialNovelties: any[];
-}
-const NoveltiesPage = ({ initialNovelties }: Props) => {
+const NoveltiesPage = () => {
   const toast = useToast();
-  const [novelties, setNovelties] = useState<any[]>(initialNovelties);
+  const { novelties } = useInstitution();
+  const queryClient = useQueryClient();
   useCurrentUser(Role.admin);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,39 +35,29 @@ const NoveltiesPage = ({ initialNovelties }: Props) => {
         "Content-Type": "application/json",
       },
     });
-    if (result.status === 200) {
-      toast({
-        description: "Novelty created",
-        status: "success",
-        title: "Created",
-        isClosable: true,
-      });
-      const response = await fetch(`/api/v1/novelty`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.status === 200) {
-        const jsonData = await response.json();
-        setNovelties(jsonData.novelties);
-      }
 
+    const success = result.status === 200;
+
+    toast({
+      title: success ? "Creada" : "Error",
+      status: success ? "success" : "error",
+      description: success
+        ? "La noticia ha sido creada con éxito "
+        : "Error al crear la noticia",
+      isClosable: true,
+    });
+
+    if (result.status === 200) {
+      // @ts-ignore
       e.target.reset();
-    } else {
-      toast({
-        description: "Error creating novelty",
-        status: "error",
-        title: "Error",
-        isClosable: true,
-      });
+      queryClient.invalidateQueries("novelties");
     }
   };
 
   return (
     <>
       <NoveltyForm handleSubmit={handleSubmit} />
-      <Novelties novelties={novelties} />
+      <Novelties novelties={novelties || []} />
     </>
   );
 };
@@ -80,9 +69,10 @@ NoveltiesPage.getLayout = function getLayout(page: NextPage) {
 
 export const getServerSideProps = async () => {
   const novelties = await prisma.novelty.findMany();
+
   return {
     props: {
-      initialNovelties: novelties.map((novelty) => ({
+      novelties: novelties.map((novelty) => ({
         ...novelty,
         date: novelty.date.toISOString(),
       })),

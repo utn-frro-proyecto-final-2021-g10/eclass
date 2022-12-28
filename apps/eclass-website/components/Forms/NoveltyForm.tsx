@@ -9,6 +9,7 @@ import { Color } from "@prisma/client";
 interface Props {
   novelty?: any;
   buttonText?: string;
+  headerText?: string;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   children?: ReactChild;
 }
@@ -17,21 +18,27 @@ const NoveltyForm = ({
   handleSubmit,
   novelty = null,
   buttonText = "Añadir",
+  headerText = "Añadir noticia",
   children,
 }: Props) => {
   const { title, description, link, imageUrl } = novelty || {};
 
   const [newImageUrl, setNewImageUrl] = useState(imageUrl);
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setNewImageUrl("");
+    handleSubmit(e);
+  };
+
   return (
     <GridContainer>
       <GridItem colSpan={[0, 1, 1, 1]} />
       <GridItem colSpan={[12, 10, 10, 10]}>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <form onSubmit={handleFormSubmit} autoComplete="off">
           <Grid gap={5} w="100%">
             <GridItem colSpan={12}>
               <Text fontSize="2xl" fontWeight="bold">
-                Añadir noticia
+                {headerText}
               </Text>
             </GridItem>
             <GridItem colSpan={[12, 12, 6, 6]}>
@@ -58,7 +65,10 @@ const NoveltyForm = ({
             </GridItem>
             <GridItem colSpan={[12, 12, 6, 6]}>
               <FormLabel>Imagen</FormLabel>
-              <ImageUploader setImageUrl={setNewImageUrl} imageUrl={imageUrl} />
+              <ImageUploader
+                setImageUrl={setNewImageUrl}
+                imageUrl={newImageUrl}
+              />
             </GridItem>
             <input type="hidden" name="imageUrl" value={newImageUrl} />
             <GridItem colSpan={12}>
