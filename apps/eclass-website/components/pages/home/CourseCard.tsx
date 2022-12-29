@@ -103,7 +103,11 @@ export const CourseCard = ({ course }: { course: FullCourse }) => {
               position="absolute"
               right={0}
               top="-4rem"
-              src={course.owner?.profileImageUrl}
+              src={
+                course.ownerId === me?.id
+                  ? me?.profileImageUrl
+                  : course.owner?.profileImageUrl
+              }
             />
           </HStack>
           <Divider />
