@@ -42,8 +42,8 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
 
     if (result.status === 200) {
       toast({
-        title: "Created",
-        description: "User created succesfully",
+        title: "Creado",
+        description: "El usuario ha sido creado con éxito",
         status: "success",
         isClosable: true,
       });
@@ -61,7 +61,7 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
     } else {
       toast({
         title: "Error",
-        description: "Error creating user",
+        description: "Error al crear el usuario",
         status: "error",
         isClosable: true,
       });

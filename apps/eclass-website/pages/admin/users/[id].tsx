@@ -40,7 +40,7 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
 
     if (result.status == 200) {
       toast({
-        title: "Updated",
+        title: "Actualizado",
         description: "User updated",
         status: "success",
         isClosable: true,

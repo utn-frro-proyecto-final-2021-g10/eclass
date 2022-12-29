@@ -54,8 +54,8 @@ const ProfilePage: NextPage = () => {
 
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Information updated succesfully",
+        title: "Actualizado",
+        description: "La información se actualizó correctamente",
         status: "success",
         isClosable: true,
       });
@@ -64,7 +64,7 @@ const ProfilePage: NextPage = () => {
     } else {
       toast({
         title: "Error",
-        description: "Error updating information",
+        description: "Error actualizando la información",
         status: "error",
         isClosable: true,
       });
@@ -91,8 +91,8 @@ const ProfilePage: NextPage = () => {
 
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Profile image updated succesfully",
+        title: "Actualizado",
+        description: "La imagen se actualizó correctamente",
         status: "success",
         isClosable: true,
       });
@@ -101,7 +101,7 @@ const ProfilePage: NextPage = () => {
     } else {
       toast({
         title: "Error",
-        description: "Error updating profile image",
+        description: "Error actualizando la imagen de perfil",
         status: "error",
         isClosable: true,
       });

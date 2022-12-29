@@ -40,8 +40,8 @@ const Tasks = ({ course }: Props) => {
 
     if (result.status === 200) {
       toast({
-        title: "Created",
-        description: "Task created succesfully",
+        title: "Creada",
+        description: "La tarea se ha creado correctamente",
         status: "success",
         isClosable: true,
       });
@@ -58,7 +58,7 @@ const Tasks = ({ course }: Props) => {
     } else {
       toast({
         title: "Error",
-        description: "Error creating task",
+        description: "Error al crear la tarea",
         status: "error",
         isClosable: true,
       });

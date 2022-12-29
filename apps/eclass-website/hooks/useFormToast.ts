@@ -6,7 +6,7 @@ export const useFormToast = ({ successMessage }: { successMessage: any }) => {
 
   const showToast = (formData: any) => {
     toast({
-      title: formData.success ? "Success" : "Error",
+      title: formData.success ? "Éxito" : "Error",
       description: formData.success ? successMessage : formData.message,
       status: formData.success ? "success" : "error",
       duration,

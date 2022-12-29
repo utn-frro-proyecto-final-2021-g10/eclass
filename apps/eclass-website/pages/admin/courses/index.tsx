@@ -45,8 +45,8 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
 
     if (result.status === 200) {
       toast({
-        title: "Created",
-        description: "Course created succesfully",
+        title: "Creado",
+        description: "El curso se ha creado correctamente",
         status: "success",
         isClosable: true,
       });
@@ -65,7 +65,7 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
     } else {
       toast({
         title: "Error",
-        description: "Error creating course",
+        description: "Error al crear el curso",
         status: "error",
         isClosable: true,
       });

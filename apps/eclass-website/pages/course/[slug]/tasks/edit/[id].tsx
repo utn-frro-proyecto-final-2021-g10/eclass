@@ -46,8 +46,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: "Deleted",
-        description: "Field deleted sucesfully",
+        title: "Borrado",
+        description: "El campo se ha borrado correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
@@ -108,8 +108,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Task updated sucesfully",
+        title: "Actualizada",
+        description: "La tarea se ha actualizado correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
@@ -172,8 +172,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Task updated sucesfully",
+        title: "Actualizada",
+        description: "La tarea se ha actualizado correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
@@ -213,8 +213,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
 
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Task updated sucesfully",
+        title: "Actualizada",
+        description: "La tarea se ha actualizado correctamente",
         status: "success",
       });
 

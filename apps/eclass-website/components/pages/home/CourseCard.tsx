@@ -30,14 +30,14 @@ export const CourseCard = ({ course }: { course: FullCourse }) => {
     useClipboard(course.enrollmentId);
   const toast = useToast();
   const { showToast } = useFormToast({
-    successMessage: "Successfully disenrolled from",
+    successMessage: "El desenrollamiento ha sido exitoso",
   });
   const me = useCurrentUser();
 
   useEffect(() => {
     if (hasCopiedEnrollmentId) {
       toast({
-        title: `Enrollment ID for ${course.name} copied`,
+        title: `El código de enrollamiento para ${course.name} ha sido copiado`,
         description: course.enrollmentId,
         status: "info",
         duration: 5000,

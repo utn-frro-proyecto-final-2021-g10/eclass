@@ -29,6 +29,7 @@ interface GridItemInputProps {
   options?: string[] | { value: string; label: string }[];
   isRequired?: boolean;
   mb?: number;
+  size?: string;
 }
 export const GridItemInput = ({
   colSpan,
@@ -38,15 +39,21 @@ export const GridItemInput = ({
   type,
   options,
   isRequired = true,
+  size,
   ...props
 }: GridItemInputProps) => (
   <InputContainer colSpan={colSpan}>
     <FormControl isRequired={isRequired} {...props}>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel fontSize={size}>{label}</FormLabel>
       {type !== "select" ? (
-        <Input defaultValue={defaultValue} name={name} type={type} />
+        <Input
+          defaultValue={defaultValue}
+          name={name}
+          type={type}
+          size={size}
+        />
       ) : (
-        <Select defaultValue={defaultValue} name={name}>
+        <Select defaultValue={defaultValue} name={name}   size={size}>
           {options?.map((option) => (
             <>
               {typeof option === "string" ? (
