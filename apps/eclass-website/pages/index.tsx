@@ -29,12 +29,16 @@ const Home: NextPage = () => {
         <Dashboard initialCourses={me.ownedCourses} heading="Mis cursos" />
       )}
 
-      {console.log(me?.ownedCourses)}
-      
-
       {me?.role === "professor" && me.courses && (
         <Dashboard
-          initialCourses={me.courses?.map((enrollment) => enrollment.course)}
+          initialCourses={me.courses
+            ?.filter(
+              (enrollment) =>
+                me.ownedCourses?.find(
+                  (course) => course.id === enrollment.course.id
+                ) === undefined
+            )
+            .map((enrollment) => enrollment.course)}
           heading="Cursos en los que estoy inscrito"
         />
       )}

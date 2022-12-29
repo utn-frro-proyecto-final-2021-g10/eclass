@@ -69,6 +69,16 @@ export const ProfessorSettings = () => {
     });
 
     if (success) {
+      const response = await result.json();
+      await fetch("/api/v1/course/enroll", {
+        method: "POST",
+        body: JSON.stringify({
+          enrollmentId: response.course.enrollmentId,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       queryClient.invalidateQueries("current-user");
       onClose();
     }

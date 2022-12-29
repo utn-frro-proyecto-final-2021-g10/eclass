@@ -9,18 +9,22 @@ interface Props {
 
 export const Dashboard = ({ initialCourses, heading }: Props) => {
   return (
-    <GridContainer mb={8}>
-      <GridItem colSpan={12}>
-        <Heading as="h2" size="md">
-          {heading}
-        </Heading>
-      </GridItem>
-      {initialCourses &&
-        initialCourses.map((course, i) => (
-          <GridItem key={i} colSpan={[12, 12, 6, 4]}>
-            <CourseCard course={course} />
+    <>
+      {initialCourses?.length > 0 && (
+        <GridContainer mb={8}>
+          <GridItem colSpan={12}>
+            <Heading as="h2" size="md">
+              {heading}
+            </Heading>
           </GridItem>
-        ))}
-    </GridContainer>
+          {initialCourses &&
+            initialCourses.map((course, i) => (
+              <GridItem key={i} colSpan={[12, 12, 6, 4]}>
+                <CourseCard course={course} />
+              </GridItem>
+            ))}
+        </GridContainer>
+      )}
+    </>
   );
 };
