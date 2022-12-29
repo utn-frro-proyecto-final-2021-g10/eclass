@@ -53,7 +53,12 @@ export const GridItemInput = ({
           size={size}
         />
       ) : (
-        <Select defaultValue={defaultValue} name={name}   size={size}>
+        <Select
+          defaultValue={defaultValue}
+          name={name}
+          textTransform="capitalize"
+          size={size}
+        >
           {options?.map((option) => (
             <>
               {typeof option === "string" ? (
