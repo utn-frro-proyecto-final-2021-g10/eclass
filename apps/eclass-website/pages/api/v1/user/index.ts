@@ -1,7 +1,8 @@
 import { NextApiResponse } from "next";
-import { protect, protectWithRoles } from "../../../../middleware/protect";
+import { protectWithRoles } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
 import { Role } from "@prisma/client";
+import { generate } from "../../../../lib/bcrypt";
 const env = process.env.NODE_ENV;
 
 function handler(req: reqWithUser, res: NextApiResponse) {
@@ -35,7 +36,10 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     if (req.body) {
       try {
         const user = await prisma.user.create({
-          data: req.body,
+          data: {
+            ...req.body,
+            password: await generate(req.body.password),
+          },
         });
         return res.status(200).json({
           success: true,

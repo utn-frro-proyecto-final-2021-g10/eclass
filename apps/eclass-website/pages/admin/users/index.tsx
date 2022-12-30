@@ -47,6 +47,7 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
         status: "success",
         isClosable: true,
       });
+
       const result = await fetch(`/api/v1/user`, {
         method: "GET",
         headers: {
@@ -57,6 +58,8 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
       if (result.status === 200) {
         const data = await result.json();
         setUsers(data.users);
+        // @ts-ignore
+        e.target.reset();
       }
     } else {
       toast({
@@ -67,12 +70,6 @@ const UsersPage = ({ initialUsers }: UsersPageProps) => {
       });
     }
   };
-
-  useEffect(() => {
-    if (me && me.role !== "admin") {
-      router.replace("/api/auth/signin");
-    }
-  }, [me, router]);
 
   return (
     <>

@@ -5,7 +5,6 @@ import {
   GridItem,
   Text,
   HStack,
-  useDisclosure,
 } from "@chakra-ui/react";
 import { GridContainer } from "../GridContainer";
 import { GridItemInput } from "./common/GridItemInput";
@@ -38,11 +37,17 @@ const CourseForm = ({
     settings,
   } = course || {};
   const [newImageUrl, setNewImageUrl] = useState(imageUrl);
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setNewImageUrl("");
+    handleSubmit(e);
+  };
+
   return (
     <GridContainer>
       <GridItem colSpan={[0, 1, 1, 1]} />
       <GridItem colSpan={[12, 10, 10, 10]}>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <form onSubmit={handleFormSubmit} autoComplete="off">
           <Grid gap={5} w="100%">
             <GridItem colSpan={12}>
               <Text fontSize="2xl" fontWeight="bold">

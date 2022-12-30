@@ -67,7 +67,7 @@ export const ImageUploader = ({
         <ModalOverlay />
         <ModalContent>
           <form autoComplete="off" ref={formRef}>
-            <ModalHeader>Actualizar imagen</ModalHeader>
+            <ModalHeader>Añadir imagen</ModalHeader>
             <ModalBody>
               <input required name="image" type="file" id="testing" />
             </ModalBody>
@@ -76,7 +76,7 @@ export const ImageUploader = ({
                 Cancelar
               </Button>
               <Button colorScheme="teal" onClick={handleUploadImage}>
-                Subir imagen
+                Añadir imagen
               </Button>
             </ModalFooter>
           </form>
@@ -108,7 +108,7 @@ export const ImageUploader = ({
           onClick={setModalOpen.on}
           colorScheme={"gray"}
         >
-          Subir imagen
+          Añadir imagen
         </Button>
       </Box>
     </>

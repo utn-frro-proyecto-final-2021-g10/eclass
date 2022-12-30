@@ -1,7 +1,6 @@
 import { Button } from "@chakra-ui/react";
 import { User, Role } from "@prisma/client";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import CourseForm from "../../../components/Forms/CourseForm";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { AdminLayout } from "../../../layouts/admin-layout";
@@ -14,7 +13,6 @@ interface CoursePageProps {
 
 const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
   const router = useRouter();
-  const [course, setCourse] = useState(initialCourse);
   useCurrentUser(Role.admin);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,7 +34,7 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
       },
     };
 
-    const result = await fetch(`/api/v1/course/${initialCourse.id}`, {
+    const response = await fetch(`/api/v1/course/${initialCourse.id}`, {
       method: "PUT",
       body: JSON.stringify(updatedCourse),
       headers: {
@@ -44,32 +42,28 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
       },
     });
 
-    if (result.status == 200) {
-      const data = await result.json();
-      setCourse(data.course);
-    }
+    response.status === 200 && router.back();
   };
 
   const handleDelete = async (e: any) => {
     e.preventDefault();
 
-    const result = await fetch(`/api/v1/course/${initialCourse.id}`, {
+    const response = await fetch(`/api/v1/course/${initialCourse.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    if (result.status === 200) {
-      router.back();
-    }
+    response.status === 200 && router.back();
+
     return;
   };
 
   return (
     <>
       <CourseForm
-        course={course}
+        course={initialCourse}
         users={users}
         handleSubmit={handleSubmit}
         buttonText="Actualizar"

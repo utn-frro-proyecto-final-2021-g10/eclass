@@ -1,4 +1,4 @@
-import { Button, useToast } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { Role } from "@prisma/client";
 import { useRouter } from "next/router";
 import NoveltyForm from "../../../components/Forms/NoveltyForm";
@@ -11,7 +11,6 @@ interface NoveltyPageProps {
 }
 
 const NoveltyPage = ({ initialNovelties }: NoveltyPageProps) => {
-  const toast = useToast();
   const router = useRouter();
   useCurrentUser(Role.admin);
 
@@ -28,40 +27,20 @@ const NoveltyPage = ({ initialNovelties }: NoveltyPageProps) => {
       },
     });
 
-    const success = response.status === 200;
-
-    toast({
-      title: success ? "Actualizada" : "Error",
-      status: success ? "success" : "error",
-      description: success
-        ? "La noticia ha sido actualizada con éxito"
-        : "Error al actualizar la noticia",
-      isClosable: true,
-    });
-
     response.status === 200 && router.back();
   };
 
   const handleDelete = async (e: any) => {
-    const res = await fetch(`/api/v1/novelty/${initialNovelties.id}`, {
+    e.preventDefault();
+
+    const response = await fetch(`/api/v1/novelty/${initialNovelties.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    const success = res.status === 200;
-
-    toast({
-      title: success ? "Eliminada" : "Error",
-      status: success ? "success" : "error",
-      description: success
-        ? "La noticia ha sido eliminada con éxito"
-        : "Error al eliminar la noticia",
-      isClosable: true,
-    });
-
-    res.status === 200 && router.back();
+    response.status === 200 && router.back();
   };
   return (
     <NoveltyForm

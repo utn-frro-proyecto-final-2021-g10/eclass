@@ -1,6 +1,7 @@
 import { Role } from "@prisma/client";
 import type { NextApiResponse } from "next";
-import { protect, protectWithRoles } from "../../../../middleware/protect";
+import { generate } from "../../../../lib/bcrypt";
+import { protectWithRoles } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
 
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
@@ -49,8 +50,14 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             firstName: req.body.firstName,
             lastName: req.body.lastName,
             email: req.body.email,
-            password: req.body.password,
             role: req.body.role,
+            institutionIdentifier: req.body.institutionIdentifier,
+            birthDate: req.body.birthDate,
+            profileImageUrl: req.body.profileImageUrl,
+            ...(req.body.password &&
+              req.body.password !== "" && {
+                password: await generate(req.body.password),
+              }),
           },
         });
         if (user) {

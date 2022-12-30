@@ -1,6 +1,5 @@
-import { Box, Button, useToast } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { useRouter } from "next/router";
-import { useState } from "react";
 import { Role } from "@prisma/client";
 import UserForm from "../../../components/Forms/UserForm";
 import { AdminLayout } from "../../../layouts/admin-layout";
@@ -13,13 +12,13 @@ interface UsersPageProps {
 
 const UserPage = ({ initialUser }: UsersPageProps) => {
   const router = useRouter();
-  const toast = useToast();
-  const [user, setUser] = useState(initialUser);
   useCurrentUser(Role.admin);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const values = eventToFormValues(e);
+
     const updatedUser = {
       email: values.email,
       firstName: values.firstName,
@@ -28,9 +27,10 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
       profileImageUrl: values.profileImageUrl,
       role: values.role,
       birthDate: new Date(values.birthDate),
+      institutionIdentifier: values.institutionIdentifier,
     };
 
-    const result = await fetch(`/api/v1/user/${user.id}`, {
+    const response = await fetch(`/api/v1/user/${initialUser.id}`, {
       method: "PUT",
       body: JSON.stringify(updatedUser),
       headers: {
@@ -38,61 +38,33 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
       },
     });
 
-    if (result.status == 200) {
-      toast({
-        title: "Actualizado",
-        description: "User updated",
-        status: "success",
-        isClosable: true,
-      });
-      const result = await fetch(`/api/v1/user/${user.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await result.json();
-      setUser(data.user);
-    } else {
-      toast({
-        title: "Error",
-        description: "Error updating user",
-        status: "error",
-        isClosable: true,
-      });
-    }
+    response.status == 200 && router.back();
   };
 
   const handleDelete = async (e: any) => {
     e.preventDefault();
 
-    const result = await fetch(`/api/v1/user/${user.id}`, {
+    const response = await fetch(`/api/v1/user/${initialUser.id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    if (result.status === 200) {
-      router.back();
-    }
-    return;
+    response.status == 200 && router.back();
   };
 
   return (
     <>
-      <Box>
-        <UserForm
-          handleSubmit={handleSubmit}
-          buttonText="Actualizar"
-          user={user}
-        >
-          <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
-            Eliminar
-          </Button>
-        </UserForm>
-      </Box>
+      <UserForm
+        handleSubmit={handleSubmit}
+        buttonText="Actualizar"
+        user={initialUser}
+      >
+        <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
+          Eliminar
+        </Button>
+      </UserForm>
     </>
   );
 };
@@ -115,6 +87,7 @@ export const getServerSideProps = async (context: any) => {
       email: true,
       profileImageUrl: true,
       birthDate: true,
+      institutionIdentifier: true,
     },
   });
   user.birthDate = user.birthDate.toISOString().substring(0, 10);

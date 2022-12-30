@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ReactChild } from "react";
 import { FormLabel, Button, Grid } from "@chakra-ui/react";
 import { GridContainer } from "../GridContainer";
 import { GridItem, Text, HStack } from "@chakra-ui/react";
@@ -26,17 +26,21 @@ const UserForm = ({
     email,
     profileImageUrl,
     institutionIdentifier,
-    password,
     role,
   } = user || {};
 
   const [newImageUrl, setNewImageUrl] = useState(profileImageUrl);
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    setNewImageUrl("");
+    handleSubmit(e);
+  };
+
   return (
     <GridContainer>
       <GridItem colSpan={[0, 1, 1, 1]} />
       <GridItem colSpan={[12, 10, 10, 10]}>
-        <form onSubmit={handleSubmit} autoComplete="off">
+        <form onSubmit={handleFormSubmit} autoComplete="off">
           <Grid gap={5} w="100%">
             <GridItem colSpan={12}>
               <Text fontSize="2xl" fontWeight="bold">
@@ -96,7 +100,7 @@ const UserForm = ({
               label="Contraseña"
               name="password"
               type="password"
-              defaultValue={password || ""}
+              isRequired={user ? false : true}
             />
             <input type="hidden" name="profileImageUrl" value={newImageUrl} />
             <GridItem colSpan={12}>
