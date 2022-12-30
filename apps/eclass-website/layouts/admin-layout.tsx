@@ -85,15 +85,15 @@ export const AdminLayout = ({ children, hideDetails }: AdminLayoutProps) => {
                       >
                         {link.title}
                       </Heading>
-                      <HStack justify="flex-end" w="100%" py={3}>
+                      <HStack justify="flex-end" w="100%">
                         <EditIcon
                           color={
                             currentLink?.title === link.title
                               ? `${link.color}.900`
                               : `${link.color}.300`
                           }
-                          w={12}
-                          h={12}
+                          w={8}
+                          h={8}
                         />
                       </HStack>
                     </VStack>
