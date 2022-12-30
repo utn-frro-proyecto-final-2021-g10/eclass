@@ -12,8 +12,7 @@ interface UsersPageProps {
   initialUsers: User[];
 }
 const UsersPage = ({ initialUsers }: UsersPageProps) => {
-  const me = useCurrentUser(Role.admin);
-  const router = useRouter();
+  useCurrentUser(Role.admin);
   const toast = useToast();
   const [users, setUsers] = useState(initialUsers);
 
@@ -92,6 +91,17 @@ export const getServerSideProps = async (context: any) => {
       id: true,
       role: true,
     },
+    orderBy: [
+      {
+        role: "asc",
+      },
+      {
+        lastName: "asc",
+      },
+      {
+        firstName: "asc",
+      },
+    ],
   });
   return {
     props: {

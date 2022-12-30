@@ -59,7 +59,7 @@ export const Users = ({ users }: UsersProps) => (
                           </Badge>
                         </Td>
                         <Td>
-                          {user.firstName} {user.lastName}
+                          {user.lastName}, {user.firstName}
                         </Td>
                         <Td>
                           <Link

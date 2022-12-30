@@ -1,4 +1,4 @@
-import { AdminLayout } from "../layouts/admin-layout";
+import { AdminLayout } from "../../layouts/admin-layout";
 
 const AdminPage = () => null;
 
