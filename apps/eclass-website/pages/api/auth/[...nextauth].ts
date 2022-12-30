@@ -6,14 +6,14 @@ import { compare } from "../../../lib/bcrypt";
 export default NextAuth({
   providers: [
     CredentialsProvider({
-      name: "credentials",
+      name: "Email",
       credentials: {
         email: {
           label: "Email",
           type: "email",
           placeholder: "example@example.com",
         },
-        password: { label: "Password", type: "password" },
+        password: { label: "Contraseña", type: "password" },
       },
       async authorize(credentials) {
         const user = await prisma.user.findUnique({
@@ -34,10 +34,10 @@ export default NextAuth({
               role,
             };
           } else {
-            throw new Error("Invalid username or password");
+            throw new Error("Usuario o contraseña incorrectos");
           }
         }
-        throw new Error("Invalid username or password");
+        throw new Error("Usuario o contraseña incorrectos");
       },
     }),
   ],

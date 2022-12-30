@@ -14,7 +14,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     default:
       return res.status(405).json({
         success: false,
-        message: `Method ${req.method} not allowed`,
+        message: `El método ${req.method} no está permitido`,
       });
   }
 
@@ -23,7 +23,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     if (req.user.role !== Role.admin) {
       res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "No autorizado",
       });
     }
     const courses = await prisma.course.findMany({});
@@ -42,7 +42,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     if (req.user.role === Role.student) {
       res.status(401).json({
         success: false,
-        message: "Unauthorized",
+        message: "No autorizado",
       });
     }
     if (req.body) {

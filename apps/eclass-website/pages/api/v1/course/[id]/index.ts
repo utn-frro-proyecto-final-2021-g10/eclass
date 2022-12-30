@@ -14,7 +14,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     default:
       return res.status(405).json({
         success: false,
-        message: "Method not allowed",
+        message: "Método no permitido",
       });
   }
 
@@ -126,7 +126,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     } else {
       return res.status(404).json({
         success: false,
-        message: "Course not found",
+        message: "Curso no encontrado",
       });
     }
   }

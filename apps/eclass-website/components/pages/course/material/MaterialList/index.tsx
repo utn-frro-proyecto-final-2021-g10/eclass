@@ -26,7 +26,7 @@ export const MaterialList = () => {
                 <Avatar size="sm" />
                 <VStack align="left" spacing="0">
                   <Text fontWeight="bold" fontSize="md">
-                    File name
+                    Nombre del archivo
                   </Text>
                   <Text fontSize="sm">PDF</Text>
                 </VStack>

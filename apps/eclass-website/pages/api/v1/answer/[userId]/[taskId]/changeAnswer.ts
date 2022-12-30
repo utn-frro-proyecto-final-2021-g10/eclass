@@ -2,6 +2,7 @@ import type { NextApiResponse } from "next";
 import { protect } from "../../../../../../middleware/protect";
 import { reqWithUser } from "../../../../../../types/reqWithUser";
 const env = process.env.NODE_ENV;
+
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   let userId = req.query.userId.toString();
   let taskId = req.query.taskId.toString();
@@ -11,9 +12,10 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     default:
       return res.status(405).json({
         success: false,
-        message: `Metodo ${req.method} no permitido`,
+        message: `Método ${req.method} no permitido`,
       });
   }
+
   // Finds an answer given an answer id
   async function changeAnswer() {
     try {

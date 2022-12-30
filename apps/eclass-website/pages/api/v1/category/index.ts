@@ -12,7 +12,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     default:
       return res.status(405).json({
         success: false,
-        message: `Metodo ${req.method} no permitido`,
+        message: `Método ${req.method} no permitido`,
       });
   }
 
@@ -29,7 +29,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       message: "No se encontraron categorias",
     });
   }
-  // creates an category
+
+  // creates a category
   async function createCategory() {
     if (req.body) {
       try {

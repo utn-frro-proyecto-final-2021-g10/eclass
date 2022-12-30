@@ -41,7 +41,7 @@ export const Publication = ({ message }: Props) => {
           description: InputValue,
           messageId: message.id,
         }),
-      }).then((res) => {
+      }).then(() => {
         queryClient.invalidateQueries("current-course");
         setShowcomment.on();
         setInputFocus.off();

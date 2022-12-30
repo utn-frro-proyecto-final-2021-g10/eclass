@@ -13,7 +13,7 @@ export const config = {
 async function handler(req: reqWithUser, res: NextApiResponse) {
   if (req.method !== "PUT") {
     return res.status(401).json({
-      message: "Metodo no permitido",
+      message: "Método no permitido",
     });
   }
 

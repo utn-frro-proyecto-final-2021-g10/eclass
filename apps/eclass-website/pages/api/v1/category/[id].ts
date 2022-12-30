@@ -13,9 +13,10 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     default:
       return res.status(405).json({
         success: false,
-        message: `Metodo ${req.method} no permitido`,
+        message: `Método ${req.method} no permitido`,
       });
   }
+
   // Finds a category given an category id
   async function getCategoryById() {
     const category = await prisma.category.findUnique({
@@ -36,7 +37,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       message: "Categoria no encontrada",
     });
   }
-  /// updates a category given a category in the body of the request
+
+  // updates a category given a category in the body of the request
   async function updateCategory() {
     if (req.body) {
       try {

@@ -32,7 +32,7 @@ export const TaskForm = ({ handleSubmit }: Props) => {
             <HStack align="center" justify="space-between">
               <HStack>
                 <Avatar size="sm" />
-                <Text fontSize="sm">Create a task!</Text>
+                <Text fontSize="sm">Crear una tarea!</Text>
               </HStack>
               <Button onClick={() => setShowForm(!showForm)}>
                 {showForm ? <ArrowUpIcon /> : <ArrowDownIcon />}
@@ -42,19 +42,19 @@ export const TaskForm = ({ handleSubmit }: Props) => {
             {showForm && (
               <form onSubmit={handleSubmit}>
                 <FormControl>
-                  <FormLabel>Name: </FormLabel>
+                  <FormLabel>Nombre: </FormLabel>
                   <Input name="name"></Input>
-                  <FormLabel>Description: </FormLabel>
+                  <FormLabel>Descripción: </FormLabel>
                   <Input name="description"></Input>
-                  <FormLabel>Date Start: </FormLabel>
+                  <FormLabel>Fecha de inicio: </FormLabel>
                   <Input name="dateStart" type={"date"}></Input>
-                  <FormLabel>Date End: </FormLabel>
+                  <FormLabel>Fecha de fin: </FormLabel>
                   <Input
                     name="dateEnd"
                     type={"date"}
                     defaultValue={tomorrow.toISOString().substring(0, 10)}
                   ></Input>
-                  <Button type="submit">Create</Button>
+                  <Button type="submit">Crear</Button>
                 </FormControl>
               </form>
             )}

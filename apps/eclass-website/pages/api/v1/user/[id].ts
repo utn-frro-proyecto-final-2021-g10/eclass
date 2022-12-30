@@ -15,7 +15,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     default:
       return res.status(405).json({
         success: false,
-        message: `Metodo ${req.method} no permitido`,
+        message: `Método ${req.method} no permitido`,
       });
   }
   // Finds a user given a course id
@@ -38,7 +38,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       message: "Usuario no encontrado",
     });
   }
-  /// updates a user given a user in the body of the request
+
+  // updates a user given a user in the body of the request
   async function updateUser() {
     if (req.body) {
       try {

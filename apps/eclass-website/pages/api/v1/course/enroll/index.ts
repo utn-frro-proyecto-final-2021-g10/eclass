@@ -22,14 +22,14 @@ const enroll = async (req: reqWithUser, res: NextApiResponse) => {
       if (!course) {
         return res.status(404).json({
           success: false,
-          message: "Incorrect enrollment id",
+          message: "Id de enrolamiento no encontrado",
         });
       }
 
       if (req.user.role === "admin") {
         return res.status(400).json({
           success: false,
-          message: "You are an admin, you can't enroll in a course",
+          message: "Un administrador no puede inscribirse a un curso",
         });
       }
 
@@ -43,7 +43,7 @@ const enroll = async (req: reqWithUser, res: NextApiResponse) => {
       if (alreadyEnrolled) {
         return res.status(400).json({
           success: false,
-          message: `Already enrolled to ${course.name}`,
+          message: `Ya estás inscrito en el curso ${course.name}`,
         });
       }
 
@@ -68,13 +68,13 @@ const enroll = async (req: reqWithUser, res: NextApiResponse) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "Enrollment id is required",
+        message: "El id de enrolamiento es requerido",
       });
     }
   } catch (e) {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Algo ha salido mal",
     });
   }
 };

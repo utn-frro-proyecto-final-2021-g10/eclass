@@ -9,7 +9,7 @@ const tasksByCourse = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "GET") {
     return res.status(405).json({
       success: false,
-      message: "Method not allowed",
+      message: "Método no permitido",
     });
   }
   if (

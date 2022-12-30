@@ -9,7 +9,6 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { eventToFormValues } from "../../utils/eventToFormValues";
 
 interface Props {
   buttonText: string;
@@ -52,7 +51,7 @@ const TaskFieldForm = ({
             <>
               {questionType === "multiple-choice" && (
                 <>
-                  <FormLabel>Posible Answers</FormLabel>
+                  <FormLabel>Posibles Respuestas</FormLabel>
                   <Input
                     name="possibleAnswers"
                     defaultValue={field?.possibleAnswers || ""}
@@ -60,7 +59,7 @@ const TaskFieldForm = ({
                   ></Input>
                 </>
               )}
-              <FormLabel>Answer</FormLabel>
+              <FormLabel>Respuesta</FormLabel>
               {questionType === "truth-or-false" ? (
                 <Input
                   name="correctAnswer"
@@ -75,14 +74,14 @@ const TaskFieldForm = ({
               )}
             </>
           )}
-          <FormLabel>Value</FormLabel>
+          <FormLabel>Valor</FormLabel>
           <NumberInput name="value" min={0} defaultValue={field?.value || ""}>
             <NumberInputField />
           </NumberInput>
         </FormControl>
         <Button type="submit">{buttonText}</Button>
       </form>
-      {field && <Button onClick={handleDelete}>Delete</Button>}
+      {field && <Button onClick={handleDelete}>Eliminar</Button>}
     </>
   );
 };

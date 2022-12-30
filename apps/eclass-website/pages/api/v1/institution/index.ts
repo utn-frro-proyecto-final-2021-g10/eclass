@@ -12,7 +12,7 @@ const institution = async (req: reqWithUser, res: NextApiResponse) => {
     default:
       return res.status(405).json({
         success: false,
-        message: "method not allowed",
+        message: "Método no permitido",
       });
   }
 
@@ -31,7 +31,7 @@ const institution = async (req: reqWithUser, res: NextApiResponse) => {
     } catch (error) {
       console.log(error);
       return res.status(500).json({
-        message: "something went wrong",
+        message: "Algo ha salido mal",
       });
     }
   }
@@ -48,7 +48,7 @@ const institution = async (req: reqWithUser, res: NextApiResponse) => {
       });
     } catch (e) {
       return res.status(500).json({
-        message: "something went wrong",
+        message: "Algo ha salido mal",
       });
     }
   }

@@ -16,7 +16,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     default:
       return res.status(405).json({
         success: false,
-        message: `Metodo ${req.method} no permitido`,
+        message: `Método ${req.method} no permitido`,
       });
   }
   // Finds an task given an task id
@@ -64,7 +64,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       message: "Tarea no encontrada",
     });
   }
-  /// updates an task given an task in the body of the request
+
+  // updates an task given an task in the body of the request
   async function updateTask() {
     if (req.user.role === Role.student) {
       return res.status(401).json({ success: false, message: "Unauthorized" });

@@ -102,7 +102,7 @@ export const NewPublication = ({ forumId }: { forumId: string }) => {
               />
             )}
             <IconButton
-              aria-label="send"
+              aria-label="enviar"
               icon={<ArrowForwardIcon boxSize="1.5rem" />}
               size="md"
               colorScheme="teal"

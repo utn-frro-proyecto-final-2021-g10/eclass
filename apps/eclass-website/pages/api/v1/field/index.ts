@@ -12,7 +12,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
     default:
       return res.status(405).json({
         success: false,
-        message: `Metodo ${req.method} no permitido`,
+        message: `Método ${req.method} no permitido`,
       });
   }
 

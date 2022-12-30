@@ -7,7 +7,7 @@ const reply = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      message: "Method not allowed",
+      message: "Método no permitido",
     });
   }
 
@@ -22,7 +22,7 @@ const reply = async (req: reqWithUser, res: NextApiResponse) => {
       if (!message) {
         return res.status(404).json({
           success: false,
-          message: "Incorrect message id",
+          message: "Id de mensaje incorrecto",
         });
       }
 
@@ -50,13 +50,13 @@ const reply = async (req: reqWithUser, res: NextApiResponse) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "Message id is required",
+        message: "El mensaje es requerido",
       });
     }
   } catch (e) {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Algo ha salido mal",
     });
   }
 };

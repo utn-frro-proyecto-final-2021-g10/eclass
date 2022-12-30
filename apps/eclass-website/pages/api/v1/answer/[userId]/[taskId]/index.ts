@@ -15,9 +15,10 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     default:
       return res.status(405).json({
         success: false,
-        message: `Metodo ${req.method} no permitido`,
+        message: `Método ${req.method} no permitido`,
       });
   }
+
   // Finds an answer given an answer id
   async function getAnswerById() {
     const answer = await prisma.answer.findUnique({
@@ -43,7 +44,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       message: "Respuesta no encontrada",
     });
   }
-  /// updates an answer given an answer in the body of the request
+
+  // updates an answer given an answer in the body of the request
   async function updateAnswer() {
     if (req.body) {
       try {

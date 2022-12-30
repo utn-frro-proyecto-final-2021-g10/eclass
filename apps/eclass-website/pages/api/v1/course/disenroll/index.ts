@@ -7,7 +7,7 @@ const disenroll = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      message: "Method not allowed",
+      message: "Método no permitido",
     });
   }
 
@@ -22,7 +22,7 @@ const disenroll = async (req: reqWithUser, res: NextApiResponse) => {
       if (!course) {
         return res.status(404).json({
           success: false,
-          message: "Incorrect enrollment id",
+          message: "Id de enrolamiento no encontrado",
         });
       }
 
@@ -30,7 +30,7 @@ const disenroll = async (req: reqWithUser, res: NextApiResponse) => {
         return res.status(403).json({
           success: false,
           message:
-            "You are the owner of this course, you cannot disenroll from it",
+            "No puedes desinscribirte de un curso que eres el propietario",
         });
       }
 
@@ -46,13 +46,13 @@ const disenroll = async (req: reqWithUser, res: NextApiResponse) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "Enrollment id is required",
+        message: "El id de enrolamiento es requerido",
       });
     }
   } catch (e) {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Algo ha salido mal"
     });
   }
 };

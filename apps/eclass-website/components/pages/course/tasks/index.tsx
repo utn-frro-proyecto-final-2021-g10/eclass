@@ -10,10 +10,10 @@ export const Questions = ({ questions }: Props) => {
       {questions.map((question: any, i: number) => {
         <Grid bg="red">
           <GridItem key={i} colSpan={1} width="100%" justifySelf="end">
-            <FormLabel>Question {question}</FormLabel>
+            <FormLabel>Pregunta {question}</FormLabel>
           </GridItem>
           <GridItem colSpan={4}>
-            <Input placeholder="Answer to your question(optional)" />
+            <Input placeholder="Responde tu pregunta (opcional)" />
           </GridItem>
         </Grid>;
       })}

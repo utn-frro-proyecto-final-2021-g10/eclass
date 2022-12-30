@@ -7,7 +7,7 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "GET") {
     return res.status(405).json({
       success: false,
-      message: "method not allowed",
+      message: "Método no permitido",
     });
   }
 
@@ -41,7 +41,7 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
   } catch (e) {
     return res.status(500).json({
       success: false,
-      message: "something went wrong",
+      message: "Algo ha salido mal",
     });
   }
 };

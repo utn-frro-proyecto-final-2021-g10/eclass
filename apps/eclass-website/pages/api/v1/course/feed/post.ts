@@ -7,7 +7,7 @@ const add = async (req: reqWithUser, res: NextApiResponse) => {
   if (req.method !== "POST") {
     return res.status(405).json({
       success: false,
-      message: "Method not allowed",
+      message: "Método no permitido",
     });
   }
 
@@ -22,7 +22,7 @@ const add = async (req: reqWithUser, res: NextApiResponse) => {
       if (!forum) {
         return res.status(404).json({
           success: false,
-          message: "Incorrect forum id",
+          message: "Id de foro incorrecto",
         });
       }
 
@@ -51,13 +51,13 @@ const add = async (req: reqWithUser, res: NextApiResponse) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "Forum id is required",
+        message: "El id de foro es requerido",
       });
     }
   } catch (e) {
     return res.status(500).json({
       success: false,
-      message: "Something went wrong",
+      message: "Algo ha salido mal",
     });
   }
 };

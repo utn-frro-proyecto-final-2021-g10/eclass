@@ -10,7 +10,7 @@ export const protect =
       req.user = session.user;
       return handler(req, res);
     }
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    return res.status(401).json({ success: false, message: "No autorizado" });
   };
 
 export const protectWithRoles =
@@ -24,7 +24,7 @@ export const protectWithRoles =
       else
         return res
           .status(401)
-          .json({ success: false, message: "Unauthorized" });
+          .json({ success: false, message: "No autorizado" });
     }
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    return res.status(401).json({ success: false, message: "No autorizado" });
   };
