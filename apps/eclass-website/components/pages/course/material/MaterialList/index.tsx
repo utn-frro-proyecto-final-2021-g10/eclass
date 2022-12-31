@@ -5,6 +5,7 @@ import {
   Avatar,
   Divider,
   Button,
+  Badge,
 } from "@chakra-ui/react";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
@@ -13,9 +14,11 @@ export const MaterialList = () => {
   return (
     <Card>
       <CardHeader>
-        <HStack spacing="2">
-          <Avatar size="sm" />
-          <Text fontSize="xl">Category</Text>
+        <HStack spacing="2" justify="space-between">
+          <Text fontSize="xl">Material</Text>
+          <Badge colorScheme="teal">
+            x elementos
+          </Badge>
         </HStack>
       </CardHeader>
       <CardBody>

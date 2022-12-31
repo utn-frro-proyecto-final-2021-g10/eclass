@@ -17,13 +17,9 @@ const Material: NextPage<{ courseId: string }> = ({ courseId }) => {
   }
 
   return (
-    <>
-      {[...Array(3)].map((i) => (
-        <GridItem key={i} colSpan={12}>
-          <MaterialList />
-        </GridItem>
-      ))}
-    </>
+    <GridItem colSpan={12}>
+      <MaterialList />
+    </GridItem>
   );
 };
 

@@ -16,6 +16,7 @@ import {
   IconButton,
   useDisclosure,
   useToast,
+  Avatar,
 } from "@chakra-ui/react";
 import { Card, CardBody, CardHeader } from "../components/Card";
 import {
@@ -24,12 +25,14 @@ import {
   DragHandleIcon,
   EditIcon,
   DeleteIcon,
+  ExternalLinkIcon,
 } from "@chakra-ui/icons";
 import { GridContainer } from "../components/GridContainer";
 import { CreateFolder } from "../components/pages/material/CreateFolder";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
+import { FileUploader } from "../components/pages/course/material/FileUploader";
 
 interface MaterialLayoutProps extends BaseLayoutProps {
   hideDetails?: boolean;
@@ -122,6 +125,7 @@ export const MaterialLayout = ({
                                 : `${folder.color}.700`
                             }
                             size="md"
+                            textTransform="capitalize"
                           >
                             {folder.title}
                           </Heading>
@@ -168,7 +172,10 @@ export const MaterialLayout = ({
                           textTransform="uppercase"
                           fontSize="xs"
                         >
-                          x elementos
+                          {folder.files?.length}{" "}
+                          {folder.files?.length === 1
+                            ? "elemento"
+                            : "elementos"}
                         </Heading>
                         <HStack justify="flex-end" w="100%">
                           <AttachmentIcon
@@ -198,15 +205,52 @@ export const MaterialLayout = ({
                 <Card w={"100%"} baseColor={currentFolder?.color}>
                   <CardHeader>
                     <HStack spacing="2" justify="space-between">
-                      <HStack spacing="2">
-                        <Text fontSize="xl"> {currentFolder?.title}</Text>
+                      <HStack spacing="4">
+                        <Text fontSize="xl" textTransform="capitalize">
+                          {currentFolder?.title}
+                        </Text>
+                        <FileUploader folderId={currentFolder?.id} color={currentFolder?.color} />
                       </HStack>
                       <Badge colorScheme={currentFolder?.color}>
-                        x elementos
+                        {currentFolder?.files?.length}{" "}
+                        {currentFolder?.files?.length === 1
+                          ? "elemento"
+                          : "elementos"}
                       </Badge>
                     </HStack>
                   </CardHeader>
-                  <CardBody my={8}>{children}</CardBody>
+                  <CardBody>
+                    {currentFolder?.files?.length > 0 ? (
+                      <VStack align="left" spacing={3} divider={<Divider />}>
+                        {currentFolder?.files.map((file, i) => (
+                          <HStack key={i} justify="space-between">
+                            <HStack spacing="4">
+                              <Avatar size="sm" />
+                              <VStack align="left" spacing="0">
+                                <Text fontWeight="bold" fontSize="md">
+                                  Nombre del archivo
+                                </Text>
+                                <Text fontSize="sm">PDF</Text>
+                              </VStack>
+                            </HStack>
+                            <HStack spacing="4">
+                              <Button
+                                variant="outline"
+                                as="a"
+                                href={file.link}
+                                target="_blank"
+                              >
+                                Descargar
+                              </Button>
+                              <Button colorScheme="green">Asignar</Button>
+                            </HStack>
+                          </HStack>
+                        ))}
+                      </VStack>
+                    ) : (
+                      <Text>No hay archivos en esta carpeta</Text>
+                    )}
+                  </CardBody>
                 </Card>
               </GridItem>
             </GridContainer>

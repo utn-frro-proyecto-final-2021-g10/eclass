@@ -5,12 +5,12 @@ answer{
     updateAnswer : admin
     getAnswerById : admin
 }
-category{
-    getAllCategories : admin
-    createCategory : admin
-    deleteCategory : admin
-    updateCategory : admin
-    getCategoryById : admin
+Folder{
+    getAllFolders : admin
+    createFolder : admin
+    deleteFolder : admin
+    updateFolder : admin
+    getFolderById : admin
 }
 course{
     getAllCourses   : admin
