@@ -5,11 +5,11 @@ import { reqWithUser } from "../../../../types/reqWithUser";
 const handler = async (req: reqWithUser, res: NextApiResponse) => {
   switch (req.method) {
     case "GET":
-      return getCategoryById();
+      return getFolderById();
     case "PUT":
-      return updateCategory();
+      return updateFolder();
     case "DELETE":
-      return deleteCategory();
+      return deleteFolder();
     default:
       return res.status(405).json({
         success: false,
@@ -17,68 +17,68 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
       });
   }
 
-  // Finds a category given an category id
-  async function getCategoryById() {
-    const category = await prisma.category.findUnique({
+  // Finds a folder given a folder id
+  async function getFolderById() {
+    const folder = await prisma.folder.findUnique({
       where: {
         id: req.query.id.toString(),
       },
     });
 
-    if (category) {
+    if (folder) {
       return res.status(200).json({
         success: true,
-        category: category,
+        folder: folder,
       });
     }
 
     return res.status(404).json({
       success: false,
-      message: "Categoria no encontrada",
+      message: "Carpeta no encontrada",
     });
   }
 
-  // updates a category given a category in the body of the request
-  async function updateCategory() {
+  // updates a folder given a folder in the body of the request
+  async function updateFolder() {
     if (req.body) {
       try {
-        const category = await prisma.category.update({
+        const folder = await prisma.folder.update({
           where: {
             id: req.query.id.toString(),
           },
           data: req.body,
         });
-        if (category) {
+        if (folder) {
           return res.status(200).json({
             success: true,
-            category: category,
+            folder: folder,
           });
         }
       } catch (error) {
         return res.status(400).json({
           success: false,
-          message: "Error al modificar categoria",
+          message: "Error al modificar la carpeta",
         });
       }
     }
   }
 
-  // deletes a category given an id
-  async function deleteCategory() {
+  // deletes a folder given an id
+  async function deleteFolder() {
     try {
-      const category = await prisma.category.delete({
+      const folder = await prisma.folder.delete({
         where: {
           id: req.query.id.toString(),
         },
       });
       return res.status(200).json({
         success: true,
-        category: category,
+        folder: folder,
       });
     } catch (error) {
       return res.status(400).json({
         success: false,
-        message: "Error al eliminar categoria",
+        message: "Error al eliminar la carpeta",
       });
     }
   }

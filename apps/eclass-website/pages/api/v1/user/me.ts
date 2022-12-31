@@ -32,6 +32,11 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
             settings: true,
           },
         },
+        folders: {
+          include: {
+            files: true,
+          },
+        },
       },
     });
     return res.status(200).json({

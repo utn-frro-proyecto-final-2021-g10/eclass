@@ -58,7 +58,7 @@ model Institution {
 }
 
 model Novelty {
-  id          String @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
   description String
   link        String
@@ -78,10 +78,10 @@ model User {
   role                  Role           @default(student)
   courses               CourseMember[]
   ownedCourses          Course[]
-  files                 File[]
   messages              Message[]
   replies               Reply[]
   answers               Answer[]
+  folders               Folder[]
 }
 
 model Course {
@@ -117,17 +117,18 @@ model CourseSettings {
 }
 
 model File {
-  id          String   @id @default(cuid())
-  link        String
-  professorId String
-  professor   User?    @relation(fields: [professorId], references: [id], onDelete: SetNull)
-  categoryId  String
-  category    Category @relation(fields: [categoryId], references: [id])
+  id       String @id @default(cuid())
+  link     String
+  folderId String
+  folder   Folder @relation(fields: [folderId], references: [id])
 }
 
-model Category {
+model Folder {
   id          String @id @default(cuid())
-  description String
+  professorId String
+  professor   User   @relation(fields: [professorId], references: [id])
+  title       String
+  color       Color  @default(primary)
   files       File[]
 }
 

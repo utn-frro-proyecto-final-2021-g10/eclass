@@ -6,9 +6,9 @@ const env = process.env.NODE_ENV;
 function handler(req: reqWithUser, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
-      return getCategories();
+      return getFolders();
     case "POST":
-      return createCategory();
+      return createFolder();
     default:
       return res.status(405).json({
         success: false,
@@ -17,8 +17,8 @@ function handler(req: reqWithUser, res: NextApiResponse) {
   }
 
   // gets all Categories
-  async function getCategories() {
-    const categories = await prisma.category.findMany();
+  async function getFolders() {
+    const categories = await prisma.folder.findMany();
     if (categories)
       return res.status(200).json({
         success: true,
@@ -26,20 +26,27 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       });
     return res.status(404).json({
       success: false,
-      message: "No se encontraron categorias",
+      message: "No se encontraron carpetas",
     });
   }
 
-  // creates a category
-  async function createCategory() {
+  // creates a folder
+  async function createFolder() {
     if (req.body) {
       try {
-        const category = await prisma.category.create({
-          data: req.body,
+        const folder = await prisma.folder.create({
+          data: {
+            ...req.body,
+            professor: {
+              connect: {
+                id: req.user.id,
+              },
+            },
+          },
         });
         return res.status(200).json({
           success: true,
-          category: category,
+          folder: folder,
         });
       } catch (error: any) {
         return res.status(400).json({

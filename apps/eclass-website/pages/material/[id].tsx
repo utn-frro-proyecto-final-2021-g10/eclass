@@ -4,7 +4,7 @@ const MaterialFolderPage = () => null;
 
 // @ts-ignore
 MaterialFolderPage.getLayout = function getLayout(page: NextPage) {
-  return <MaterialLayout hideDetails>{page}</MaterialLayout>;
+  return <MaterialLayout>{page}</MaterialLayout>;
 };
 
 export default MaterialFolderPage;
