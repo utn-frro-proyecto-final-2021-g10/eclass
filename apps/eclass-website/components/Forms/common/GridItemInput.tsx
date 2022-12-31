@@ -5,6 +5,7 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
+import { Fragment } from "react";
 
 const InputContainer = ({
   colSpan,
@@ -59,18 +60,14 @@ export const GridItemInput = ({
           textTransform="capitalize"
           size={size}
         >
-          {options?.map((option) => (
-            <>
+          {options?.map((option, i) => (
+            <Fragment key={i}>
               {typeof option === "string" ? (
-                <option key={option} value={option}>
-                  {option}
-                </option>
+                <option value={option}>{option}</option>
               ) : (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
+                <option value={option.value}>{option.label}</option>
               )}
-            </>
+            </Fragment>
           ))}
         </Select>
       )}
