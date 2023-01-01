@@ -120,7 +120,7 @@ const ProfilePage: NextPage = () => {
           <form onSubmit={handleEditProfileImage} autoComplete="off">
             <ModalHeader>Actualizar imagen de perfil</ModalHeader>
             <ModalBody>
-              <input required name="image" type="file" id="testing" />
+              <input required name="image" type="file" />
             </ModalBody>
             <ModalFooter>
               <Button variant="ghost" mr={3} onClick={setModalOpen.off}>

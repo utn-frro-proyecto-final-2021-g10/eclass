@@ -36,7 +36,7 @@ export const ImageUploader = ({
 
     const formData = new FormData();
     formData.append("image", values.image);
-
+    
     const result = await fetch(
       `/api/v1/cloudinary/upload?folder=novelty-images`,
       {
@@ -69,7 +69,7 @@ export const ImageUploader = ({
           <form autoComplete="off" ref={formRef}>
             <ModalHeader>Añadir imagen</ModalHeader>
             <ModalBody>
-              <input required name="image" type="file" id="testing" />
+              <input required name="image" type="file" />
             </ModalBody>
             <ModalFooter>
               <Button variant="ghost" mr={3} onClick={setModalOpen.off}>

@@ -41,6 +41,7 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
     return res.status(200).json({
       success: true,
       filepath: response.secure_url,
+      format: response.format,
     });
   }
 

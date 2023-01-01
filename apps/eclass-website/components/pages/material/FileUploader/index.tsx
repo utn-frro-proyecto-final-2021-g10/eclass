@@ -9,6 +9,9 @@ import {
   ModalFooter,
   ModalContent,
   useBoolean,
+  Input,
+  FormControl,
+  FormLabel,
 } from "@chakra-ui/react";
 
 import { getFormValues } from "../../../../utils/getFormValues";
@@ -32,6 +35,28 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
     const data = new FormData(form);
     const values = getFormValues(data);
 
+    console.log(values);
+
+    if (values.image.size === 0) {
+      toast({
+        title: "Error",
+        description: "Debes seleccionar un archivo",
+        status: "error",
+        isClosable: true,
+      });
+      return;
+    }
+
+    if (values.title.length === 0) {
+      toast({
+        title: "Error",
+        description: "Debes darle un nombre al archivo",
+        status: "error",
+        isClosable: true,
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("image", values.image);
 
@@ -43,13 +68,16 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
     setModalOpen.off();
 
     if (result.status === 200) {
-      const { filepath } = await result.json();
+      const { filepath, format } = await result.json();
 
       const r = await fetch("/api/v1/file", {
         method: "POST",
         body: JSON.stringify({
           link: filepath,
           folderId,
+          format,
+          title: values.title,
+          size: values.image.size,
         }),
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +112,11 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
           <form autoComplete="off" ref={formRef}>
             <ModalHeader>Subir Archivo</ModalHeader>
             <ModalBody>
-              <input required name="image" type="file" id="testing" />
+              <FormControl isRequired mb={4}>
+                <FormLabel>Nombre</FormLabel>
+                <Input name="title" />
+              </FormControl>
+              <input required name="image" type="file" />
             </ModalBody>
             <ModalFooter>
               <Button variant="ghost" mr={3} onClick={setModalOpen.off}>

@@ -11,11 +11,7 @@ interface FolderModalProps {
   folder: any;
 }
 
-export const FolderModal = ({
-  isOpen,
-  onClose,
-  folder,
-}: FolderModalProps) => {
+export const FolderModal = ({ isOpen, onClose, folder }: FolderModalProps) => {
   const queryClient = useQueryClient();
   const { showToast } = useFormToast({
     successMessage: "Carpeta creada con éxito",
@@ -69,7 +65,11 @@ export const FolderModal = ({
         </FormControl>
         <FormControl>
           <FormLabel>Color</FormLabel>
-          <Select name="color" defaultValue={folder?.color || Color.blue}>
+          <Select
+            name="color"
+            defaultValue={folder?.color || Color.blue}
+            textTransform="capitalize"
+          >
             <option value={Color.blue}>{Color.blue}</option>
             <option value={Color.green}>{Color.green}</option>
             <option value={Color.orange}>{Color.orange}</option>

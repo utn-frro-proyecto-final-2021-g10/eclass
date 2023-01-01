@@ -78,7 +78,8 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     } catch (error) {
       return res.status(400).json({
         success: false,
-        message: "Error al eliminar la carpeta",
+        message:
+          "Error al eliminar la carpeta, es posible que contenga archivos y deba eliminarlos primero",
       });
     }
   }

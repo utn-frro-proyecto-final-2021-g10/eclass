@@ -118,7 +118,10 @@ model CourseSettings {
 
 model File {
   id       String @id @default(cuid())
+  title    String
+  format   String
   link     String
+  size     Float
   folderId String
   folder   Folder @relation(fields: [folderId], references: [id])
 }

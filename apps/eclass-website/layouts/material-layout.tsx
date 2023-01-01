@@ -5,34 +5,23 @@ import {
   GridItem,
   HStack,
   VStack,
-  Heading,
   Divider,
   Text,
   Button,
   Badge,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Menu,
-  IconButton,
   useDisclosure,
   useToast,
-  Avatar,
 } from "@chakra-ui/react";
 import { Card, CardBody, CardHeader } from "../components/Card";
-import {
-  AttachmentIcon,
-  AddIcon,
-  DragHandleIcon,
-  EditIcon,
-  DeleteIcon,
-} from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
 import { GridContainer } from "../components/GridContainer";
 import { FolderModal } from "../components/pages/material/FolderModal";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useQueryClient } from "react-query";
-import { useRouter } from "next/router";
 import { FileUploader } from "../components/pages/material/FileUploader";
+import { formatBytes } from "../utils/formatBytes";
+import { Folder } from "@prisma/client";
+import { FolderCard } from "../components/pages/material/FolderCard";
 
 interface MaterialLayoutProps extends BaseLayoutProps {
   hideDetails?: boolean;
@@ -47,7 +36,7 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
   } = useDisclosure();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const router = useRouter();
+
   const [editFolder, setEditFolder] = useState<Folder | null>(null);
 
   const pathname =
@@ -57,8 +46,13 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
     (folder) => folder.id === pathname.split("/")[2]
   );
 
-  const handleRemove = async (id: string) => {
-    const result = await fetch(`/api/v1/folder/${id}`, {
+  const handleModalClose = () => {
+    onCloseCreateFolder();
+    setEditFolder(null);
+  };
+
+  const handleRemoveFile = async (id: string) => {
+    const result = await fetch(`/api/v1/file/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -68,24 +62,16 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
     const data = await result.json();
 
     toast({
-      title: data.success ? "Carpeta eliminada" : "Error",
-      description: data.success ? "Carpeta eliminada con éxito" : data.message,
+      title: data.success ? "Archivo eliminado" : "Error",
+      description: data.success ? "Archivo eliminado con éxito" : data.message,
       status: data.success ? "success" : "error",
-      duration: 5000,
+
       isClosable: true,
     });
 
     if (data.success) {
       queryClient.invalidateQueries("current-user");
-      if (pathname === `/material/${id}`) {
-        router.replace("/material");
-      }
     }
-  };
-
-  const handleModalClose = () => {
-    onCloseCreateFolder();
-    setEditFolder(null);
   };
 
   return (
@@ -114,108 +100,27 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
                 </Button>
               </HStack>
             </GridItem>
-            {me?.folders?.map((folder, i) => (
-              <GridItem key={i} colSpan={[12, 6, 6, 3]}>
-                <Card
-                  baseColor={folder.color}
-                  variation={
-                    currentFolder?.id === folder.id ? undefined : "light"
-                  }
-                  href={`/material/${folder.id}`}
-                >
-                  <CardHeader>
-                    <HStack spacing="2" w="100%" h="100%">
-                      <VStack align="left" spacing="2" w="100%" h="100%">
-                        <HStack justify="space-between" w="100%">
-                          <Heading
-                            fontWeight="400"
-                            color={
-                              currentFolder?.id === folder.id
-                                ? `${folder.color}.900`
-                                : `${folder.color}.700`
-                            }
-                            size="md"
-                            textTransform="capitalize"
-                          >
-                            {folder.title}
-                          </Heading>
-                          <Menu placement="top-start">
-                            <MenuButton
-                              transform="translate(50%, -40%)"
-                              as={IconButton}
-                              size="sm"
-                              _focus={{
-                                outline: "none",
-                              }}
-                              icon={
-                                <DragHandleIcon
-                                  color={
-                                    currentFolder?.id === folder.id
-                                      ? `${folder.color}.900`
-                                      : `${folder.color}.700`
-                                  }
-                                />
-                              }
-                              variant="unstyled"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                              }}
-                            />
-                            <MenuList color={`gray.900`}>
-                              <MenuItem
-                                icon={<EditIcon />}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setEditFolder(folder);
-                                  onOpenCreateFolder();
-                                }}
-                              >
-                                Editar
-                              </MenuItem>
-                              <MenuItem
-                                icon={<DeleteIcon />}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleRemove(folder.id);
-                                }}
-                              >
-                                Eliminar
-                              </MenuItem>
-                            </MenuList>
-                          </Menu>
-                        </HStack>
-                        <Heading
-                          fontWeight="300"
-                          color={
-                            currentFolder?.id === folder.id
-                              ? `${folder.color}.700`
-                              : `${folder.color}.500`
-                          }
-                          textTransform="uppercase"
-                          fontSize="xs"
-                        >
-                          {folder.files?.length}{" "}
-                          {folder.files?.length === 1
-                            ? "elemento"
-                            : "elementos"}
-                        </Heading>
-                        <HStack justify="flex-end" w="100%">
-                          <AttachmentIcon
-                            color={
-                              currentFolder?.id === folder.id
-                                ? `${folder.color}.400`
-                                : `${folder.color}.200`
-                            }
-                            w={12}
-                            h={12}
-                          />
-                        </HStack>
-                      </VStack>
-                    </HStack>
-                  </CardHeader>
-                </Card>
+            {me?.folders && me.folders.length > 0 ? (
+              <>
+                {me?.folders?.map((folder, i) => (
+                  <GridItem key={i} colSpan={[12, 6, 6, 3]}>
+                    <FolderCard
+                      folder={folder}
+                      isCurrent={currentFolder?.id === folder.id}
+                      setEditFolder={setEditFolder}
+                      onOpenCreateFolder={onOpenCreateFolder}
+                    />
+                  </GridItem>
+                ))}
+              </>
+            ) : (
+              <GridItem colSpan={12}>
+                <Text color={"gray.500"}>
+                  No tienes ninguna carpeta, presione el boton de{" "}
+                  <b>añadir carpeta</b> para comenzar a subir tus archivos.
+                </Text>
               </GridItem>
-            ))}
+            )}
           </GridContainer>
 
           {!hideDetails && (
@@ -249,31 +154,55 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
                       <VStack align="left" spacing={3} divider={<Divider />}>
                         {currentFolder?.files.map((file, i) => (
                           <HStack key={i} justify="space-between">
-                            <HStack spacing="4">
-                              <Avatar size="sm" />
-                              <VStack align="left" spacing="0">
-                                <Text fontWeight="bold" fontSize="md">
-                                  Nombre del archivo
-                                </Text>
-                                <Text fontSize="sm">PDF</Text>
-                              </VStack>
-                            </HStack>
+                            <VStack align="left" spacing="0">
+                              <Text fontWeight="bold" fontSize="md">
+                                {file.title}
+                              </Text>
+                              <Text fontSize="sm" textTransform="uppercase">
+                                <Badge colorScheme="blue" mr="2">
+                                  {file.format}
+                                </Badge>
+                                <Badge colorScheme="yellow">
+                                  {formatBytes(file.size)}
+                                </Badge>
+                              </Text>
+                            </VStack>
                             <HStack spacing="4">
                               <Button
+                                colorScheme="red"
+                                size="sm"
                                 variant="outline"
+                                leftIcon={<DeleteIcon />}
+                                onClick={() => handleRemoveFile(file.id)}
+                              >
+                                Eliminar
+                              </Button>
+                              <Button
+                                variant="outline"
+                                colorScheme="blue"
                                 as="a"
                                 href={file.link}
                                 target="_blank"
+                                size="sm"
+                                leftIcon={<DownloadIcon />}
                               >
                                 Descargar
                               </Button>
-                              <Button colorScheme="green">Asignar</Button>
+                              <Button
+                                colorScheme="green"
+                                size="sm"
+                                leftIcon={<AddIcon />}
+                              >
+                                Asignar
+                              </Button>
                             </HStack>
                           </HStack>
                         ))}
                       </VStack>
                     ) : (
-                      <Text>No hay archivos en esta carpeta</Text>
+                      <Text color={"gray.500"}>
+                        No hay archivos en esta carpeta.
+                      </Text>
                     )}
                   </CardBody>
                 </Card>
