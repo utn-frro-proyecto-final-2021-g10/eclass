@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { InstitutionLayout } from "./institution-layout";
 import { BaseLayoutProps } from "./base-layout";
 import {
@@ -25,23 +26,19 @@ import {
   DragHandleIcon,
   EditIcon,
   DeleteIcon,
-  ExternalLinkIcon,
 } from "@chakra-ui/icons";
 import { GridContainer } from "../components/GridContainer";
-import { CreateFolder } from "../components/pages/material/CreateFolder";
+import { FolderModal } from "../components/pages/material/FolderModal";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import { useQueryClient } from "react-query";
 import { useRouter } from "next/router";
-import { FileUploader } from "../components/pages/course/material/FileUploader";
+import { FileUploader } from "../components/pages/material/FileUploader";
 
 interface MaterialLayoutProps extends BaseLayoutProps {
   hideDetails?: boolean;
 }
 
-export const MaterialLayout = ({
-  children,
-  hideDetails,
-}: MaterialLayoutProps) => {
+export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
   const me = useCurrentUser();
   const {
     onOpen: onOpenCreateFolder,
@@ -51,6 +48,7 @@ export const MaterialLayout = ({
   const toast = useToast();
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [editFolder, setEditFolder] = useState<Folder | null>(null);
 
   const pathname =
     typeof window !== "undefined" ? window.location.pathname : "";
@@ -69,22 +67,34 @@ export const MaterialLayout = ({
 
     const data = await result.json();
 
+    toast({
+      title: data.success ? "Carpeta eliminada" : "Error",
+      description: data.success ? "Carpeta eliminada con éxito" : data.message,
+      status: data.success ? "success" : "error",
+      duration: 5000,
+      isClosable: true,
+    });
+
     if (data.success) {
-      toast({
-        title: "Carpeta eliminada",
-        description: "La carpeta se ha eliminado con éxito",
-        status: "success",
-        duration: 5000,
-        isClosable: true,
-      });
       queryClient.invalidateQueries("current-user");
-      router.replace("/material");
+      if (pathname === `/material/${id}`) {
+        router.replace("/material");
+      }
     }
+  };
+
+  const handleModalClose = () => {
+    onCloseCreateFolder();
+    setEditFolder(null);
   };
 
   return (
     <>
-      <CreateFolder isOpen={isOpenCreateFolder} onClose={onCloseCreateFolder} />
+      <FolderModal
+        isOpen={isOpenCreateFolder}
+        onClose={handleModalClose}
+        folder={editFolder}
+      />
       <InstitutionLayout>
         <VStack spacing={8} w="100%" align="stretch">
           <GridContainer>
@@ -152,10 +162,22 @@ export const MaterialLayout = ({
                               }}
                             />
                             <MenuList color={`gray.900`}>
-                              <MenuItem icon={<EditIcon />}>Editar</MenuItem>
+                              <MenuItem
+                                icon={<EditIcon />}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditFolder(folder);
+                                  onOpenCreateFolder();
+                                }}
+                              >
+                                Editar
+                              </MenuItem>
                               <MenuItem
                                 icon={<DeleteIcon />}
-                                onClick={() => handleRemove(folder.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemove(folder.id);
+                                }}
                               >
                                 Eliminar
                               </MenuItem>
@@ -209,7 +231,10 @@ export const MaterialLayout = ({
                         <Text fontSize="xl" textTransform="capitalize">
                           {currentFolder?.title}
                         </Text>
-                        <FileUploader folderId={currentFolder?.id} color={currentFolder?.color} />
+                        <FileUploader
+                          folderId={currentFolder?.id}
+                          color={currentFolder?.color}
+                        />
                       </HStack>
                       <Badge colorScheme={currentFolder?.color}>
                         {currentFolder?.files?.length}{" "}

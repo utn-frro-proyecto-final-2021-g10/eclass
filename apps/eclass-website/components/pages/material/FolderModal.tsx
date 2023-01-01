@@ -5,12 +5,17 @@ import { getFormValues } from "../../../utils/getFormValues";
 import { useQueryClient } from "react-query";
 import { Color } from "@prisma/client";
 
-interface CreateFolderProps {
+interface FolderModalProps {
   isOpen: boolean;
   onClose: () => void;
+  folder: any;
 }
 
-export const CreateFolder = ({ isOpen, onClose }: CreateFolderProps) => {
+export const FolderModal = ({
+  isOpen,
+  onClose,
+  folder,
+}: FolderModalProps) => {
   const queryClient = useQueryClient();
   const { showToast } = useFormToast({
     successMessage: "Carpeta creada con éxito",
@@ -22,13 +27,16 @@ export const CreateFolder = ({ isOpen, onClose }: CreateFolderProps) => {
     const formData = new FormData(form);
     const values = getFormValues(formData);
 
-    const result = await fetch("/api/v1/folder", {
-      method: "POST",
-      body: JSON.stringify(values),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const result = await fetch(
+      folder ? `/api/v1/folder/${folder.id}` : "/api/v1/folder",
+      {
+        method: folder ? "PUT" : "POST",
+        body: JSON.stringify(values),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     const data = await result.json();
     showToast(data);
@@ -45,18 +53,23 @@ export const CreateFolder = ({ isOpen, onClose }: CreateFolderProps) => {
     <>
       <ModalForm
         onSubmit={handleSubmit}
-        header={"Crear carpeta"}
-        submit="Crear"
+        header={folder ? "Editar carpeta" : "Crear carpeta"}
+        submit={folder ? "Editar" : "Crear"}
         isOpen={isOpen}
         onClose={onClose}
       >
         <FormControl mb={4}>
           <FormLabel>Nombre</FormLabel>
-          <Input required name="title" placeholder="Física I" />
+          <Input
+            required
+            name="title"
+            placeholder="Física I"
+            defaultValue={folder?.title}
+          />
         </FormControl>
         <FormControl>
           <FormLabel>Color</FormLabel>
-         <Select name="color" defaultValue={Color.blue}>
+          <Select name="color" defaultValue={folder?.color || Color.blue}>
             <option value={Color.blue}>{Color.blue}</option>
             <option value={Color.green}>{Color.green}</option>
             <option value={Color.orange}>{Color.orange}</option>
@@ -66,7 +79,6 @@ export const CreateFolder = ({ isOpen, onClose }: CreateFolderProps) => {
             <option value={Color.yellow}>{Color.yellow}</option>
           </Select>
         </FormControl>
-
       </ModalForm>
     </>
   );

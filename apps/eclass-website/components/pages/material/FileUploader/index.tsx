@@ -1,9 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import {
   useToast,
-  Box,
   Button,
-  Image,
   Modal,
   ModalOverlay,
   ModalHeader,
@@ -13,7 +11,7 @@ import {
   useBoolean,
 } from "@chakra-ui/react";
 
-import { getFormValues } from "../../../../../utils/getFormValues";
+import { getFormValues } from "../../../../utils/getFormValues";
 import { AddIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "react-query";
 
@@ -27,7 +25,6 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
   const toast = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const queryClient = useQueryClient();
-
 
   const handleUploadImage = async () => {
     const form = formRef.current;
@@ -103,7 +100,6 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
 
       <Button
         colorScheme={color}
-        
         size="xs"
         leftIcon={<AddIcon />}
         onClick={setModalOpen.on}
