@@ -32,7 +32,7 @@ export const Header = ({
       <Wrapper>
         <Card baseColor="dark">
           <CardHeader>
-            <HStack spacing="4" py={[2, 3, 4]}>
+            <HStack spacing="4" py={[2, 3, 4]} position="relative">
               {imageUrl && (
                 <Avatar
                   w="32"
@@ -47,10 +47,7 @@ export const Header = ({
                 <Heading fontWeight="300" fontSize={["2xl", "4xl", "6xl"]}>
                   {title || "eClass"}
                 </Heading>
-                <HStack
-                  justify={subtitle ? "space-between" : "flex-end"}
-                  position="relative"
-                >
+                <HStack justify={subtitle ? "space-between" : "flex-end"}>
                   {subtitle && (
                     <Heading
                       fontWeight="300"
@@ -60,9 +57,9 @@ export const Header = ({
                       {subtitle || "eClass"}
                     </Heading>
                   )}
-                  {children}
                 </HStack>
               </VStack>
+              {children}
             </HStack>
           </CardHeader>
         </Card>

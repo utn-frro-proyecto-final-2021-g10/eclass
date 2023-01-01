@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BaseLayout, BaseLayoutProps } from "./base-layout";
 import { Header } from "../components/Header";
 import { useInstitution } from "../hooks/useInstitution";
-import { IconButton } from "@chakra-ui/react";
+import { IconButton, Tooltip } from "@chakra-ui/react";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { Novelties } from "../components/pages/home/Novelties";
 
@@ -18,17 +18,20 @@ export const InstitutionLayout = ({ children }: BaseLayoutProps) => {
           subtitle={institution?.description}
           imageUrl={institution?.imageUrl}
         >
-          <IconButton
-            aria-label="Abrir novedades"
-            title="Abrir novedades"
-            icon={<InfoOutlineIcon width="5" height="5" color="white" />}
-            borderRadius="full"
-            colorScheme="whiteAlpha"
-            pos="absolute"
-            right={0}
-            variant="ghost"
-            onClick={() => setIsNoveltiesOpen(true)}
-          />
+          <Tooltip label="Ver novedades">
+            <IconButton
+              aria-label="Abrir novedades"
+              title="Abrir novedades"
+              icon={<InfoOutlineIcon width="5" height="5" color="white" />}
+              borderRadius="full"
+              colorScheme="whiteAlpha"
+              pos="absolute"
+              bottom="-8px"
+              right="-10px"
+              variant="ghost"
+              onClick={() => setIsNoveltiesOpen(true)}
+            />
+          </Tooltip>
         </Header>
         {children}
       </BaseLayout>
