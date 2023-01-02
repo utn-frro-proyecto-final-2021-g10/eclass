@@ -31,6 +31,7 @@ const ProfilePage: NextPage = () => {
   const me = useCurrentUser();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [loading, setLoading] = useBoolean();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,7 +55,7 @@ const ProfilePage: NextPage = () => {
 
     if (result.status === 200) {
       toast({
-        title: "Actualizado",
+        title: "Actualizada",
         description: "La información se actualizó correctamente",
         status: "success",
         isClosable: true,
@@ -75,6 +76,7 @@ const ProfilePage: NextPage = () => {
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+    setLoading.on();
 
     const values = eventToFormValues(e);
 
@@ -91,7 +93,7 @@ const ProfilePage: NextPage = () => {
 
     if (result.status === 200) {
       toast({
-        title: "Actualizado",
+        title: "Actualizada",
         description: "La imagen se actualizó correctamente",
         status: "success",
         isClosable: true,
@@ -106,6 +108,7 @@ const ProfilePage: NextPage = () => {
         isClosable: true,
       });
     }
+    setLoading.off();
   };
 
   if (!me) {
@@ -126,7 +129,7 @@ const ProfilePage: NextPage = () => {
               <Button variant="ghost" mr={3} onClick={setModalOpen.off}>
                 Cancelar
               </Button>
-              <Button colorScheme="teal" type="submit">
+              <Button colorScheme="teal" type="submit" isLoading={loading}>
                 Actualizar
               </Button>
             </ModalFooter>

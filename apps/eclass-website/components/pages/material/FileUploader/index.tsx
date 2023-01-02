@@ -28,14 +28,14 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
   const toast = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const queryClient = useQueryClient();
+  const [loading, setLoading] = useBoolean();
 
-  const handleUploadImage = async () => {
+  const handleUploadFile = async () => {
+    setLoading.on();
     const form = formRef.current;
 
     const data = new FormData(form);
     const values = getFormValues(data);
-
-    console.log(values);
 
     if (values.image.size === 0) {
       toast({
@@ -44,6 +44,7 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
         status: "error",
         isClosable: true,
       });
+      setLoading.off();
       return;
     }
 
@@ -54,6 +55,7 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
         status: "error",
         isClosable: true,
       });
+      setLoading.off();
       return;
     }
 
@@ -64,8 +66,6 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
       method: "PUT",
       body: formData,
     });
-
-    setModalOpen.off();
 
     if (result.status === 200) {
       const { filepath, format } = await result.json();
@@ -93,7 +93,16 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
           status: "success",
           isClosable: true,
         });
+      } else {
+        toast({
+          title: "Error",
+          description: "Error al subir el archivo",
+          status: "error",
+          isClosable: true,
+        });
       }
+
+      setLoading.off();
     } else {
       toast({
         title: "Error",
@@ -101,7 +110,10 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
         status: "error",
         isClosable: true,
       });
+      setLoading.off();
     }
+
+    setModalOpen.off();
   };
 
   return (
@@ -122,7 +134,11 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
               <Button variant="ghost" mr={3} onClick={setModalOpen.off}>
                 Cancelar
               </Button>
-              <Button colorScheme="teal" onClick={handleUploadImage}>
+              <Button
+                colorScheme="teal"
+                onClick={handleUploadFile}
+                isLoading={loading}
+              >
                 Subir
               </Button>
             </ModalFooter>

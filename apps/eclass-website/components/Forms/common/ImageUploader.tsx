@@ -25,10 +25,12 @@ export const ImageUploader = ({
   setImageUrl,
 }: ImageUploaderProps) => {
   const [modalOpen, setModalOpen] = useBoolean();
+  const [loading, setLoading] = useBoolean();
   const toast = useToast();
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleUploadImage = async () => {
+    setLoading.on();
     const form = formRef.current;
 
     const data = new FormData(form);
@@ -36,7 +38,7 @@ export const ImageUploader = ({
 
     const formData = new FormData();
     formData.append("image", values.image);
-    
+
     const result = await fetch(
       `/api/v1/cloudinary/upload?folder=novelty-images`,
       {
@@ -59,6 +61,7 @@ export const ImageUploader = ({
         isClosable: true,
       });
     }
+    setLoading.off();
   };
 
   return (
@@ -75,7 +78,11 @@ export const ImageUploader = ({
               <Button variant="ghost" mr={3} onClick={setModalOpen.off}>
                 Cancelar
               </Button>
-              <Button colorScheme="teal" onClick={handleUploadImage}>
+              <Button
+                colorScheme="teal"
+                onClick={handleUploadImage}
+                isLoading={loading}
+              >
                 Añadir imagen
               </Button>
             </ModalFooter>
