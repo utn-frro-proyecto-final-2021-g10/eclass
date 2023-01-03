@@ -34,7 +34,11 @@ const me = async (req: reqWithUser, res: NextApiResponse) => {
         },
         folders: {
           include: {
-            files: true,
+            files: {
+              include: {
+                assignedTo: true,
+              },
+            },
           },
         },
       },

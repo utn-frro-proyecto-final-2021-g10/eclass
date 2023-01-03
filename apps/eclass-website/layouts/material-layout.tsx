@@ -22,6 +22,7 @@ import { FileUploader } from "../components/pages/material/FileUploader";
 import { formatBytes } from "../utils/formatBytes";
 import { Folder } from "@prisma/client";
 import { FolderCard } from "../components/pages/material/FolderCard";
+import { AssignFile } from "../components/pages/material/AssignFile";
 
 interface MaterialLayoutProps extends BaseLayoutProps {
   hideDetails?: boolean;
@@ -188,13 +189,7 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
                               >
                                 Descargar
                               </Button>
-                              <Button
-                                colorScheme="green"
-                                size="sm"
-                                leftIcon={<AddIcon />}
-                              >
-                                Asignar
-                              </Button>
+                              <AssignFile file={file} />\
                             </HStack>
                           </HStack>
                         ))}

@@ -99,6 +99,7 @@ model Course {
   forumId      String          @unique
   forum        Forum           @relation(fields: [forumId], references: [id])
   tasks        Task[]
+  files        CourseFiles[]
 }
 
 model CourseMember {
@@ -117,13 +118,23 @@ model CourseSettings {
 }
 
 model File {
-  id       String @id @default(cuid())
-  title    String
-  format   String
-  link     String
-  size     Float
-  folderId String
-  folder   Folder @relation(fields: [folderId], references: [id])
+  id         String        @id @default(cuid())
+  title      String
+  format     String
+  link       String
+  size       Float
+  folderId   String
+  folder     Folder        @relation(fields: [folderId], references: [id])
+  assignedTo CourseFiles[]
+}
+
+model CourseFiles {
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  courseId String
+  file     File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  fileId   String
+
+  @@id([courseId, fileId])
 }
 
 model Folder {
