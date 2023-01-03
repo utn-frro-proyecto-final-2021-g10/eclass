@@ -301,7 +301,7 @@ export const getServerSideProps = async (context: any) => {
 
     return {
       props: {
-        task,
+        fullTask: task,
       },
     };
   }
