@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import { CourseLayout } from "../../../layouts/course-layout";
 import { useCurrentCourse } from "../../../hooks/useCurrentCourse";
-import { GridItem } from "@chakra-ui/react";
+import { GridItem, Text } from "@chakra-ui/react";
 import { MaterialList } from "../../../components/pages/course/material/MaterialList";
 import { Loader } from "../../../components/Loader";
 
@@ -18,7 +18,13 @@ const Material: NextPage<{ courseId: string }> = ({ courseId }) => {
 
   return (
     <GridItem colSpan={12}>
-      <MaterialList />
+      {courseData.data.files.length === 0 ? (
+        <Text color={"gray.500"}>
+          No se encontraron archivos asignados al curso
+        </Text>
+      ) : (
+        <MaterialList files={courseData.data.files} />
+      )}
     </GridItem>
   );
 };

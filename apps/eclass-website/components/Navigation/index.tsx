@@ -158,7 +158,7 @@ export const Navigation = () => {
             </MenuList>
           </Menu>
           {course && (
-            <Box onClick={toggle} display={{ lg: "none" }}>
+            <Box onClick={toggle} display={{ lg: "none" }} cursor="pointer">
               {isOpen ? (
                 <CloseIcon boxSize="4" />
               ) : (

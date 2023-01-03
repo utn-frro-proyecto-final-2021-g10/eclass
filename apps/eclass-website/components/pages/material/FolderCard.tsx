@@ -139,7 +139,7 @@ export const FolderCard = ({
               fontSize="xs"
             >
               {folder.files?.length}
-              {folder.files?.length === 1 ? " elemento" : " elementos"}
+              {folder.files?.length === 1 ? " archivo" : " archivos"}
               <br />
               {folder.files?.reduce((acc, file) => acc + file.size, 0) > 0 ? (
                 formatBytes(

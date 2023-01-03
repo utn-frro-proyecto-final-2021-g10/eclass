@@ -115,6 +115,19 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             },
           },
         },
+        files: {
+          include: {
+            file: {
+              include: {
+                folder: {
+                  include: {
+                    professor: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 

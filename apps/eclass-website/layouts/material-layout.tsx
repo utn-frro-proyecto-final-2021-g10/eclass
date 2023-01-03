@@ -145,8 +145,8 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
                       <Badge colorScheme={currentFolder?.color}>
                         {currentFolder?.files?.length}{" "}
                         {currentFolder?.files?.length === 1
-                          ? "elemento"
-                          : "elementos"}
+                          ? "archivo"
+                          : "archivos"}
                       </Badge>
                     </HStack>
                   </CardHeader>
@@ -166,6 +166,19 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
                                 <Badge colorScheme="yellow">
                                   {formatBytes(file.size)}
                                 </Badge>
+                                <br />
+                                {file.assignedTo.length > 0 ? (
+                                  <Badge colorScheme="purple" mt="1">
+                                    asignado a {file.assignedTo.length}{" "}
+                                    {file.assignedTo.length === 1
+                                      ? "curso"
+                                      : "cursos"}
+                                  </Badge>
+                                ) : (
+                                  <Badge colorScheme="red" mt="1">
+                                    sin asignar
+                                  </Badge>
+                                )}
                               </Text>
                             </VStack>
                             <HStack spacing="4">
@@ -189,7 +202,7 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
                               >
                                 Descargar
                               </Button>
-                              <AssignFile file={file} />\
+                              <AssignFile file={file} />
                             </HStack>
                           </HStack>
                         ))}

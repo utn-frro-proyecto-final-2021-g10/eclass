@@ -70,7 +70,6 @@ export const AssignFile = ({ file }: AssignFileProps) => {
                 <Select
                   name="course"
                   isMulti
-           
                   placeholder="Selecciona un curso"
                   options={me?.courses?.map((course) => ({
                     value: course.course.id,
@@ -78,16 +77,15 @@ export const AssignFile = ({ file }: AssignFileProps) => {
                   }))}
                   defaultValue={selectedCourses.map((id) => {
                     const course = me.courses?.find((c) => c.course.id === id);
-                    
-                    
-                    return course && {
-                      value: course?.course.id,
-                      label: course?.course.name,
-                    };
+
+                    return (
+                      course && {
+                        value: course?.course.id,
+                        label: course?.course.name,
+                      }
+                    );
                   })}
                   onChange={(value) => {
-                    console.log(value);
-
                     setSelectedCourses(value.map((v) => v.value));
                   }}
                 />
