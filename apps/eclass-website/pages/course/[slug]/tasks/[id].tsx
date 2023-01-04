@@ -40,17 +40,19 @@ const Task = ({ fullTask }: Props) => {
     const values = eventToFormValues(e);
 
     const answer: any = fullTask.answers[values.AnswerIndex];
-
+    let score = 0
     for (let index = 0; index < answer.fields.length; index++) {
       const field = answer.fields[index];
+
       field.qualification = parseFloat(values[`${index}-score`]);
+      score = score + field.qualification
     }
 
     const insert = {
       userId: answer.user.id,
       taskId: fullTask.id,
       dateSubmitted: new Date(),
-      qualification: null,
+      qualification: score,
       fields: {
         create: answer.fields.map((field: any) => {
           return {
