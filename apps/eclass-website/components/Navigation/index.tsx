@@ -111,6 +111,10 @@ export const Navigation = () => {
               displayName="Participantes"
               url={`/course/${course.slug}/members`}
             />
+            <Tab
+              displayName="Calificaciones"
+              url={`/course/${course.slug}/qualifications`}
+            />
           </Stack>
         </Box>
       )}
