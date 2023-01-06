@@ -26,7 +26,7 @@ const Home: NextPage = () => {
       {me?.role == "professor" && <ProfessorSettings />}
 
       {me?.role === "professor" && me.ownedCourses && (
-        <Dashboard initialCourses={me.ownedCourses} heading="Mis cursos" />
+        <Dashboard initialCourses={me.ownedCourses} heading="Mis cursos" ownedCourses />
       )}
 
       {me?.role === "professor" && me.courses && (

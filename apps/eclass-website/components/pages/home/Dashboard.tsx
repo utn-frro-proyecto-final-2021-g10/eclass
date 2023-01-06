@@ -5,9 +5,10 @@ import { CourseCard } from "./CourseCard";
 interface Props {
   initialCourses: Course[];
   heading?: string;
+  ownedCourses?: boolean;
 }
 
-export const Dashboard = ({ initialCourses, heading }: Props) => {
+export const Dashboard = ({ initialCourses, heading, ownedCourses }: Props) => {
   return (
     <>
       {initialCourses?.length > 0 && (
@@ -20,7 +21,7 @@ export const Dashboard = ({ initialCourses, heading }: Props) => {
           {initialCourses &&
             initialCourses.map((course, i) => (
               <GridItem key={i} colSpan={[12, 12, 6, 4]}>
-                <CourseCard course={course} />
+                <CourseCard course={course} isOwner={ownedCourses} />
               </GridItem>
             ))}
         </GridContainer>

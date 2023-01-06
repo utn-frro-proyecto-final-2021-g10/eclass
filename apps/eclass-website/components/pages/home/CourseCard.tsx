@@ -17,21 +17,36 @@ import {
   useClipboard,
   useToast,
 } from "@chakra-ui/react";
-import { SettingsIcon, ArrowBackIcon, EditIcon } from "@chakra-ui/icons";
+import {
+  SettingsIcon,
+  ArrowBackIcon,
+  EditIcon,
+  DeleteIcon,
+} from "@chakra-ui/icons";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { useFormToast } from "../../../hooks/useFormToast";
 import { FullCourse } from "../../../types/Course";
 import { Card, CardHeader, CardBody } from "../../Card";
 import { useQueryClient } from "react-query";
 
-export const CourseCard = ({ course }: { course: FullCourse }) => {
+export const CourseCard = ({
+  course,
+  isOwner,
+}: {
+  course: FullCourse;
+  isOwner: boolean;
+}) => {
   const queryClient = useQueryClient();
   const { hasCopied: hasCopiedEnrollmentId, onCopy: onCopyEnrollmentId } =
     useClipboard(course.enrollmentId);
   const toast = useToast();
-  const { showToast } = useFormToast({
-    successMessage: "El desenrollamiento ha sido exitoso",
+  const { showToast: disenrollToast } = useFormToast({
+    successMessage: "te has desinscrito del curso con éxito",
   });
+  const { showToast: removeToast } = useFormToast({
+    successMessage: "El curso ha sido eliminado con éxito",
+  });
+
   const me = useCurrentUser();
 
   useEffect(() => {
@@ -60,7 +75,21 @@ export const CourseCard = ({ course }: { course: FullCourse }) => {
       },
     });
     const data = await result.json();
-    showToast(data);
+    disenrollToast(data);
+    if (data.success) {
+      queryClient.invalidateQueries("current-user");
+    }
+  };
+
+  const handleRemove = async (id: string) => {
+    const result = await fetch(`/api/v1/course/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await result.json();
+    removeToast(data);
     if (data.success) {
       queryClient.invalidateQueries("current-user");
     }
@@ -134,15 +163,27 @@ export const CourseCard = ({ course }: { course: FullCourse }) => {
                 }}
               />
               <MenuList>
-                <MenuItem
-                  onClick={(e) => {
-                    handleDisenroll(course.enrollmentId);
-                    e.stopPropagation();
-                  }}
-                  icon={<ArrowBackIcon />}
-                >
-                  Salir del curso
-                </MenuItem>
+                {isOwner ? (
+                  <MenuItem
+                    onClick={(e) => {
+                      handleRemove(course.id);
+                      e.stopPropagation();
+                    }}
+                    icon={<DeleteIcon />}
+                  >
+                    Eliminar curso
+                  </MenuItem>
+                ) : (
+                  <MenuItem
+                    onClick={(e) => {
+                      handleDisenroll(course.enrollmentId);
+                      e.stopPropagation();
+                    }}
+                    icon={<ArrowBackIcon />}
+                  >
+                    Salir del curso
+                  </MenuItem>
+                )}
                 {me?.role === "professor" && (
                   <MenuItem
                     onClick={(e) => {

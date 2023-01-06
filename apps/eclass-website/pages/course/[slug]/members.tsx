@@ -112,6 +112,7 @@ const Members: NextPage<{ courseId: string }> = ({ courseId }) => {
           onEnableSelect={() => setSelectState(true)}
           checkedEmails={checkedProfessors}
           setCheckedEmails={setCheckedProfessors}
+          owner={courseData.data.ownerId}
         />
       </GridItem>
 

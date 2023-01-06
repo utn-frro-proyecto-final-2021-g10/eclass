@@ -20,6 +20,7 @@ interface Props {
   onEnableSelect: any;
   checkedEmails: any;
   setCheckedEmails: any;
+  owner?: any;
 }
 
 export const MemberList = ({
@@ -30,6 +31,7 @@ export const MemberList = ({
   onEnableSelect,
   checkedEmails,
   setCheckedEmails,
+  owner,
 }: Props) => {
   const me = useCurrentUser();
 
@@ -113,6 +115,12 @@ export const MemberList = ({
                   {user.id === me?.id && (
                     <Badge colorScheme="teal" variant="outline">
                       Yo
+                    </Badge>
+                  )}
+
+                  {owner && user.id === owner && (
+                    <Badge colorScheme="purple" variant="outline">
+                      Owner
                     </Badge>
                   )}
                 </HStack>
