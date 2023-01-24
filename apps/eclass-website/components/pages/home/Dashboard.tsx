@@ -6,9 +6,15 @@ interface Props {
   initialCourses: Course[];
   heading?: string;
   ownedCourses?: boolean;
+  onEditCourse?: (course: Course) => void;
 }
 
-export const Dashboard = ({ initialCourses, heading, ownedCourses }: Props) => {
+export const Dashboard = ({
+  initialCourses,
+  heading,
+  ownedCourses,
+  onEditCourse,
+}: Props) => {
   return (
     <>
       {initialCourses?.length > 0 && (
@@ -21,7 +27,11 @@ export const Dashboard = ({ initialCourses, heading, ownedCourses }: Props) => {
           {initialCourses &&
             initialCourses.map((course, i) => (
               <GridItem key={i} colSpan={[12, 12, 6, 4]}>
-                <CourseCard course={course} isOwner={ownedCourses} />
+                <CourseCard
+                  course={course}
+                  isOwner={ownedCourses}
+                  onEditCourse={onEditCourse}
+                />
               </GridItem>
             ))}
         </GridContainer>

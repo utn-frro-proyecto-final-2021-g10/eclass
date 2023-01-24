@@ -37,6 +37,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       message: "No se encontraron cursos",
     });
   }
+  
   // creates a course
   async function createCourse() {
     if (req.user.role === Role.student) {

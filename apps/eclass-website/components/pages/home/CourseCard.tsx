@@ -32,9 +32,11 @@ import { useQueryClient } from "react-query";
 export const CourseCard = ({
   course,
   isOwner,
+  onEditCourse,
 }: {
   course: FullCourse;
-  isOwner: boolean;
+  isOwner?: boolean;
+  onEditCourse?: (course: FullCourse) => void;
 }) => {
   const queryClient = useQueryClient();
   const { hasCopied: hasCopiedEnrollmentId, onCopy: onCopyEnrollmentId } =
@@ -184,10 +186,10 @@ export const CourseCard = ({
                     Salir del curso
                   </MenuItem>
                 )}
-                {me?.role === "professor" && (
+                {me?.role === "professor" && onEditCourse && (
                   <MenuItem
                     onClick={(e) => {
-                      alert("Edit course");
+                      onEditCourse(course);
                       e.stopPropagation();
                     }}
                     icon={<EditIcon />}

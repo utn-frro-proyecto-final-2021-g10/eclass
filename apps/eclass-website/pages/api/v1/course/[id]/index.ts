@@ -1,4 +1,3 @@
-import { Course } from "@prisma/client";
 import { NextApiResponse } from "next";
 import { protect } from "../../../../../middleware/protect";
 import { reqWithUser } from "../../../../../types/reqWithUser";
@@ -20,12 +19,23 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
 
   async function updateCourse() {
     try {
+      const { settings, ...courseData } = req.body;
+
       const course = await prisma.course.update({
         where: {
           id: req.query.id.toString(),
         },
-        data: req.body,
+
+        data: {
+          ...courseData,
+          settings: {
+            update: {
+              ...settings,
+            },
+          },
+        },
       });
+
       if (course) {
         return res.status(200).json({
           success: true,
