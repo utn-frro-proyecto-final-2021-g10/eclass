@@ -23,7 +23,7 @@ const Material: NextPage<{ courseId: string }> = ({ courseId }) => {
           No se encontraron archivos asignados al curso
         </Text>
       ) : (
-        <MaterialList files={courseData.data.files} />
+        <MaterialList files={courseData.data.files} courseId={courseData.data.id} />
       )}
     </GridItem>
   );

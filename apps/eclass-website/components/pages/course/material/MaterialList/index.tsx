@@ -1,19 +1,56 @@
-import { Text, VStack, HStack, Divider, Button, Badge } from "@chakra-ui/react";
+import {
+  Text,
+  VStack,
+  HStack,
+  Divider,
+  Button,
+  Badge,
+  useToast,
+} from "@chakra-ui/react";
 import { DeleteIcon, DownloadIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
 import { File } from "@prisma/client";
 import { formatBytes } from "../../../../../utils/formatBytes";
 import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
+import { useQueryClient } from "react-query";
 
 interface MaterialListProps {
   files: File[];
+  courseId: string;
 }
 
-export const MaterialList = ({ files }: MaterialListProps) => {
-  const handleRemoveFile = async (id: string) => {};
+export const MaterialList = ({ files, courseId }: MaterialListProps) => {
   const me = useCurrentUser();
+  const toast = useToast();
+  const queryClient = useQueryClient();
 
-  console.log(files);
+  const handleRemoveFile = async (file) => {
+    const result = await fetch(`/api/v1/file/${file.fileId}/unassign`, {
+      method: "POST",
+      body: JSON.stringify({
+        course: courseId,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const success = result.status === 200;
+
+    toast({
+      title: success ? "Archivo removido con éxito" : "Error",
+      description: success
+        ? "El archivo ha sido removido con éxito"
+        : "Error al remover el archivo",
+      status: success ? "success" : "error",
+      isClosable: true,
+    });
+
+    if (success) {
+      queryClient.invalidateQueries("current-user");
+      queryClient.invalidateQueries("current-course");
+    }
+  };
 
   return (
     <Card>
@@ -54,7 +91,7 @@ export const MaterialList = ({ files }: MaterialListProps) => {
                     colorScheme="red"
                     variant="outline"
                     leftIcon={<DeleteIcon />}
-                    onClick={() => handleRemoveFile(file.id)}
+                    onClick={() => handleRemoveFile(file)}
                   >
                     Eliminar
                   </Button>
