@@ -7,9 +7,10 @@ import {
   Thead,
   Tr,
   Td,
-  Text
+  Text,
+  TableContainer,
+  GridItem
 } from '@chakra-ui/react';
-import answer from "../../api/v1/answer";
 
 interface Dictionary {
   [key: string]: any[];
@@ -24,37 +25,41 @@ const QualificationsPage: NextPage<{
 
   return (
     <>
+      <GridItem colSpan={12}>
+        <TableContainer>
+          {tasks &&
 
-      {tasks &&
-        <Table>
-          <Thead>
-            <Tr>
-              <Td>
-                <Text fontWeight="bold">User</Text>
-              </Td>
-              {tasks.map((task: any) => (
-                <Td key={task.name}>{task.name}</Td>
-              ))}
-            </Tr>
-          </Thead>
-          <Tbody>
+            <Table variant={"simple"}>
+              <Thead>
+                <Tr>
+                  <Td>
+                    <Text fontWeight="bold">User</Text>
+                  </Td>
+                  {tasks.map((task: any) => (
+                    <Td key={task.name}>{task.name}</Td>
+                  ))}
+                </Tr>
+              </Thead>
+              <Tbody>
 
-            {Object.keys(userAnswersDictionary).map((key: string) => (
-              <Tr key={key}>
-                <Td>{key}</Td>
-                {Array.isArray(userAnswersDictionary[key]) &&
-                  userAnswersDictionary[key].map((elem: any) => (
-                    <Td key={`${elem.taskId}-${elem.userId}`}>{elem.qualification || "No resuelto"}</Td>
-                  ))
-                }
+                {Object.keys(userAnswersDictionary).map((key: string) => (
+                  <Tr key={key}>
+                    <Td>{key}</Td>
+                    {Array.isArray(userAnswersDictionary[key]) &&
+                      userAnswersDictionary[key].map((elem: any) => (
+                        <Td key={`${elem.taskId}-${elem.userId}`}>{elem.qualification || "No resuelto"}</Td>
+                      ))
+                    }
 
-              </Tr>
-            ))}
+                  </Tr>
+                ))}
 
-          </Tbody>
+              </Tbody>
 
-        </Table>
-      }
+            </Table>
+          }
+        </TableContainer>
+      </GridItem>
     </>
   );
 };

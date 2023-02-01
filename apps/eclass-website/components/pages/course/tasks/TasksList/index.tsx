@@ -2,6 +2,7 @@ import { Text, VStack, HStack, Divider, IconButton } from "@chakra-ui/react";
 import { Task, Course } from "@prisma/client";
 import { ArrowForwardIcon, EditIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
+import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
 
 export const TasksList = ({
   tasks,
@@ -10,6 +11,7 @@ export const TasksList = ({
   tasks: Task[];
   course: Course;
 }) => {
+  const user = useCurrentUser()
   return (
     <Card>
       <CardHeader>
@@ -28,12 +30,16 @@ export const TasksList = ({
                   </Text>
                   <Text fontSize="sm">{task.description}</Text>
                 </VStack>
-                <IconButton
-                  aria-label="Ver tarea"
-                  as="a"
-                  icon={<EditIcon />}
-                  href={`/course/${course.slug}/tasks/edit/${task.id}`}
-                />
+                {
+                  user?.role === "professor" &&
+                  <IconButton
+                    aria-label="Ver tarea"
+                    as="a"
+                    icon={<EditIcon />}
+                    href={`/course/${course.slug}/tasks/edit/${task.id}`}
+                  />
+
+                }
                 <IconButton
                   aria-label="Ver tarea"
                   as="a"

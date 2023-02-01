@@ -4,17 +4,25 @@ import {
   Input,
   Button,
   useToast,
+  GridItem,
 } from "@chakra-ui/react";
+import { NextPage } from "next";
 import { useState } from "react";
 import TaskFieldForm from "../../../../../components/Forms/TaskFieldForm";
+import { useCurrentCourse } from "../../../../../hooks/useCurrentCourse";
+import { CourseLayout } from "../../../../../layouts/course-layout";
 import { eventToFormValues } from "../../../../../utils/eventToFormValues";
 import toLocaleISOString from "../../../../../utils/toLocaleISOString";
 
 interface Props {
   initialTask: any;
+  courseId: string;
 }
 
-const TaskEditPage = ({ initialTask }: Props) => {
+const TaskEditPage = ({ initialTask, courseId }: Props) => {
+
+  const courseData = useCurrentCourse(courseId);
+
   const toast = useToast();
   const [task, setTask] = useState(initialTask);
 
@@ -238,7 +246,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
   };
 
   return (
-    <>
+    <GridItem colSpan={12}>
+
       <form onSubmit={handleTaskSubmit}>
         <FormControl>
           <FormLabel>Name: </FormLabel>
@@ -274,8 +283,13 @@ const TaskEditPage = ({ initialTask }: Props) => {
           />
         ))}
       <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
-    </>
+    </GridItem>
+
   );
+};
+
+TaskEditPage.getLayout = function getLayout(page: NextPage) {
+  return <CourseLayout>{page}</CourseLayout>;
 };
 
 export const getServerSideProps = async (context: any) => {
@@ -314,6 +328,7 @@ export const getServerSideProps = async (context: any) => {
   return {
     props: {
       initialTask: task,
+      courseId: context.params.slug
     },
   };
 };

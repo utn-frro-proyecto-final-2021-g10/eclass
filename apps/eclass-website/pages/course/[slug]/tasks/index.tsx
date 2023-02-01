@@ -7,6 +7,7 @@ import { TaskForm } from "../../../../components/pages/course/tasks/TaskForm";
 import { TasksList } from "../../../../components/pages/course/tasks/TasksList";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
 import { useState } from "react";
+import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 
 interface Props {
   course: any;
