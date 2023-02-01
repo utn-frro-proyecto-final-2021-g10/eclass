@@ -14,6 +14,7 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Card } from "../../../../components/Card";
+import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 import { CourseLayout } from "../../../../layouts/course-layout";
 import { FullTask } from "../../../../types/Task";
@@ -25,7 +26,8 @@ interface Props {
   courseId: string;
 }
 
-const Task = ({ fullTask }: Props) => {
+const Task = ({ fullTask, courseId }: Props) => {
+  const courseData = useCurrentCourse(courseId);
   const me = useCurrentUser();
   const router = useRouter();
   const [answer, setAnswer] = useState<any | null>(null);
@@ -311,6 +313,7 @@ export const getServerSideProps = async (context: any) => {
     return {
       props: {
         fullTask: task,
+        courseId: context.params.slug
       },
     };
   }
