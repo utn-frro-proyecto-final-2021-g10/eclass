@@ -23,6 +23,7 @@ import {
 } from "@chakra-ui/icons";
 import { courseContext } from "../../layouts/course-layout";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
+import user from "../../pages/api/v1/user";
 
 const Tab = ({ displayName, url }: { displayName: string; url: string }) => {
   const router = useRouter();
@@ -111,10 +112,12 @@ export const Navigation = () => {
               displayName="Participantes"
               url={`/course/${course.slug}/members`}
             />
-            <Tab
-              displayName="Calificaciones"
-              url={`/course/${course.slug}/qualifications`}
-            />
+            {me?.role === "professor" &&
+              <Tab
+                displayName="Calificaciones"
+                url={`/course/${course.slug}/qualifications`}
+              />
+            }
           </Stack>
         </Box>
       )}
