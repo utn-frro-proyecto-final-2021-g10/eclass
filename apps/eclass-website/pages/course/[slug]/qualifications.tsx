@@ -34,13 +34,13 @@ const QualificationsPage: NextPage<{
               colorScheme={"facebook"}
               borderRadius={15}
             >
-              <Thead bg={"blackAlpha.100"}>
+              <Thead bg={"teal.400"}>
                 <Tr>
                   <Td>
-                    <Text fontWeight="bold">User</Text>
+                    <Text fontWeight="bold" color={"white"} fontSize={"large"}>User</Text>
                   </Td>
                   {tasks.map((task: any) => (
-                    <Td key={task.name} fontWeight="bold">{task.name}</Td>
+                    <Td key={task.name} fontWeight="bold" color={"white"}>{task.name}</Td>
                   ))}
                 </Tr>
               </Thead>
@@ -48,7 +48,7 @@ const QualificationsPage: NextPage<{
 
                 {Object.keys(userAnswersDictionary).map((key: string) => (
                   <Tr key={key}>
-                    <Td>{key}</Td>
+                    <Td fontSize={"large"} fontWeight={"semibold"}>{key}</Td>
                     {Array.isArray(userAnswersDictionary[key]) &&
                       userAnswersDictionary[key].map((elem: any) => (
                         <Td key={`${elem.taskId}-${elem.userId}`}>{elem.qualification || "No resuelto"}</Td>
