@@ -26,17 +26,21 @@ const QualificationsPage: NextPage<{
   return (
     <>
       <GridItem colSpan={12}>
-        <TableContainer>
+        <TableContainer border={"1px solid"} borderColor={"gray.100"} borderRadius={"15px"}>
           {tasks &&
 
-            <Table variant={"simple"}>
-              <Thead>
+            <Table
+              variant={"simple"}
+              colorScheme={"facebook"}
+              borderRadius={15}
+            >
+              <Thead bg={"blackAlpha.100"}>
                 <Tr>
                   <Td>
                     <Text fontWeight="bold">User</Text>
                   </Td>
                   {tasks.map((task: any) => (
-                    <Td key={task.name}>{task.name}</Td>
+                    <Td key={task.name} fontWeight="bold">{task.name}</Td>
                   ))}
                 </Tr>
               </Thead>
