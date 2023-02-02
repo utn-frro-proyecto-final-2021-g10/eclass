@@ -3,16 +3,20 @@ import {
   Button,
   FormControl,
   FormLabel,
+  GridItem,
   Input,
   NumberInput,
   NumberInputField,
   Text,
 } from "@chakra-ui/react";
 import { Answer, Field } from "@prisma/client";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Card } from "../../../../components/Card";
+import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
+import { CourseLayout } from "../../../../layouts/course-layout";
 import { FullTask } from "../../../../types/Task";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
 import { getFormValues } from "../../../../utils/getFormValues";
@@ -22,7 +26,8 @@ interface Props {
   courseId: string;
 }
 
-const Task = ({ fullTask }: Props) => {
+const Task = ({ fullTask, courseId }: Props) => {
+  const courseData = useCurrentCourse(courseId);
   const me = useCurrentUser();
   const router = useRouter();
   const [answer, setAnswer] = useState<any | null>(null);
@@ -139,7 +144,7 @@ const Task = ({ fullTask }: Props) => {
 
   if (me?.role == "professor") {
     return (
-      <>
+      <GridItem colSpan={12}>
         <Text> {fullTask.name} </Text>
         <Text> {fullTask.description} </Text>
         {fullTask.dateEnd !== null && (
@@ -187,7 +192,7 @@ const Task = ({ fullTask }: Props) => {
             </>
           </form>
         ))}
-      </>
+      </GridItem>
     );
   }
 
@@ -201,7 +206,7 @@ const Task = ({ fullTask }: Props) => {
     );
   }
   return (
-    <>
+    <GridItem colSpan={12}>
       {answer !== null ? (
         <>
           <Text> {fullTask.name} </Text>
@@ -244,8 +249,12 @@ const Task = ({ fullTask }: Props) => {
           </form>
         </>
       )}
-    </>
+    </GridItem>
   );
+};
+
+Task.getLayout = function getLayout(page: NextPage) {
+  return <CourseLayout>{page}</CourseLayout>;
 };
 
 export const getServerSideProps = async (context: any) => {
@@ -304,6 +313,7 @@ export const getServerSideProps = async (context: any) => {
     return {
       props: {
         fullTask: task,
+        courseId: context.params.slug
       },
     };
   }
