@@ -36,6 +36,30 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             id: true,
           },
         },
+        answers: {
+          select: {
+            fields: {
+              select: {
+                type: true,
+                question: true,
+                possibleAnswers: true,
+                studentAnswer: true,
+                correctAnswer: true,
+                value: true,
+                id: true,
+                qualification: true,
+              },
+            },
+            taskId: true,
+            userId: true,
+            user: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
       },
     });
 
@@ -67,9 +91,6 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
 
   // updates an task given an task in the body of the request
   async function updateTask() {
-    if (req.user.role === Role.student) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
     if (req.body) {
       try {
         const task = await prisma.task.findUnique({
@@ -77,16 +98,6 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             id: req.query.id.toString(),
           },
         });
-
-        if (task) {
-          if (!(await userOwnsCourse(req.user.id, task.courseId))) {
-            return res.status(401).json({
-              success: false,
-              message: "El usuario no es dueño de este curso",
-            });
-          }
-        }
-
         const updatedTask = await prisma.task.update({
           where: {
             id: req.query.id.toString(),
