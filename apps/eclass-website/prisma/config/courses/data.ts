@@ -9,9 +9,9 @@ interface ICourse extends Omit<FullCourse, "id" | "settings"> {
 
 export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
   {
-    name: "Introducción a la Progamación",
+    name: "Introducción a la Programación",
     slug: "intro-to-programming",
-    description: "Commission AB1",
+    description: "Comisión AB1",
     moreInfo:
       "In this course, we will learn the basics of programming and how to write code. We will also learn about the different types of programming languages, data structures and more.",
     imageUrl: "https://avatars.dicebear.com/api/identicon/1.svg?b=%23dedede",
@@ -23,7 +23,7 @@ export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
   {
     name: "Física I",
     slug: "physics-1",
-    description: "Commission AB1",
+    description: "Comisión AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     imageUrl: "https://avatars.dicebear.com/api/identicon/2.svg?b=%23dedede",
@@ -35,7 +35,7 @@ export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
   {
     name: "Cálculo I",
     slug: "calculus-1",
-    description: "Commission AB1",
+    description: "Comisión AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     imageUrl: "https://avatars.dicebear.com/api/identicon/3.svg?b=%23dedede",
@@ -47,7 +47,7 @@ export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
   {
     name: "Álgebra",
     slug: "algebra",
-    description: "Commission AB1",
+    description: "Comisión AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     imageUrl: "https://avatars.dicebear.com/api/identicon/4.svg?b=%23dedede",
@@ -59,7 +59,7 @@ export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
   {
     name: "Arquitectura de las Computadoras",
     slug: "arquitecture-of-computers",
-    description: "Commission AB1",
+    description: "Comisión AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     imageUrl: "https://avatars.dicebear.com/api/identicon/5.svg?b=%23dedede",
@@ -71,7 +71,7 @@ export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
   {
     name: "Sistemas y Organizaciones",
     slug: "systems-and-organizations",
-    description: "Commission AB1",
+    description: "Comisión AB1",
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     imageUrl: "https://avatars.dicebear.com/api/identicon/6.svg?b=%23dedede",
