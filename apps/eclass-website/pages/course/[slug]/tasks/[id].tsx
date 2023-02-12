@@ -1,16 +1,21 @@
-import { Button, FormControl, FormLabel, Input, NumberInput, NumberInputField, Radio, RadioGroup, useToast } from "@chakra-ui/react";
+import { Button, FormControl, FormLabel, GridItem, Input, NumberInput, NumberInputField, Radio, RadioGroup, Text, useToast } from "@chakra-ui/react";
+import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import ProfessorCorrectionForm from "../../../../components/Forms/ProfessorCorrectionForm";
 import StudentTaskFormWrapper from "../../../../components/Forms/StudentTaskFormWrapper";
+import { useCurrentCourse } from "../../../../hooks/useCurrentCourse";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
+import { CourseLayout } from "../../../../layouts/course-layout";
 import { eventToFormValues } from "../../../../utils/eventToFormValues";
 import { getFormValues } from "../../../../utils/getFormValues";
 import toLocaleISOString from "../../../../utils/toLocaleISOString";
 
 interface Props {
   initialTask: any
+  courseSlug: string
 }
-const Task = ({ initialTask }: Props) => {
+const Task = ({ initialTask, courseSlug }: Props) => {
+  useCurrentCourse(courseSlug)
   const me = useCurrentUser()
   const toast = useToast()
   const [task, setTask] = useState(initialTask)
@@ -240,6 +245,7 @@ const Task = ({ initialTask }: Props) => {
 
 
   if (me?.role === "student") {
+    <pre>{JSON.stringify(task, null, 2)}</pre>
     return (
       <StudentTaskFormWrapper
         handleSubmit={handleAnswer}
@@ -251,11 +257,18 @@ const Task = ({ initialTask }: Props) => {
 
   if (me?.role === "professor") {
     return (
-      <ProfessorCorrectionForm
-        handleSubmit={handleCorrection}
-        handleAutoCorrection={handleAutoCorrection}
-        task={task}
-      />
+      <GridItem colSpan={12}>
+
+        {
+          task.answers.length > 0 ?
+            <ProfessorCorrectionForm
+              handleSubmit={handleCorrection}
+              handleAutoCorrection={handleAutoCorrection}
+              task={task} />
+            :
+            <Text>No hay respuestas...</Text>
+        }
+      </GridItem>
     )
   }
   return <p>error</p>
@@ -267,6 +280,7 @@ Task.getLayout = function getLayout(page: NextPage) {
 
 export const getServerSideProps = async (context: any) => {
   const taskId = context.params.id
+  const courseSlug = context.params.slug
   let task: any = await prisma.task.findUnique({
     where: {
       id: taskId
@@ -308,6 +322,8 @@ export const getServerSideProps = async (context: any) => {
       }
     }
   });
+  console.log(task);
+
   if (!task) {
     return {
       redirect: {
@@ -321,7 +337,8 @@ export const getServerSideProps = async (context: any) => {
 
   return {
     props: {
-      initialTask: task
+      initialTask: task,
+      courseSlug
     }
   };
 };
