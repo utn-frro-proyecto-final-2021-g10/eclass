@@ -61,6 +61,7 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
       if (result.status === 200) {
         const data = await result.json();
         setCourses(data.courses);
+        e.target.reset();
       }
     } else {
       toast({

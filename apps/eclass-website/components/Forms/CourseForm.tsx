@@ -5,6 +5,7 @@ import {
   GridItem,
   Text,
   HStack,
+  Button,
 } from "@chakra-ui/react";
 import { GridContainer } from "../GridContainer";
 import { GridItemInput } from "./common/GridItemInput";
@@ -15,7 +16,6 @@ interface Props {
   course?: any;
   users: any[];
   buttonText?: string;
-  professorId?: any;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   children?: ReactChild;
 }
@@ -23,8 +23,8 @@ interface Props {
 const CourseForm = ({
   users,
   handleSubmit,
-  professorId = null,
   course = null,
+  buttonText = "Añadir",
   children,
 }: Props) => {
   const {
@@ -97,7 +97,7 @@ const CourseForm = ({
               type="select"
               label="Dueño"
               name="owner"
-              defaultValue={professorId !== null ? professorId : ""}
+              defaultValue={course?.owner?.id || ""}
               options={users.map((user: any) => ({
                 value: user.id,
                 label: `${user.lastName}, ${user.firstName}`,
@@ -120,8 +120,14 @@ const CourseForm = ({
               ]}
             />
             <input type="hidden" name="imageUrl" value={newImageUrl} />
+            <input type="hidden" name="profileImageUrl" value={newImageUrl} />
             <GridItem colSpan={12}>
-              <HStack justify="end">{children}</HStack>
+              <HStack justify="end">
+                {children}
+                <Button type="submit" colorScheme="teal">
+                  {buttonText}
+                </Button>
+              </HStack>
             </GridItem>
           </Grid>
         </form>

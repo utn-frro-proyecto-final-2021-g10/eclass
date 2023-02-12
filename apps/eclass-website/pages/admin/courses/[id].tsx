@@ -28,9 +28,7 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
       enrollmentId: values.enrollmentId,
       ownerId: values.owner,
       settings: {
-        update: {
-          baseColor: values.color,
-        },
+        baseColor: values.color,
       },
     };
 
