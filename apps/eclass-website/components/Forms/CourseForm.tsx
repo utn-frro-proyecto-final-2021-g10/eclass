@@ -16,6 +16,7 @@ interface Props {
   course?: any;
   users: any[];
   buttonText?: string;
+  headerText?: string;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   children?: ReactChild;
 }
@@ -25,6 +26,7 @@ const CourseForm = ({
   handleSubmit,
   course = null,
   buttonText = "Añadir",
+  headerText = "Añadir Curso",
   children,
 }: Props) => {
   const {
@@ -51,7 +53,7 @@ const CourseForm = ({
           <Grid gap={5} w="100%">
             <GridItem colSpan={12}>
               <Text fontSize="2xl" fontWeight="bold">
-                Curso
+                {headerText}
               </Text>
             </GridItem>
             <GridItem colSpan={[12, 12, 6, 6]}>

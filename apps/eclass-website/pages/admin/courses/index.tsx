@@ -88,10 +88,8 @@ CoursesPage.getLayout = function getLayout(page: NextPage) {
 
 export const getServerSideProps = async () => {
   const courses = await prisma.course.findMany({
-    select: {
-      name: true,
-      description: true,
-      id: true,
+    include: {
+      settings: true,
     },
   });
   const professors = await prisma.user.findMany({

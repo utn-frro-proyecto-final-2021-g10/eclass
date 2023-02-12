@@ -43,7 +43,7 @@ export const CourseCard = ({
     useClipboard(course.enrollmentId);
   const toast = useToast();
   const { showToast: disenrollToast } = useFormToast({
-    successMessage: "te has desinscrito del curso con éxito",
+    successMessage: "Te has desinscrito del curso con éxito",
   });
   const { showToast: removeToast } = useFormToast({
     successMessage: "El curso ha sido eliminado con éxito",
@@ -54,7 +54,7 @@ export const CourseCard = ({
   useEffect(() => {
     if (hasCopiedEnrollmentId) {
       toast({
-        title: `El código de enrollamiento para ${course.name} ha sido copiado`,
+        title: `El código de inscripción para ${course.name} ha sido copiado`,
         description: course.enrollmentId,
         status: "info",
         duration: 5000,
@@ -143,7 +143,7 @@ export const CourseCard = ({
           </HStack>
           <Divider />
           <HStack spacing={3} justify="space-between">
-            <Tooltip label="Copy enrollment id">
+            <Tooltip label="Copiar ID de inscripción">
               <Badge
                 as="button"
                 onClick={handleCopyEnrollmentId}

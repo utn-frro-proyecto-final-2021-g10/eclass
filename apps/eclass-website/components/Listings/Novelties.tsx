@@ -13,6 +13,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 import { Novelty } from "@prisma/client";
+import { parseDate } from "../../utils/parseDate";
 import { GridContainer } from "../GridContainer";
 
 interface NoveltiesProps {
@@ -35,6 +36,7 @@ export const Novelties = ({ novelties }: NoveltiesProps) => (
               <Table variant="striped">
                 <Thead>
                   <Tr>
+                    <Th>Fecha</Th>
                     <Th>Título</Th>
                     <Th>Acciones</Th>
                   </Tr>
@@ -43,6 +45,7 @@ export const Novelties = ({ novelties }: NoveltiesProps) => (
                   {novelties &&
                     novelties.map((novelty: any, i: number) => (
                       <Tr key={i}>
+                        <Td>{parseDate(novelty.date)}</Td>
                         <Td>{novelty.title}</Td>
                         <Td>
                           <Link

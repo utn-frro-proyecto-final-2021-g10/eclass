@@ -65,6 +65,7 @@ const CoursePage = ({ initialCourse, users }: CoursePageProps) => {
         users={users}
         handleSubmit={handleSubmit}
         buttonText="Actualizar"
+        headerText="Editar curso"
       >
         <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>
           Eliminar

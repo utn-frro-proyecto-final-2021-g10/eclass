@@ -22,7 +22,7 @@ const disenroll = async (req: reqWithUser, res: NextApiResponse) => {
       if (!course) {
         return res.status(404).json({
           success: false,
-          message: "Id de enrolamiento no encontrado",
+          message: "Id de inscripción no encontrado",
         });
       }
 
@@ -46,7 +46,7 @@ const disenroll = async (req: reqWithUser, res: NextApiResponse) => {
     } else {
       return res.status(400).json({
         success: false,
-        message: "El id de enrolamiento es requerido",
+        message: "El id de inscripción es requerido",
       });
     }
   } catch (e) {

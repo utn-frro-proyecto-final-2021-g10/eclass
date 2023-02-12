@@ -10,6 +10,7 @@ interface Props {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
   user?: any | null;
   buttonText?: string;
+  headerText?: string;
   children?: ReactChild;
 }
 
@@ -17,6 +18,7 @@ const UserForm = ({
   handleSubmit,
   user = null,
   buttonText = "Añadir",
+  headerText = "Añadir Usuario",
   children,
 }: Props) => {
   const {
@@ -44,7 +46,7 @@ const UserForm = ({
           <Grid gap={5} w="100%">
             <GridItem colSpan={12}>
               <Text fontSize="2xl" fontWeight="bold">
-                Usuarios
+                {headerText}
               </Text>
             </GridItem>
             <GridItem colSpan={[12, 12, 6, 6]}>

@@ -59,6 +59,7 @@ const UserPage = ({ initialUser }: UsersPageProps) => {
       <UserForm
         handleSubmit={handleSubmit}
         buttonText="Actualizar"
+        headerText="Editar usuario"
         user={initialUser}
       >
         <Button variant={"ghost"} bg="red.200" onClick={handleDelete}>

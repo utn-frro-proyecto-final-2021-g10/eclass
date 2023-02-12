@@ -23,7 +23,6 @@ import {
 } from "@chakra-ui/icons";
 import { courseContext } from "../../layouts/course-layout";
 import { useCurrentUser } from "../../hooks/useCurrentUser";
-import user from "../../pages/api/v1/user";
 
 const Tab = ({ displayName, url }: { displayName: string; url: string }) => {
   const router = useRouter();
@@ -112,12 +111,12 @@ export const Navigation = () => {
               displayName="Participantes"
               url={`/course/${course.slug}/members`}
             />
-            {me?.role === "professor" &&
+            {me?.role === "professor" && (
               <Tab
                 displayName="Calificaciones"
                 url={`/course/${course.slug}/qualifications`}
               />
-            }
+            )}
           </Stack>
         </Box>
       )}
@@ -131,7 +130,11 @@ export const Navigation = () => {
               boxSize="6"
               variant="ghost"
             />
-            <MenuList></MenuList>
+            <MenuList>
+              <Text py={2} px={4}>
+                No tienes notificaciones nuevas
+              </Text>
+            </MenuList>
           </Menu>
           {me?.role !== "student" && (
             <Badge

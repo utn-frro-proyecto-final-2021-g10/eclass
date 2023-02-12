@@ -11,6 +11,7 @@ import {
   Tr,
   TableContainer,
   Link,
+  Badge,
 } from "@chakra-ui/react";
 import { Course } from "@prisma/client";
 import { GridContainer } from "../GridContainer";
@@ -35,6 +36,7 @@ export const Courses = ({ courses }: CoursesProps) => (
               <Table variant="striped">
                 <Thead>
                   <Tr>
+                    <Th>ID</Th>
                     <Th>Nombre</Th>
                     <Th>Acciones</Th>
                   </Tr>
@@ -43,6 +45,11 @@ export const Courses = ({ courses }: CoursesProps) => (
                   {courses &&
                     courses.map((course: any, i: number) => (
                       <Tr key={i}>
+                        <Td>
+                          <Badge colorScheme={course.settings.baseColor}>
+                            {course.enrollmentId}
+                          </Badge>
+                        </Td>
                         <Td>{course.name}</Td>
                         <Td>
                           <Link

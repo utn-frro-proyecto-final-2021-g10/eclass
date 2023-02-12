@@ -138,6 +138,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             },
           },
         },
+        settings: true,
       },
     });
 
