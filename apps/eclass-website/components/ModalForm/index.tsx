@@ -1,6 +1,5 @@
 import {
   Button,
-  IconButton,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -9,7 +8,6 @@ import {
   ModalBody,
 } from "@chakra-ui/react";
 
-import { AddIcon } from "@chakra-ui/icons";
 interface Props {
   header: string;
   submit: string;
@@ -33,7 +31,7 @@ export const ModalForm = ({
     <>
       <Modal isOpen={isOpen} onClose={onClose} size={size}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent mx={6}>
           <form onSubmit={onSubmit}>
             <ModalHeader>{header}</ModalHeader>
             <ModalBody>{children}</ModalBody>
