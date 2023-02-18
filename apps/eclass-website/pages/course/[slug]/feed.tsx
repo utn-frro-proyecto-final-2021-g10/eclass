@@ -4,7 +4,6 @@ import { useCurrentCourse } from "../../../hooks/useCurrentCourse";
 import { GridItem } from "@chakra-ui/react";
 import { Publication } from "../../../components/pages/course/feed/Publication";
 import { Message } from "@prisma/client";
-import { Loader } from "../../../components/Loader";
 import { NewPublication } from "../../../components/pages/course/feed/NewPublication";
 
 const Feed: NextPage<{ courseId: string }> = ({ courseId }) => {

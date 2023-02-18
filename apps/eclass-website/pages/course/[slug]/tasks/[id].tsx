@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, GridItem, Input, NumberInput, NumberInputField, Radio, RadioGroup, Text, useToast } from "@chakra-ui/react";
+import {  GridItem, Text, useToast } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import ProfessorCorrectionForm from "../../../../components/Forms/ProfessorCorrectionForm";
@@ -11,30 +11,30 @@ import { getFormValues } from "../../../../utils/getFormValues";
 import toLocaleISOString from "../../../../utils/toLocaleISOString";
 
 interface Props {
-  initialTask: any
-  courseSlug: string
+  initialTask: any;
+  courseSlug: string;
 }
 const Task = ({ initialTask, courseSlug }: Props) => {
-  useCurrentCourse(courseSlug)
-  const me = useCurrentUser()
-  const toast = useToast()
-  const [task, setTask] = useState(initialTask)
-  const [myAnswer, setMyAnswer] = useState<any>(null)
+  useCurrentCourse(courseSlug);
+  const me = useCurrentUser();
+  const toast = useToast();
+  const [task, setTask] = useState(initialTask);
+  const [myAnswer, setMyAnswer] = useState<any>(null);
 
   const handleAnswer = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const values = eventToFormValues(e)
+    e.preventDefault();
+    const values = eventToFormValues(e);
 
-    const fields = new Array()
+    const fields = new Array();
     for (const [key, value] of Object.entries(values)) {
-      let field = myAnswer ?
-        myAnswer.fields.filter((field: any) => field.id === key)[0] :
-        task.fields.filter((field: any) => field.id === key)[0]
+      let field = myAnswer
+        ? myAnswer.fields.filter((field: any) => field.id === key)[0]
+        : task.fields.filter((field: any) => field.id === key)[0];
 
-      field.studentAnswer = value
-      field.dateSubmitted = new Date()
-      delete field.id
-      fields.push(field)
+      field.studentAnswer = value;
+      field.dateSubmitted = new Date();
+      delete field.id;
+      fields.push(field);
     }
     const insert = {
       answers: {
@@ -42,39 +42,39 @@ const Task = ({ initialTask, courseSlug }: Props) => {
           where: {
             userId_taskId: {
               taskId: task.id,
-              userId: me?.id
-            }
+              userId: me?.id,
+            },
           },
           create: {
             fields: {
               createMany: {
-                data: fields
-              }
+                data: fields,
+              },
             },
             dateSubmitted: new Date(),
             user: {
               connect: {
-                id: me?.id
-              }
-            }
+                id: me?.id,
+              },
+            },
           },
           update: {
             fields: {
               deleteMany: {},
               createMany: {
-                data: fields
-              }
+                data: fields,
+              },
             },
             dateSubmitted: new Date(),
             user: {
               connect: {
-                id: me?.id
-              }
-            }
+                id: me?.id,
+              },
+            },
           },
-        }
-      }
-    }
+        },
+      },
+    };
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(insert),
@@ -84,10 +84,10 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: 'Updated',
-        description: 'Task answered sucesfully',
-        status: "success"
-      })
+        title: "Updated",
+        description: "Task answered sucesfully",
+        status: "success",
+      });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
         headers: {
@@ -95,24 +95,25 @@ const Task = ({ initialTask, courseSlug }: Props) => {
         },
       });
       if (taskResult.status === 200) {
-        const data = await taskResult.json()
-        setTask(data.task)
+        const data = await taskResult.json();
+        setTask(data.task);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
+        title: "Error",
         description: JSON.stringify(await result.json(), null, 2),
-        status: "error"
-      })
+        status: "error",
+      });
     }
-  }
+  };
   const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const values = eventToFormValues(e)
-    const answer = task.answers.filter((answer: any) => answer.userId == values.studentId)[0]
+    e.preventDefault();
+    const values = eventToFormValues(e);
+    const answer = task.answers.filter(
+      (answer: any) => answer.userId == values.studentId
+    )[0];
     answer.fields.forEach((field: any) => {
-      field.qualification = parseInt(values[`${field.id}-qualification`])
+      field.qualification = parseInt(values[`${field.id}-qualification`]);
     });
 
     const update = {
@@ -121,20 +122,20 @@ const Task = ({ initialTask, courseSlug }: Props) => {
           where: {
             userId_taskId: {
               taskId: task.id,
-              userId: values.studentId
-            }
+              userId: values.studentId,
+            },
           },
           data: {
             fields: {
               deleteMany: {},
               createMany: {
-                data: answer.fields
-              }
+                data: answer.fields,
+              },
             },
           },
-        }
-      }
-    }
+        },
+      },
+    };
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(update),
@@ -144,10 +145,10 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: 'Updated',
-        description: 'Task answered sucesfully',
-        status: "success"
-      })
+        title: "Updated",
+        description: "Task answered sucesfully",
+        status: "success",
+      });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
         headers: {
@@ -155,30 +156,32 @@ const Task = ({ initialTask, courseSlug }: Props) => {
         },
       });
       if (taskResult.status === 200) {
-        const data = await taskResult.json()
-        setTask(data.task)
+        const data = await taskResult.json();
+        setTask(data.task);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
+        title: "Error",
         description: JSON.stringify(await result.json(), null, 2),
-        status: "error"
-      })
+        status: "error",
+      });
     }
-  }
+  };
   const handleAutoCorrection = async (e: any, formName: string) => {
-    e.preventDefault()
-    const form = document.forms.namedItem(formName)
-    if (!form) return
+    e.preventDefault();
+    const form = document.forms.namedItem(formName);
+    if (!form) return;
     const data = new FormData(form);
     const values = getFormValues(data);
-    const answer = task.answers.filter((answer: any) => answer.userId == values.studentId)[0]
+    const answer = task.answers.filter(
+      (answer: any) => answer.userId == values.studentId
+    )[0];
     answer.fields.forEach((field: any) => {
       if (field.type !== "text") {
         console.log(field);
 
-        field.qualification = field.studentAnswer === field.correctAnswer ? field.value : 0
+        field.qualification =
+          field.studentAnswer === field.correctAnswer ? field.value : 0;
       }
     });
     const update = {
@@ -187,21 +190,20 @@ const Task = ({ initialTask, courseSlug }: Props) => {
           where: {
             userId_taskId: {
               taskId: task.id,
-              userId: values.studentId
-            }
+              userId: values.studentId,
+            },
           },
           data: {
             fields: {
-              deleteMany: {
-              },
+              deleteMany: {},
               createMany: {
-                data: answer.fields
-              }
+                data: answer.fields,
+              },
             },
           },
-        }
-      }
-    }
+        },
+      },
+    };
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(update),
@@ -211,10 +213,10 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: 'Updated',
-        description: 'Task answered sucesfully',
-        status: "success"
-      })
+        title: "Updated",
+        description: "Task answered sucesfully",
+        status: "success",
+      });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
         headers: {
@@ -222,56 +224,58 @@ const Task = ({ initialTask, courseSlug }: Props) => {
         },
       });
       if (taskResult.status === 200) {
-        const data = await taskResult.json()
-        console.log("🚀 ~ file: [id].tsx ~ line 229 ~ handleAutoCorrection ~ data", data)
-        setTask(data.task)
+        const data = await taskResult.json();
+        console.log(
+          "🚀 ~ file: [id].tsx ~ line 229 ~ handleAutoCorrection ~ data",
+          data
+        );
+        setTask(data.task);
       }
-    }
-    else {
+    } else {
       toast({
-        title: 'Error',
+        title: "Error",
         description: JSON.stringify(await result.json(), null, 2),
-        status: "error"
-      })
+        status: "error",
+      });
     }
-  }
+  };
 
   useEffect(() => {
-    if (!task || !task.answers) return
-    const myAnswer = task.answers.filter((answer: any) => answer.userId == me?.id)[0]
+    if (!task || !task.answers) return;
+    const myAnswer = task.answers.filter(
+      (answer: any) => answer.userId == me?.id
+    )[0];
 
-    setMyAnswer(myAnswer)
-  }, [me?.id, task])
-
+    setMyAnswer(myAnswer);
+  }, [me?.id, task]);
 
   if (me?.role === "student") {
-    <pre>{JSON.stringify(task, null, 2)}</pre>
+    <pre>{JSON.stringify(task, null, 2)}</pre>;
     return (
       <StudentTaskFormWrapper
         handleSubmit={handleAnswer}
         task={task}
         myAnswer={myAnswer}
       />
-    )
+    );
   }
 
   if (me?.role === "professor") {
     return (
       <GridItem colSpan={12}>
-
-        {
-          task.answers.length > 0 ?
-            <ProfessorCorrectionForm
-              handleSubmit={handleCorrection}
-              handleAutoCorrection={handleAutoCorrection}
-              task={task} />
-            :
-            <Text>No hay respuestas...</Text>
-        }
+        {task.answers.length > 0 ? (
+          <ProfessorCorrectionForm
+            handleSubmit={handleCorrection}
+            handleAutoCorrection={handleAutoCorrection}
+            task={task}
+          />
+        ) : (
+          <Text>No hay respuestas...</Text>
+        )}
       </GridItem>
-    )
+    );
   }
-  return <p>error</p>
+  return <p>error</p>;
 };
 
 Task.getLayout = function getLayout(page: NextPage) {
@@ -279,11 +283,11 @@ Task.getLayout = function getLayout(page: NextPage) {
 };
 
 export const getServerSideProps = async (context: any) => {
-  const taskId = context.params.id
-  const courseSlug = context.params.slug
+  const taskId = context.params.id;
+  const courseSlug = context.params.slug;
   let task: any = await prisma.task.findUnique({
     where: {
-      id: taskId
+      id: taskId,
     },
     include: {
       fields: {
@@ -294,7 +298,7 @@ export const getServerSideProps = async (context: any) => {
           correctAnswer: true,
           value: true,
           id: true,
-        }
+        },
       },
       answers: {
         select: {
@@ -307,8 +311,8 @@ export const getServerSideProps = async (context: any) => {
               correctAnswer: true,
               value: true,
               id: true,
-              qualification: true
-            }
+              qualification: true,
+            },
           },
           taskId: true,
           userId: true,
@@ -316,30 +320,33 @@ export const getServerSideProps = async (context: any) => {
             select: {
               firstName: true,
               lastName: true,
-            }
-          }
-        }
-      }
-    }
+            },
+          },
+        },
+      },
+    },
   });
   console.log(task);
 
   if (!task) {
     return {
       redirect: {
-        destination: '/api/auth/signin',
+        destination: "/api/auth/signin",
         permanent: false,
       },
-    }
+    };
   }
-  task.dateStart = task.dateStart !== null ? toLocaleISOString(task.dateStart).substring(0, 16) : null;
+  task.dateStart =
+    task.dateStart !== null
+      ? toLocaleISOString(task.dateStart).substring(0, 16)
+      : null;
   task.dateEnd = toLocaleISOString(task.dateEnd).substring(0, 16) || null;
 
   return {
     props: {
       initialTask: task,
-      courseSlug
-    }
+      courseSlug,
+    },
   };
 };
 
