@@ -1,4 +1,5 @@
-import { Text, VStack, HStack, Divider, IconButton } from "@chakra-ui/react";
+import Link from "next/link";
+import { Text, VStack, HStack, Divider, Button } from "@chakra-ui/react";
 import { Task, Course } from "@prisma/client";
 import { ArrowForwardIcon, EditIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
@@ -11,7 +12,7 @@ export const TasksList = ({
   tasks: Task[];
   course: Course;
 }) => {
-  const user = useCurrentUser()
+  const user = useCurrentUser();
   return (
     <Card>
       <CardHeader>
@@ -30,22 +31,41 @@ export const TasksList = ({
                   </Text>
                   <Text fontSize="sm">{task.description}</Text>
                 </VStack>
-                {
-                  user?.role === "professor" &&
-                  <IconButton
-                    aria-label="Ver tarea"
-                    as="a"
-                    icon={<EditIcon />}
-                    href={`/course/${course.slug}/tasks/edit/${task.id}`}
-                  />
 
-                }
-                <IconButton
-                  aria-label="Ver tarea"
-                  as="a"
-                  icon={<ArrowForwardIcon />}
-                  href={`/course/${course.slug}/tasks/${task.id}`}
-                />
+                <HStack>
+                  {user?.role === "professor" && (
+                    <Link
+                      href={`/course/${course.slug}/tasks/edit/${task.id}`}
+                      passHref
+                    >
+                      <Button
+                        as="a"
+                        outline="none"
+                        size="sm"
+                        variant="outline"
+                        leftIcon={<EditIcon />}
+                        colorScheme="yellow"
+                      >
+                        Editar
+                      </Button>
+                    </Link>
+                  )}
+                  <Link
+                    href={`/course/${course.slug}/tasks/${task.id}`}
+                    passHref
+                  >
+                    <Button
+                      as="a"
+                      outline="none"
+                      size="sm"
+                      variant="solid"
+                      colorScheme="green"
+                      leftIcon={<ArrowForwardIcon />}
+                    >
+                      Ver tarea
+                    </Button>
+                  </Link>
+                </HStack>
               </HStack>
             ))
           ) : (

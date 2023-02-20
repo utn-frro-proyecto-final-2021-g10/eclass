@@ -138,6 +138,24 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
             },
           },
         },
+        tasks: {
+          where: {
+            dateEnd: {
+              gt: new Date(),
+            },
+            OR: [
+              {
+                dateStart: {
+                  lt: new Date(),
+                },
+              },
+              {
+                dateStart: null,
+              },
+            ],
+          },
+        },
+
         settings: true,
       },
     });

@@ -1,66 +1,80 @@
-import { ArrowDownIcon, ArrowUpIcon } from "@chakra-ui/icons";
-import {
-  Avatar,
-  Button,
-  FormControl,
-  FormLabel,
-  Grid,
-  HStack,
-  Input,
-  Text,
-  useToast,
-} from "@chakra-ui/react";
-import { useRouter } from "next/router";
-import { useState } from "react";
+import { Button, HStack, useDisclosure, useToast } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { CreateTask } from "./CreateTask";
+import { Course } from "@prisma/client";
 import { eventToFormValues } from "../../../../../utils/eventToFormValues";
-import { Card, CardBody } from "../../../../Card";
+import { useQueryClient } from "react-query";
 
 interface Props {
-  handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  course: Course;
 }
-export const TaskForm = ({ handleSubmit }: Props) => {
-  const [showForm, setShowForm] = useState(false);
-  const today = new Date();
-  let tomorrow = new Date();
-  tomorrow.setDate(today.getDate() + 1);
+
+export const TaskForm = ({ course }: Props) => {
+  const { onClose, onOpen, isOpen } = useDisclosure();
+  const queryClient = useQueryClient();
+  const toast = useToast();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const values = eventToFormValues(e);
+
+    const task = {
+      name: values.name,
+      description: values.description,
+      dateStart: new Date(values.dateStart) || null,
+      dateEnd: new Date(values.dateEnd),
+      course: {
+        connect: {
+          id: course.id,
+        },
+      },
+    };
+
+    const result = await fetch(`/api/v1/task`, {
+      method: "POST",
+      body: JSON.stringify(task),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (result.status === 200) {
+      toast({
+        title: "Creada",
+        description: "La tarea ha sido creada con éxito",
+        status: "success",
+        isClosable: true,
+      });
+
+      onClose();
+      queryClient.invalidateQueries("current-course");
+    } else {
+      toast({
+        title: "Error",
+        description: "Error al crear la tarea",
+        status: "error",
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
-      <Grid justify="center" width="100%" height="auto">
-        <Card>
-          <CardBody>
-            <HStack align="center" justify="space-between">
-              <HStack>
-                <Avatar size="sm" />
-                <Text fontSize="sm">Crear una tarea!</Text>
-              </HStack>
-              <Button onClick={() => setShowForm(!showForm)}>
-                {showForm ? <ArrowUpIcon /> : <ArrowDownIcon />}
-              </Button>
-            </HStack>
-
-            {showForm && (
-              <form onSubmit={handleSubmit}>
-                <FormControl>
-                  <FormLabel>Nombre: </FormLabel>
-                  <Input name="name"></Input>
-                  <FormLabel>Descripción: </FormLabel>
-                  <Input name="description"></Input>
-                  <FormLabel>Fecha de inicio: </FormLabel>
-                  <Input name="dateStart" type={"date"}></Input>
-                  <FormLabel>Fecha de fin: </FormLabel>
-                  <Input
-                    name="dateEnd"
-                    type={"date"}
-                    defaultValue={tomorrow.toISOString().substring(0, 10)}
-                  ></Input>
-                  <Button type="submit">Crear</Button>
-                </FormControl>
-              </form>
-            )}
-          </CardBody>
-        </Card>
-      </Grid>
+      <HStack spacing={4}>
+        <Button
+          onClick={onOpen}
+          leftIcon={<AddIcon />}
+          colorScheme="green"
+          size="sm"
+        >
+          Añadir nueva tarea
+        </Button>
+      </HStack>
+      <CreateTask
+        isOpen={isOpen}
+        onClose={onClose}
+        handleSubmit={handleSubmit}
+      />
     </>
   );
 };
