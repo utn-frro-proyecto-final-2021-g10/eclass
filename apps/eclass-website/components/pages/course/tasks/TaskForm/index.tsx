@@ -1,6 +1,6 @@
 import { Button, HStack, useDisclosure, useToast } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import { CreateTask } from "./CreateTask";
+import { CreateAndEditTask } from "../CreateAndEditTask";
 import { Course } from "@prisma/client";
 import { eventToFormValues } from "../../../../../utils/eventToFormValues";
 import { useQueryClient } from "react-query";
@@ -70,7 +70,7 @@ export const TaskForm = ({ course }: Props) => {
           Añadir nueva tarea
         </Button>
       </HStack>
-      <CreateTask
+      <CreateAndEditTask
         isOpen={isOpen}
         onClose={onClose}
         handleSubmit={handleSubmit}

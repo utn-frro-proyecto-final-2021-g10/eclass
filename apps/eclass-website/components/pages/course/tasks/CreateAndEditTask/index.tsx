@@ -10,7 +10,7 @@ interface Props {
   taskToEdit?: Task | null;
 }
 
-export const CreateTask = ({
+export const CreateAndEditTask = ({
   isOpen,
   onClose,
   handleSubmit,
@@ -47,7 +47,8 @@ export const CreateTask = ({
           colSpan={6}
           type="date"
           defaultValue={
-            taskToEdit?.dateStart?.toISOString().substring(0, 10) ||
+            // @ts-ignore
+            taskToEdit?.dateStart?.substring(0, 10) ||
             new Date().toISOString().substring(0, 10)
           }
         />
@@ -58,7 +59,8 @@ export const CreateTask = ({
           colSpan={6}
           type="date"
           defaultValue={
-            taskToEdit?.dateEnd?.toISOString().substring(0, 10) ||
+            // @ts-ignore
+            taskToEdit?.dateEnd?.substring(0, 10) ||
             new Date(new Date().setDate(new Date().getDate() + 1))
               .toISOString()
               .substring(0, 10)

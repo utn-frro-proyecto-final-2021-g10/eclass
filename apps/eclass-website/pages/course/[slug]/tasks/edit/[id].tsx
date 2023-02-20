@@ -1,28 +1,18 @@
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  Button,
-  useToast,
-  GridItem,
-} from "@chakra-ui/react";
+import { useToast, GridItem, Button, Divider } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
-import TaskFieldForm from "../../../../../components/Forms/TaskFieldForm";
-import { useCurrentCourse } from "../../../../../hooks/useCurrentCourse";
 import { CourseLayout } from "../../../../../layouts/course-layout";
 import { eventToFormValues } from "../../../../../utils/eventToFormValues";
 import toLocaleISOString from "../../../../../utils/toLocaleISOString";
+import { AddIcon } from "@chakra-ui/icons";
+import TaskFieldForm from "../../../../../components/Forms/TaskFieldForm";
 
 interface Props {
   initialTask: any;
   courseId: string;
 }
 
-const TaskEditPage = ({ initialTask, courseId }: Props) => {
-
-  const courseData = useCurrentCourse(courseId);
-
+const TaskEditPage = ({ initialTask }: Props) => {
   const toast = useToast();
   const [task, setTask] = useState(initialTask);
 
@@ -202,89 +192,37 @@ const TaskEditPage = ({ initialTask, courseId }: Props) => {
       });
     }
   };
-  const handleTaskSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const values = eventToFormValues(e);
-    const updatedTask = {
-      name: values.name,
-      description: values.description,
-      dateStart: new Date(values.dateStart) || null,
-      dateEnd: new Date(values.dateEnd),
-    };
-    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
-      method: "PUT",
-      body: JSON.stringify(updatedTask),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (result.status === 200) {
-      toast({
-        title: "Actualizada",
-        description: "La tarea se ha actualizado correctamente",
-        status: "success",
-      });
-
-      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (taskResult.status === 200) {
-        const data = await taskResult.json();
-        setTask(data.task);
-      }
-    } else {
-      toast({
-        title: "Error",
-        description: JSON.stringify(await result.json(), null, 2),
-        status: "error",
-      });
-    }
-  };
 
   return (
-    <GridItem colSpan={12}>
+    <>
+      <GridItem colSpan={12}>
+        <Button
+          leftIcon={<AddIcon />}
+          colorScheme="green"
+          size="sm"
+          variant="outline"
+        >
+          Agregar campo
+        </Button>
+      </GridItem>
+      <GridItem colSpan={12}>
+        <Divider />
+      </GridItem>
 
-      <form onSubmit={handleTaskSubmit}>
-        <FormControl>
-          <FormLabel>Name: </FormLabel>
-          <Input name="name" defaultValue={initialTask.name}></Input>
-          <FormLabel>Description: </FormLabel>
-          <Input
-            name="description"
-            defaultValue={initialTask.description}
-          ></Input>
-          <FormLabel>Date Start: </FormLabel>
-          <Input
-            name="dateStart"
-            type={"datetime-local"}
-            defaultValue={initialTask.dateStart || ""}
-          ></Input>
-          <FormLabel>Date End: </FormLabel>
-          <Input
-            name="dateEnd"
-            type={"datetime-local"}
-            defaultValue={initialTask?.dateEnd || ""}
-          ></Input>
-          <Button type="submit">Update</Button>
-        </FormControl>
-      </form>
-      {task.fields.length > 0 &&
-        task.fields.map((field: any, index: number) => (
-          <TaskFieldForm
-            buttonText="Update"
-            handleSubmit={handleUpdateField}
-            handleDelete={(e: any) => handleDelete(e, field.id)}
-            field={field}
-            key={index}
-          />
-        ))}
-      <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
-    </GridItem>
-
+      <GridItem colSpan={12}>
+        {task.fields.length > 0 &&
+          task.fields.map((field: any, index: number) => (
+            <TaskFieldForm
+              buttonText="Update"
+              handleSubmit={handleUpdateField}
+              handleDelete={(e: any) => handleDelete(e, field.id)}
+              field={field}
+              key={index}
+            />
+          ))}
+        <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
+      </GridItem>
+    </>
   );
 };
 
@@ -328,7 +266,7 @@ export const getServerSideProps = async (context: any) => {
   return {
     props: {
       initialTask: task,
-      courseId: context.params.slug
+      courseId: context.params.slug,
     },
   };
 };
