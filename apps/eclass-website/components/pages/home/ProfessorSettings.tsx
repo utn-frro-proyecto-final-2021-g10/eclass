@@ -1,4 +1,6 @@
-import { Button, HStack, Divider, Link } from "@chakra-ui/react";
+import React from "react";
+import Link from "next/link";
+import { Button, HStack, Divider } from "@chakra-ui/react";
 import { AddIcon, AttachmentIcon } from "@chakra-ui/icons";
 import { GridContainer } from "../../GridContainer";
 import { GridItem } from "@chakra-ui/react";
@@ -86,8 +88,10 @@ export const ProfessorSettings = () => {
               Crear un curso
             </Button>
 
-            <Link href="/material">
+            <Link href="/material" passHref>
               <Button
+                as="a"
+                outline="none"
                 leftIcon={<AttachmentIcon />}
                 colorScheme="blue"
                 variant="outline"
