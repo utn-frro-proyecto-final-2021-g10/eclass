@@ -1,4 +1,4 @@
-import {  GridItem, Text, useToast } from "@chakra-ui/react";
+import { GridItem, Text, useToast } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import ProfessorCorrectionForm from "../../../../components/Forms/ProfessorCorrectionForm";
@@ -270,7 +270,9 @@ const Task = ({ initialTask, courseSlug }: Props) => {
             task={task}
           />
         ) : (
-          <Text>No hay respuestas...</Text>
+          <Text color={"gray.500"}>
+            Hasta el momento, ningún estudiante ha respondido esta tarea.
+          </Text>
         )}
       </GridItem>
     );

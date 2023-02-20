@@ -26,7 +26,7 @@ import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 const Tab = ({ displayName, url }: { displayName: string; url: string }) => {
   const router = useRouter();
-  const currentPath = router.asPath === url;
+  const currentPath = router.asPath.startsWith(url);
 
   return (
     <Link href={url} passHref>
