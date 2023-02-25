@@ -9,7 +9,12 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Task, Course } from "@prisma/client";
-import { ArrowForwardIcon, EditIcon } from "@chakra-ui/icons";
+import {
+  ArrowForwardIcon,
+  DeleteIcon,
+  EditIcon,
+  QuestionIcon,
+} from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
 import { useCurrentUser } from "../../../../../hooks/useCurrentUser";
 import { CreateAndEditTask } from "../CreateAndEditTask";
@@ -24,8 +29,6 @@ export const TasksList = ({
   tasks: Task[];
   course: Course;
 }) => {
-  console.log(tasks[0]);
-  
   const user = useCurrentUser();
   const { onClose, onOpen, isOpen } = useDisclosure();
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
@@ -68,6 +71,30 @@ export const TasksList = ({
     }
   };
 
+  const handleRemoveTask = async (taskToEdit: Task) => {
+    console.log(taskToEdit);
+    
+    const result = await fetch(`/api/v1/task/${taskToEdit?.id}`, {
+      method: "DELETE",
+    });
+
+    const success = result.status === 200;
+
+    toast({
+      title: success ? "Exito" : "Error",
+      description: success
+        ? "la tarea se ha eliminado correctamente"
+        : "Error al eliminar la tarea",
+      status: success ? "success" : "error",
+      isClosable: true,
+    });
+
+    if (success) {
+      queryClient.invalidateQueries("current-course");
+      onClose();
+    }
+  };
+
   const onEditTask = (course: Task) => {
     setTaskToEdit(course);
     onOpen();
@@ -99,11 +126,20 @@ export const TasksList = ({
                         <Button
                           size="sm"
                           variant="outline"
+                          leftIcon={<DeleteIcon />}
+                          colorScheme="red"
+                          onClick={() => handleRemoveTask(task)}
+                        >
+                          Eliminar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
                           leftIcon={<EditIcon />}
                           colorScheme="blue"
                           onClick={() => onEditTask(task)}
                         >
-                          Editar tarea
+                          Editar
                         </Button>
                         <Link
                           href={`/course/${course.slug}/tasks/edit/${task.id}`}
@@ -114,7 +150,7 @@ export const TasksList = ({
                             outline="none"
                             size="sm"
                             variant="outline"
-                            leftIcon={<EditIcon />}
+                            leftIcon={<QuestionIcon />}
                             colorScheme="yellow"
                           >
                             Editar preguntas y respuestas
@@ -134,7 +170,7 @@ export const TasksList = ({
                         colorScheme="green"
                         leftIcon={<ArrowForwardIcon />}
                       >
-                        Ver tarea
+                        Ver respuestas
                       </Button>
                     </Link>
                   </HStack>

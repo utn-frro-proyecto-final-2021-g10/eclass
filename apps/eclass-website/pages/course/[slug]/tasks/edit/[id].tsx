@@ -1,11 +1,21 @@
-import { useToast, GridItem, Button, Divider } from "@chakra-ui/react";
+import {
+  useToast,
+  GridItem,
+  Button,
+  Divider,
+  VStack,
+  HStack,
+  Text,
+  Badge,
+} from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useState } from "react";
 import { CourseLayout } from "../../../../../layouts/course-layout";
 import { eventToFormValues } from "../../../../../utils/eventToFormValues";
 import toLocaleISOString from "../../../../../utils/toLocaleISOString";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
 import TaskFieldForm from "../../../../../components/Forms/TaskFieldForm";
+import { Card, CardBody } from "../../../../../components/Card";
 
 interface Props {
   initialTask: any;
@@ -196,32 +206,65 @@ const TaskEditPage = ({ initialTask }: Props) => {
   return (
     <>
       <GridItem colSpan={12}>
-        <Button
-          leftIcon={<AddIcon />}
-          colorScheme="green"
-          size="sm"
-          variant="outline"
-        >
-          Agregar campo
-        </Button>
+        <HStack spacing="4">
+          <Text fontSize="2xl" fontWeight="bold" color={"gray.00"}>
+            {task.name}
+          </Text>
+          <Button
+            leftIcon={<AddIcon />}
+            colorScheme="green"
+            size="sm"
+            variant="outline"
+          >
+            Agregar campo
+          </Button>
+        </HStack>
       </GridItem>
       <GridItem colSpan={12}>
         <Divider />
       </GridItem>
-
-      <GridItem colSpan={12}>
-        {task.fields.length > 0 &&
-          task.fields.map((field: any, index: number) => (
-            <TaskFieldForm
-              buttonText="Update"
-              handleSubmit={handleUpdateField}
-              handleDelete={(e: any) => handleDelete(e, field.id)}
-              field={field}
-              key={index}
-            />
-          ))}
-        <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
-      </GridItem>
+      {task.fields.length > 0 && (
+        <GridItem colSpan={12}>
+          <Card>
+            <CardBody>
+              <VStack align="left" spacing={3} divider={<Divider />}>
+                {task.fields.map((field: any, index: number) => (
+                  <HStack key={index} justify="space-between" w="100%">
+                    <VStack align="left">
+                      <Text fontWeight="bold" fontSize="md">
+                        {field.question}
+                      </Text>
+                      <Badge colorScheme="green" width="fit-content">
+                        {field.type}
+                      </Badge>
+                    </VStack>
+                    <HStack spacing="4">
+                      <Button
+                        colorScheme="red"
+                        size="sm"
+                        variant="outline"
+                        leftIcon={<DeleteIcon />}
+                      >
+                        Eliminar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        colorScheme="blue"
+                        target="_blank"
+                        size="sm"
+                        leftIcon={<EditIcon />}
+                      >
+                        Editar
+                      </Button>
+                    </HStack>
+                  </HStack>
+                ))}
+              </VStack>
+            </CardBody>
+          </Card>
+          <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
+        </GridItem>
+      )}
     </>
   );
 };

@@ -126,21 +126,6 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
     if (req.user.role === Role.student)
       return res.status(401).json({ success: false, message: "Unauthorized" });
     try {
-      const task = await prisma.task.findUnique({
-        where: {
-          id: req.query.id.toString(),
-        },
-      });
-
-      if (task) {
-        if (!(await userOwnsCourse(req.user.id, task.courseId))) {
-          return res.status(401).json({
-            success: false,
-            message: "El usuario no es dueño de este curso",
-          });
-        }
-      }
-
       const deletedTask = await prisma.task.delete({
         where: {
           id: req.query.id.toString(),
