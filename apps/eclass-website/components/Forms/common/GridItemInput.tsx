@@ -28,6 +28,7 @@ interface GridItemInputProps {
   name: string;
   type?: string;
   options?: string[] | { value: string; label: string }[];
+  placeholder?: string;
   isRequired?: boolean;
   mb?: number;
   size?: string;
@@ -39,6 +40,7 @@ export const GridItemInput = ({
   name,
   type,
   options,
+  placeholder,
   isRequired = true,
   size,
   ...props
@@ -52,6 +54,7 @@ export const GridItemInput = ({
           name={name}
           type={type}
           size={size}
+          placeholder={placeholder}
         />
       ) : (
         <Select

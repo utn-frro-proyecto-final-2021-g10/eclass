@@ -7,12 +7,20 @@ import {
   Button,
   useDisclosure,
   useToast,
+  Badge,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  IconButton,
 } from "@chakra-ui/react";
 import { Task, Course } from "@prisma/client";
 import {
   ArrowForwardIcon,
   DeleteIcon,
   EditIcon,
+  InfoIcon,
   QuestionIcon,
 } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
@@ -72,8 +80,6 @@ export const TasksList = ({
   };
 
   const handleRemoveTask = async (taskToEdit: Task) => {
-    console.log(taskToEdit);
-    
     const result = await fetch(`/api/v1/task/${taskToEdit?.id}`, {
       method: "DELETE",
     });
@@ -95,10 +101,12 @@ export const TasksList = ({
     }
   };
 
-  const onEditTask = (course: Task) => {
-    setTaskToEdit(course);
+  const onEditTask = (task: Task) => {
+    setTaskToEdit(task);
     onOpen();
   };
+
+  console.log(tasks);
 
   return (
     <>
@@ -113,10 +121,46 @@ export const TasksList = ({
             {tasks?.length > 0 ? (
               tasks.map((task, i) => (
                 <HStack key={i} justify="space-between">
-                  <VStack align="left" spacing="0">
-                    <Text fontWeight="bold" fontSize="md">
-                      {task.name}
-                    </Text>
+                  <VStack align="left">
+                    <HStack>
+                      <Text fontWeight="bold" fontSize="md">
+                        {task.name}
+                      </Text>
+                      <Popover>
+                        <PopoverTrigger>
+                          <IconButton
+                            aria-label="Mas info"
+                            icon={<InfoIcon />}
+                            rounded="full"
+                            size="xs"
+                            variant="ghost"
+                          />
+                        </PopoverTrigger>
+                        <PopoverContent w="fit-content">
+                          <PopoverHeader fontWeight="semibold">
+                            Datos de la tarea
+                          </PopoverHeader>
+                          <PopoverBody>
+                            <VStack align="left">
+                              <Text fontSize="sm">
+                                Fecha de inicio:{" "}
+                                <Badge colorScheme="green">
+                                  {new Date(
+                                    task.dateStart
+                                  ).toLocaleDateString()}
+                                </Badge>
+                              </Text>
+                              <Text fontSize="sm">
+                                Fecha de entrega:{" "}
+                                <Badge colorScheme="red">
+                                  {new Date(task.dateEnd).toLocaleDateString()}
+                                </Badge>
+                              </Text>
+                            </VStack>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </HStack>
                     <Text fontSize="sm">{task.description}</Text>
                   </VStack>
 
@@ -182,7 +226,6 @@ export const TasksList = ({
           </VStack>
         </CardBody>
       </Card>
-      {console.log(taskToEdit)}
       <CreateAndEditTask
         isOpen={isOpen}
         onClose={onClose}

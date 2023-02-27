@@ -3,9 +3,9 @@ import {
   GridItem,
   Button,
   Divider,
-  VStack,
   HStack,
   Text,
+  useDisclosure,
   Badge,
 } from "@chakra-ui/react";
 import { NextPage } from "next";
@@ -13,22 +13,101 @@ import { useState } from "react";
 import { CourseLayout } from "../../../../../layouts/course-layout";
 import { eventToFormValues } from "../../../../../utils/eventToFormValues";
 import toLocaleISOString from "../../../../../utils/toLocaleISOString";
-import { AddIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import TaskFieldForm from "../../../../../components/Forms/TaskFieldForm";
+import { AddIcon } from "@chakra-ui/icons";
 import { Card, CardBody } from "../../../../../components/Card";
+import { CreateAndEditField } from "../../../../../components/pages/course/tasks/CreateAndEditField";
+import { FieldsList } from "../../../../../components/pages/course/tasks/FieldsList";
+import { useCurrentCourse } from "../../../../../hooks/useCurrentCourse";
 
 interface Props {
   initialTask: any;
-  courseId: string;
+  courseSlug: string;
 }
 
-const TaskEditPage = ({ initialTask }: Props) => {
+const TaskEditPage = ({ initialTask, courseSlug }: Props) => {
+  useCurrentCourse(courseSlug);
   const toast = useToast();
+  const { onClose, onOpen, isOpen } = useDisclosure();
+  const {
+    onClose: onCloseField,
+    onOpen: onOpenField,
+    isOpen: isOpenField,
+  } = useDisclosure();
   const [task, setTask] = useState(initialTask);
+  const [fieldToEdit, setFieldToEdit] = useState<Field | null>(null);
 
-  const handleDelete = async (e: any, id: string) => {
+  const handleCreateField = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const values = eventToFormValues(e);
 
+    let possibleAnswers;
+
+    if (values.type === "text") possibleAnswers = null;
+    else if (values.type === "multiple-choice")
+      possibleAnswers = values.possibleAnswers;
+    else if (values.type === "truth-or-false") possibleAnswers = "v,f";
+
+    const field = {
+      type: values.type,
+      question: values.question,
+      possibleAnswers: possibleAnswers,
+      correctAnswer: values.type !== "text" ? values.correctAnswer : null,
+      value: parseInt(values.value, 10),
+    };
+
+    task.fields.push(field);
+
+    const insert = {
+      dateStart: new Date(task.dateStart),
+      dateEnd: new Date(task.dateEnd),
+      name: task.name,
+      description: task.description,
+      courseId: task.courseId,
+      fields: {
+        createMany: {
+          skipDuplicates: true,
+          data: task.fields,
+        },
+      },
+    };
+
+    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
+      method: "PUT",
+      body: JSON.stringify(insert),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (result.status === 200) {
+      toast({
+        title: "Actualizada",
+        description: "La tarea se ha actualizado correctamente",
+        status: "success",
+      });
+      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (taskResult.status === 200) {
+        const data = await taskResult.json();
+        setTask(data.task);
+
+        onClose();
+      }
+    } else {
+      toast({
+        title: "Error",
+        description: JSON.stringify(await result.json(), null, 2),
+        status: "error",
+      });
+    }
+  };
+
+  const handleDelete = async (id: string) => {
     task.fields = task.fields.filter((field: any) => field.id !== id);
 
     const insert = {
@@ -76,68 +155,7 @@ const TaskEditPage = ({ initialTask }: Props) => {
       });
     }
   };
-  const handleCreateField = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const values = eventToFormValues(e);
 
-    let possibleAnswers;
-    if (values.type === "text") possibleAnswers = null;
-    else if (values.type === "multiple-choice")
-      possibleAnswers = values.possibleAnswers;
-    else if (values.type === "truth-or-false") possibleAnswers = "v,f";
-
-    const field = {
-      type: values.type,
-      question: values.question,
-      possibleAnswers: possibleAnswers,
-      correctAnswer: values.type !== "text" ? values.correctAnswer : null,
-      value: parseInt(values.value, 10),
-    };
-    task.fields.push(field);
-    const insert = {
-      dateStart: new Date(task.dateStart),
-      dateEnd: new Date(task.dateEnd),
-      name: task.name,
-      description: task.description,
-      courseId: task.courseId,
-      fields: {
-        createMany: {
-          skipDuplicates: true,
-          data: task.fields,
-        },
-      },
-    };
-    const result = await fetch(`/api/v1/task/${initialTask.id}`, {
-      method: "PUT",
-      body: JSON.stringify(insert),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (result.status === 200) {
-      toast({
-        title: "Actualizada",
-        description: "La tarea se ha actualizado correctamente",
-        status: "success",
-      });
-      const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (taskResult.status === 200) {
-        const data = await taskResult.json();
-        setTask(data.task);
-      }
-    } else {
-      toast({
-        title: "Error",
-        description: JSON.stringify(await result.json(), null, 2),
-        status: "error",
-      });
-    }
-  };
   const handleUpdateField = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e);
@@ -148,7 +166,8 @@ const TaskEditPage = ({ initialTask }: Props) => {
       possibleAnswers = values.possibleAnswers;
     else if (values.type === "truth-or-false") possibleAnswers = "v,f";
 
-    task.fields = task.fields.filter((field: any) => field.id !== values.id);
+    const index = task.fields.findIndex((field: any) => field.id === values.id);
+
     const field = {
       type: values.type,
       question: values.question,
@@ -156,7 +175,9 @@ const TaskEditPage = ({ initialTask }: Props) => {
       correctAnswer: values.type !== "text" ? values.correctAnswer : null,
       value: parseInt(values.value, 10),
     };
-    task.fields.push(field);
+
+    task.fields.splice(index, 1, field);
+
     const insert = {
       dateStart: new Date(task.dateStart),
       dateEnd: new Date(task.dateEnd),
@@ -171,6 +192,7 @@ const TaskEditPage = ({ initialTask }: Props) => {
         },
       },
     };
+
     const result = await fetch(`/api/v1/task/${initialTask.id}`, {
       method: "PUT",
       body: JSON.stringify(insert),
@@ -178,12 +200,14 @@ const TaskEditPage = ({ initialTask }: Props) => {
         "Content-Type": "application/json",
       },
     });
+
     if (result.status === 200) {
       toast({
         title: "Actualizada",
-        description: "La tarea se ha actualizado correctamente",
+        description: "La pregunta se ha actualizado correctamente",
         status: "success",
       });
+
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
         method: "GET",
         headers: {
@@ -193,6 +217,7 @@ const TaskEditPage = ({ initialTask }: Props) => {
       if (taskResult.status === 200) {
         const data = await taskResult.json();
         setTask(data.task);
+        onCloseField();
       }
     } else {
       toast({
@@ -203,8 +228,24 @@ const TaskEditPage = ({ initialTask }: Props) => {
     }
   };
 
+  const onEditField = (field: Field) => {
+    setFieldToEdit(field);
+    onOpenField();
+  };
+
   return (
     <>
+      <CreateAndEditField
+        isOpen={isOpen}
+        onClose={onClose}
+        handleSubmit={handleCreateField}
+      />
+      <CreateAndEditField
+        isOpen={isOpenField}
+        onClose={onCloseField}
+        handleSubmit={handleUpdateField}
+        fieldToEdit={fieldToEdit}
+      />
       <GridItem colSpan={12}>
         <HStack spacing="4">
           <Text fontSize="2xl" fontWeight="bold" color={"gray.00"}>
@@ -215,8 +256,9 @@ const TaskEditPage = ({ initialTask }: Props) => {
             colorScheme="green"
             size="sm"
             variant="outline"
+            onClick={onOpen}
           >
-            Agregar campo
+            Añadir pregunta
           </Button>
         </HStack>
       </GridItem>
@@ -224,46 +266,36 @@ const TaskEditPage = ({ initialTask }: Props) => {
         <Divider />
       </GridItem>
       {task.fields.length > 0 && (
-        <GridItem colSpan={12}>
-          <Card>
-            <CardBody>
-              <VStack align="left" spacing={3} divider={<Divider />}>
-                {task.fields.map((field: any, index: number) => (
-                  <HStack key={index} justify="space-between" w="100%">
-                    <VStack align="left">
-                      <Text fontWeight="bold" fontSize="md">
-                        {field.question}
-                      </Text>
-                      <Badge colorScheme="green" width="fit-content">
-                        {field.type}
-                      </Badge>
-                    </VStack>
-                    <HStack spacing="4">
-                      <Button
-                        colorScheme="red"
-                        size="sm"
-                        variant="outline"
-                        leftIcon={<DeleteIcon />}
-                      >
-                        Eliminar
-                      </Button>
-                      <Button
-                        variant="outline"
-                        colorScheme="blue"
-                        target="_blank"
-                        size="sm"
-                        leftIcon={<EditIcon />}
-                      >
-                        Editar
-                      </Button>
-                    </HStack>
-                  </HStack>
-                ))}
-              </VStack>
-            </CardBody>
-          </Card>
-          <TaskFieldForm buttonText="Create" handleSubmit={handleCreateField} />
-        </GridItem>
+        <>
+          <GridItem colSpan={12}>
+            <HStack spacing="6">
+              <Text>
+                Cantidad de preguntas:{" "}
+                <Badge colorScheme="cyan">{task.fields.length}</Badge>
+              </Text>
+              <Text>
+                Puntaje total:{" "}
+                <Badge colorScheme="cyan">
+                  {task.fields.reduce(
+                    (acc: number, field: any) => acc + field.value,
+                    0
+                  )}
+                </Badge>
+              </Text>
+            </HStack>
+          </GridItem>
+          <GridItem colSpan={12}>
+            <Card>
+              <CardBody>
+                <FieldsList
+                  task={task}
+                  onEdit={onEditField}
+                  onDelete={handleDelete}
+                />
+              </CardBody>
+            </Card>
+          </GridItem>
+        </>
       )}
     </>
   );
@@ -306,10 +338,12 @@ export const getServerSideProps = async (context: any) => {
       : null;
   task.dateEnd = toLocaleISOString(task.dateEnd).substring(0, 16) || null;
 
+  const courseSlug = context.params.slug;
+
   return {
     props: {
       initialTask: task,
-      courseId: context.params.slug,
+      courseSlug,
     },
   };
 };
