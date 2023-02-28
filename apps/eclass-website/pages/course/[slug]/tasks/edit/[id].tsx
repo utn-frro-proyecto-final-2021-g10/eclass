@@ -133,8 +133,8 @@ const TaskEditPage = ({ initialTask, courseSlug }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: "Borrado",
-        description: "El campo se ha borrado correctamente",
+        title: "Eliminado",
+        description: "El campo se ha eliminado correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
@@ -261,6 +261,9 @@ const TaskEditPage = ({ initialTask, courseSlug }: Props) => {
             Añadir pregunta
           </Button>
         </HStack>
+        <GridItem colSpan={12} mt={4}>
+          <Text color={"gray.700"}>{task.description}</Text>
+        </GridItem>
       </GridItem>
       <GridItem colSpan={12}>
         <Divider />

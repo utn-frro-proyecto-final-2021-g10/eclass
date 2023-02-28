@@ -21,6 +21,10 @@ export const CreateAndEditField = ({
   const [questionType, setQuestionType] = useState("text");
 
   useEffect(() => {
+    isOpen && setQuestionType("text");
+  }, [isOpen]);
+
+  useEffect(() => {
     if (fieldToEdit) {
       setQuestionType(fieldToEdit.type);
     }
@@ -57,7 +61,7 @@ export const CreateAndEditField = ({
           name="value"
           colSpan={4}
           type="number"
-          defaultValue={(fieldToEdit?.value || 0).toString()}
+          defaultValue={(fieldToEdit?.value || 1).toString()}
         />
         <GridItemInput
           size="sm"
@@ -76,8 +80,7 @@ export const CreateAndEditField = ({
             defaultValue={fieldToEdit?.possibleAnswers || ""}
           />
         )}
-        {questionType === "multiple-choice" ||
-        questionType === "truth-or-false" ? (
+        {questionType === "multiple-choice" && (
           <GridItemInput
             size="sm"
             label="Respuesta correcta"
@@ -85,7 +88,21 @@ export const CreateAndEditField = ({
             colSpan={12}
             defaultValue={fieldToEdit?.correctAnswer || ""}
           />
-        ) : null}
+        )}
+        {questionType === "truth-or-false" && (
+          <GridItemInput
+            size="sm"
+            type="select"
+            label="Respuesta correcta"
+            name="correctAnswer"
+            colSpan={12}
+            options={[
+              { value: "v", label: "Verdadero" },
+              { value: "f", label: "Falso" },
+            ]}
+            defaultValue={fieldToEdit?.correctAnswer || ""}
+          />
+        )}
         {fieldToEdit && (
           <GridItemInput
             display="none"

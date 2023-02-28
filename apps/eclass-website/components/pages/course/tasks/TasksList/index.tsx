@@ -214,7 +214,9 @@ export const TasksList = ({
                         colorScheme="green"
                         leftIcon={<ArrowForwardIcon />}
                       >
-                        Ver respuestas
+                        {user?.role === "professor"
+                          ? "Ver respuestas"
+                          : "Responder"}
                       </Button>
                     </Link>
                   </HStack>

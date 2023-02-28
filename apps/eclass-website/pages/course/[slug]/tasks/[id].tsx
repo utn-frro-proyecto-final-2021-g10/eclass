@@ -1,4 +1,4 @@
-import { GridItem, Text, useToast } from "@chakra-ui/react";
+import { GridItem, Divider, HStack, Text, useToast } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useEffect, useState } from "react";
 import ProfessorCorrectionForm from "../../../../components/Forms/ProfessorCorrectionForm";
@@ -106,6 +106,7 @@ const Task = ({ initialTask, courseSlug }: Props) => {
       });
     }
   };
+
   const handleCorrection = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const values = eventToFormValues(e);
@@ -167,6 +168,7 @@ const Task = ({ initialTask, courseSlug }: Props) => {
       });
     }
   };
+
   const handleAutoCorrection = async (e: any, formName: string) => {
     e.preventDefault();
     const form = document.forms.namedItem(formName);
@@ -249,35 +251,47 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     setMyAnswer(myAnswer);
   }, [me?.id, task]);
 
-  if (me?.role === "student") {
-    <pre>{JSON.stringify(task, null, 2)}</pre>;
-    return (
-      <StudentTaskFormWrapper
-        handleSubmit={handleAnswer}
-        task={task}
-        myAnswer={myAnswer}
-      />
-    );
-  }
-
-  if (me?.role === "professor") {
-    return (
+  return (
+    <>
       <GridItem colSpan={12}>
-        {task.answers.length > 0 ? (
-          <ProfessorCorrectionForm
-            handleSubmit={handleCorrection}
-            handleAutoCorrection={handleAutoCorrection}
+        <HStack spacing="4">
+          <Text fontSize="2xl" fontWeight="bold" color={"gray.00"}>
+            {task.name}
+          </Text>
+        </HStack>
+        <GridItem colSpan={12} mt={4}>
+          <Text color={"gray.700"}>{task.description}</Text>
+        </GridItem>
+      </GridItem>
+      <GridItem colSpan={12}>
+        <Divider />
+      </GridItem>
+
+      <GridItem colSpan={12}>
+        {me?.role === "student" ? (
+          <StudentTaskFormWrapper
+            handleSubmit={handleAnswer}
             task={task}
+            myAnswer={myAnswer}
           />
         ) : (
-          <Text color={"gray.500"}>
-            Hasta el momento, ningún estudiante ha respondido esta tarea.
-          </Text>
+          <>
+            {task.answers.length > 0 ? (
+              <ProfessorCorrectionForm
+                handleSubmit={handleCorrection}
+                handleAutoCorrection={handleAutoCorrection}
+                task={task}
+              />
+            ) : (
+              <Text color={"gray.500"}>
+                Hasta el momento, ningún estudiante ha respondido esta tarea.
+              </Text>
+            )}
+          </>
         )}
       </GridItem>
-    );
-  }
-  return <p>error</p>;
+    </>
+  );
 };
 
 Task.getLayout = function getLayout(page: NextPage) {
@@ -287,6 +301,7 @@ Task.getLayout = function getLayout(page: NextPage) {
 export const getServerSideProps = async (context: any) => {
   const taskId = context.params.id;
   const courseSlug = context.params.slug;
+
   let task: any = await prisma.task.findUnique({
     where: {
       id: taskId,
