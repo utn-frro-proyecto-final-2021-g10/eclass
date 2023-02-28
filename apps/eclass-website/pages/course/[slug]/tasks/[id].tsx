@@ -328,7 +328,6 @@ export const getServerSideProps = async (context: any) => {
       },
     },
   });
-  console.log(task);
 
   if (!task) {
     return {
