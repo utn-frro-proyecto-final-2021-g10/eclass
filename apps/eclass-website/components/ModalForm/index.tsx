@@ -16,6 +16,8 @@ interface Props {
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "full";
   onClose: () => void;
   isOpen: boolean;
+  name?: string;
+  extraAction?: React.ReactNode;
 }
 
 export const ModalForm = ({
@@ -26,19 +28,22 @@ export const ModalForm = ({
   size,
   onClose,
   isOpen,
+  name,
+  extraAction,
 }: Props) => {
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} size={size}>
         <ModalOverlay />
         <ModalContent mx={6}>
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} name={name}>
             <ModalHeader>{header}</ModalHeader>
             <ModalBody>{children}</ModalBody>
             <ModalFooter>
               <Button variant="ghost" mr={3} onClick={onClose}>
                 Cancelar
               </Button>
+              {extraAction}
               <Button colorScheme="teal" type="submit">
                 {submit}
               </Button>

@@ -1,5 +1,3 @@
-import { FormLabel, Input, RadioGroup, Radio } from "@chakra-ui/react";
-import field from "../../pages/api/v1/field";
 import { GridItemInput } from "./common/GridItemInput";
 
 interface Props {
@@ -22,7 +20,7 @@ const StudentAnswerForm = ({ field, answer }: Props) => {
         <GridItemInput
           colSpan={12}
           name={field.id}
-          defaultValue={answer || undefined}
+          defaultValue={answer || field.possibleAnswers.split(",")[0]}
           label={field.question}
           type="select"
           options={field.possibleAnswers.split(",").map((option: string) => ({
@@ -35,7 +33,7 @@ const StudentAnswerForm = ({ field, answer }: Props) => {
         <GridItemInput
           colSpan={12}
           name={field.id}
-          defaultValue={answer || undefined}
+          defaultValue={answer || "v"}
           label={field.question}
           type="select"
           options={field.possibleAnswers.split(",").map((option: string) => ({

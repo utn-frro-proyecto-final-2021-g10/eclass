@@ -65,7 +65,7 @@ export const TasksList = ({
     const success = result.status === 200;
 
     toast({
-      title: success ? "Exito" : "Error",
+      title: success ? "Éxito" : "Error",
       description: success
         ? "la tarea se ha actualizado correctamente"
         : "Error al actualizar la tarea",
@@ -87,7 +87,7 @@ export const TasksList = ({
     const success = result.status === 200;
 
     toast({
-      title: success ? "Exito" : "Error",
+      title: success ? "Éxito" : "Error",
       description: success
         ? "la tarea se ha eliminado correctamente"
         : "Error al eliminar la tarea",
@@ -105,8 +105,6 @@ export const TasksList = ({
     setTaskToEdit(task);
     onOpen();
   };
-
-  console.log(tasks);
 
   return (
     <>

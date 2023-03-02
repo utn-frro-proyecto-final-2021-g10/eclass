@@ -84,8 +84,8 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Task answered sucesfully",
+        title: "Éxito",
+        description: "La tarea se respondió correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
@@ -146,8 +146,8 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Task answered sucesfully",
+        title: "Éxito",
+        description: "La tarea se corrigió correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
@@ -180,8 +180,6 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     )[0];
     answer.fields.forEach((field: any) => {
       if (field.type !== "text") {
-        console.log(field);
-
         field.qualification =
           field.studentAnswer === field.correctAnswer ? field.value : 0;
       }
@@ -215,8 +213,8 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     });
     if (result.status === 200) {
       toast({
-        title: "Updated",
-        description: "Task answered sucesfully",
+        title: "Éxito",
+        description: "La tarea se corrigió correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {
@@ -227,11 +225,9 @@ const Task = ({ initialTask, courseSlug }: Props) => {
       });
       if (taskResult.status === 200) {
         const data = await taskResult.json();
-        console.log(
-          "🚀 ~ file: [id].tsx ~ line 229 ~ handleAutoCorrection ~ data",
-          data
-        );
         setTask(data.task);
+        // @ts-ignore
+        form.reset();
       }
     } else {
       toast({

@@ -18,13 +18,13 @@ const StudentTaskFormWrapper = ({ handleSubmit, myAnswer, task }: Props) => {
               {myAnswer
                 ? myAnswer.fields.map((field: any, i: number) => (
                     <StudentAnswerForm
-                      key={i}
+                      key={`answer-${i}`}
                       field={field}
                       answer={field.studentAnswer}
                     />
                   ))
                 : task.fields.map((field: any, i: number) => (
-                    <StudentAnswerForm key={i} field={field} />
+                    <StudentAnswerForm key={`no-answer-${i}`} field={field} />
                   ))}
               <GridItem colSpan={12}>
                 <Button

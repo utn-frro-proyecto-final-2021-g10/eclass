@@ -9,59 +9,85 @@ import {
   Td,
   Text,
   TableContainer,
-  GridItem
-} from '@chakra-ui/react';
+  GridItem,
+  Badge,
+} from "@chakra-ui/react";
 
 interface Dictionary {
   [key: string]: any[];
 }
 
 const QualificationsPage: NextPage<{
-  courseId: string,
-  tasks: any,
-  userAnswersDictionary: Dictionary
+  courseId: string;
+  tasks: any;
+  userAnswersDictionary: Dictionary;
 }> = ({ courseId, tasks, userAnswersDictionary }) => {
-  const courseData = useCurrentCourse(courseId);
+  useCurrentCourse(courseId);
+
+  console.log(userAnswersDictionary);
 
   return (
     <>
       <GridItem colSpan={12}>
-        <TableContainer border={"1px solid"} borderColor={"gray.100"} borderRadius={"15px"}>
-          {tasks &&
-
-            <Table
-              variant={"simple"}
-              colorScheme={"facebook"}
-              borderRadius={15}
-            >
+        <TableContainer
+          border={"1px solid"}
+          borderColor={"gray.100"}
+          borderRadius={"15px"}
+        >
+          {tasks && (
+            <Table variant={"simple"} borderRadius={15}>
               <Thead bg={"teal.400"}>
                 <Tr>
                   <Td>
-                    <Text fontWeight="bold" color={"white"} fontSize={"large"}>User</Text>
+                    <Text fontWeight="bold" color={"white"} fontSize={"large"}>
+                      User
+                    </Text>
                   </Td>
                   {tasks.map((task: any) => (
-                    <Td key={task.name} fontWeight="bold" color={"white"}>{task.name}</Td>
+                    <Td key={task.name} fontWeight="bold" color={"white"}>
+                      {task.name}
+                    </Td>
                   ))}
                 </Tr>
               </Thead>
               <Tbody>
-
                 {Object.keys(userAnswersDictionary).map((key: string) => (
                   <Tr key={key}>
-                    <Td fontSize={"large"} fontWeight={"semibold"}>{key}</Td>
+                    <Td fontSize={"large"} fontWeight={"semibold"}>
+                      {key}
+                    </Td>
+             
                     {Array.isArray(userAnswersDictionary[key]) &&
                       userAnswersDictionary[key].map((elem: any) => (
-                        <Td key={`${elem.taskId}-${elem.userId}`}>{elem.qualification || "No resuelto"}</Td>
-                      ))
-                    }
-
+                        <Td key={`${elem.taskId}-${elem.userId}`}>
+                          {(
+                            <>
+                              <Badge colorScheme="blue" fontSize="xl">
+                                {elem?.reduce(
+                                  (acc: number, field: any) => {
+                                    return acc + field.fields?.qualification;
+                                  },
+                                  0
+                                )}
+                              </Badge>{" "}
+                              /{" "}
+                              <Badge colorScheme="green" fontSize="xl">
+                                {elem?.reduce(
+                                  (acc: number, field: any) => {
+                                    return acc + field.fields.value;
+                                  },
+                                  0
+                                )}
+                              </Badge>
+                            </>
+                          ) || "No resuelto"}
+                        </Td>
+                      ))}
                   </Tr>
                 ))}
-
               </Tbody>
-
             </Table>
-          }
+          )}
         </TableContainer>
       </GridItem>
     </>
@@ -79,62 +105,68 @@ export const getServerSideProps = async (context: any) => {
   const tasks = await prisma.task.findMany({
     where: {
       course: {
-        slug: context.params.slug
-      }
+        slug: context.params.slug,
+      },
     },
     select: {
       id: true,
-      name: true
-    }
-  })
+      name: true,
+    },
+  });
   const users = await prisma.user.findMany({
     where: {
       courses: {
         some: {
           course: {
-            slug: context.params.slug
-          }
-        }
+            slug: context.params.slug,
+          },
+        },
       },
-      role: "student"
-
+      role: "student",
     },
     select: {
       firstName: true,
       lastName: true,
       answers: {
         select: {
+          fields: {
+            select: {
+              value: true,
+              qualification: true,
+            },
+          },
           taskId: true,
           userId: true,
-          qualification: true
-        }
-      }
-    }
-  })
+        },
+      },
+    },
+  });
 
-
-  let usersDict: Dictionary = {}
-  let longestArray = 0
+  let usersDict: Dictionary = {};
   for (let index = 0; index < users.length; index++) {
     const user = users[index];
-    usersDict[`${user.firstName}, ${user.lastName}`] = []
+    usersDict[`${user.firstName}, ${user.lastName}`] = [];
   }
 
   for (let index = 0; index < tasks.length; index++) {
     const task = tasks[index];
     for (let usersIndex = 0; usersIndex < users.length; usersIndex++) {
       const user = users[usersIndex];
-      let taskAnswers = user.answers.filter((answer: any) => answer.taskId == task.id)
-      let dictValue = usersDict[`${user.firstName}, ${user.lastName}`]
-      dictValue.push(taskAnswers.length > 0 ? taskAnswers[0] : "")
-      usersDict[`${user.firstName}, ${user.lastName}`] = dictValue
+      let taskAnswers = user.answers.filter(
+        (answer: any) => answer.taskId == task.id
+      );
+      let dictValue = usersDict[`${user.firstName}, ${user.lastName}`];
+      dictValue.push(taskAnswers.length > 0 ? taskAnswers[0] : "");
+      usersDict[`${user.firstName}, ${user.lastName}`] = dictValue;
     }
   }
-  console.log(JSON.stringify(usersDict, null, 2));
-
 
   return {
-    props: { courseId: context.params.slug, tasks: tasks, userAnswersDictionary: usersDict },
+    props: {
+      courseId: context.params.slug,
+      tasks: tasks,
+      userAnswersDictionary: usersDict,
+    },
   };
 };
 

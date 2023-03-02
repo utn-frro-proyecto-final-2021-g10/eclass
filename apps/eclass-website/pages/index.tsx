@@ -56,9 +56,9 @@ const Home: NextPage = () => {
     const success = result.status === 200;
 
     toast({
-      title: success ? "Exito" : "Error",
+      title: success ? "Éxito" : "Error",
       description: success
-        ? "El curso ha sido editado con exito"
+        ? "El curso ha sido editado con éxito"
         : "Error al editar el curso",
       status: success ? "success" : "error",
       isClosable: true,

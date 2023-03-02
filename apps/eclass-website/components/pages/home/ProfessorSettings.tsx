@@ -50,7 +50,7 @@ export const ProfessorSettings = () => {
     const success = result.status === 200;
 
     toast({
-      title: success ? "Exito" : "Error",
+      title: success ? "Éxito" : "Error",
       description: success
         ? "El curso ha sido creado correctamente"
         : "Error al crear el curso",

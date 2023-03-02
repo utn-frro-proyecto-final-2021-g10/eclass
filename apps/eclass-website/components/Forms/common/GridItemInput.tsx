@@ -32,6 +32,9 @@ interface GridItemInputProps {
   isRequired?: boolean;
   mb?: number;
   size?: string;
+  disabled?: boolean;
+  min?: number;
+  max?: number;
 }
 export const GridItemInput = ({
   colSpan,
@@ -43,11 +46,14 @@ export const GridItemInput = ({
   placeholder,
   isRequired = true,
   size,
+  disabled,
+  min,
+  max,
   ...props
 }: GridItemInputProps) => (
   <InputContainer colSpan={colSpan}>
     <FormControl isRequired={isRequired} {...props}>
-      <FormLabel fontSize={size}>{label}</FormLabel>
+      {label && <FormLabel fontSize={size}>{label}</FormLabel>}
       {type !== "select" ? (
         <Input
           defaultValue={defaultValue}
@@ -55,6 +61,9 @@ export const GridItemInput = ({
           type={type}
           size={size}
           placeholder={placeholder}
+          disabled={disabled}
+          min={min}
+          max={max}
         />
       ) : (
         <Select
@@ -62,6 +71,7 @@ export const GridItemInput = ({
           name={name}
           textTransform="capitalize"
           size={size}
+          disabled={disabled}
         >
           {options?.map((option, i) => (
             <Fragment key={i}>
