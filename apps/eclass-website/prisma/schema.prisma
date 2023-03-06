@@ -179,6 +179,7 @@ model Task {
   dateEnd     DateTime?
   name        String
   description String
+  published   Boolean   @default(false)
   courseId    String
   course      Course    @relation(fields: [courseId], references: [id])
   answers     Answer[]

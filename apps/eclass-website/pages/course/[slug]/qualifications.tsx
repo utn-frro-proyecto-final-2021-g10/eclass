@@ -17,14 +17,15 @@ interface Dictionary {
   [key: string]: any[];
 }
 
+const calculateScore = (fields: any[], key: string) =>
+  fields.reduce((acc: number, field: any) => acc + field[key], 0);
+
 const QualificationsPage: NextPage<{
   courseId: string;
   tasks: any;
   userAnswersDictionary: Dictionary;
 }> = ({ courseId, tasks, userAnswersDictionary }) => {
   useCurrentCourse(courseId);
-
-  console.log(userAnswersDictionary);
 
   return (
     <>
@@ -56,31 +57,35 @@ const QualificationsPage: NextPage<{
                     <Td fontSize={"large"} fontWeight={"semibold"}>
                       {key}
                     </Td>
-             
+
                     {Array.isArray(userAnswersDictionary[key]) &&
                       userAnswersDictionary[key].map((elem: any) => (
                         <Td key={`${elem.taskId}-${elem.userId}`}>
-                          {(
+                          {elem?.fields?.length &&
+                          elem.fields[0].qualification ? (
                             <>
-                              <Badge colorScheme="blue" fontSize="xl">
-                                {elem?.reduce(
-                                  (acc: number, field: any) => {
-                                    return acc + field.fields?.qualification;
-                                  },
-                                  0
-                                )}
+                              <Badge colorScheme="blue">
+                                {calculateScore(elem.fields, "qualification")} /{" "}
+                                {calculateScore(elem.fields, "value")}
                               </Badge>{" "}
-                              /{" "}
-                              <Badge colorScheme="green" fontSize="xl">
-                                {elem?.reduce(
-                                  (acc: number, field: any) => {
-                                    return acc + field.fields.value;
-                                  },
-                                  0
-                                )}
+                              - (
+                              <Badge colorScheme="yellow">
+                                {(
+                                  (calculateScore(
+                                    elem.fields,
+                                    "qualification"
+                                  ) /
+                                    calculateScore(elem.fields, "value")) *
+                                  10
+                                ).toFixed(2)}
                               </Badge>
+                              )
                             </>
-                          ) || "No resuelto"}
+                          ) : elem?.fields ? (
+                            <Badge colorScheme="purple">No calificado</Badge>
+                          ) : (
+                            <Badge colorScheme="pink">No resuelto</Badge>
+                          )}
                         </Td>
                       ))}
                   </Tr>

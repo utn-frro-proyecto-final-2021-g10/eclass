@@ -93,11 +93,6 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
   async function updateTask() {
     if (req.body) {
       try {
-        const task = await prisma.task.findUnique({
-          where: {
-            id: req.query.id.toString(),
-          },
-        });
         const updatedTask = await prisma.task.update({
           where: {
             id: req.query.id.toString(),
