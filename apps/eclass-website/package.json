@@ -10,7 +10,9 @@
     "lint": "next lint",
     "db": "npx prisma studio",
     "docker:up": "docker compose up -d --remove-orphans",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "docker:login": "docker login ghcr.io",
+    "docker:publish": "docker login ghcr.io && docker build . -t ghcr.io/utn-frro-proyecto-final-2021-g10/eclass:latest && docker push ghcr.io/utn-frro-proyecto-final-2021-g10/eclass:latest"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
