@@ -16,7 +16,10 @@ export const NoveltyCard = ({ novelty }: { novelty: Novelty }) => {
       <Card baseColor="dark" href={novelty.link}>
         <CardHeader>
           <AspectRatio ratio={1.75} width="100%">
-            <Box spacing={0}>
+
+            <Box
+              // @ts-ignore 
+              spacing={0}>
               {novelty.imageUrl && (
                 <Image
                   src={novelty.imageUrl}

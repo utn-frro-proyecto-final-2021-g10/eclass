@@ -43,7 +43,7 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
   const pathname =
     typeof window !== "undefined" ? window.location.pathname : "";
 
-  const currentFolder = me?.folders?.find(
+  const currentFolder: any = me?.folders?.find(
     (folder) => folder.id === pathname.split("/")[2]
   );
 
@@ -153,7 +153,7 @@ export const MaterialLayout = ({ hideDetails }: MaterialLayoutProps) => {
                   <CardBody>
                     {currentFolder?.files?.length > 0 ? (
                       <VStack align="left" spacing={3} divider={<Divider />}>
-                        {currentFolder?.files.map((file, i) => (
+                        {currentFolder?.files.map((file: any, i: number) => (
                           <HStack key={i} justify="space-between">
                             <VStack align="left" spacing="0">
                               <Text fontWeight="bold" fontSize="md">

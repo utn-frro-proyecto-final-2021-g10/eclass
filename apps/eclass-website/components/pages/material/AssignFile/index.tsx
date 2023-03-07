@@ -13,11 +13,10 @@ import {
 import { Select } from "chakra-react-select";
 import { AddIcon } from "@chakra-ui/icons";
 import { useQueryClient } from "react-query";
-import { File } from "@prisma/client";
 import { useCurrentUser } from "../../../../hooks/useCurrentUser";
 
 interface AssignFileProps {
-  file: File;
+  file: any;
 }
 
 export const AssignFile = ({ file }: AssignFileProps) => {
@@ -25,7 +24,7 @@ export const AssignFile = ({ file }: AssignFileProps) => {
   const toast = useToast();
   const queryClient = useQueryClient();
   const [selectedCourses, setSelectedCourses] = useState<string[]>(
-    file.assignedTo.map((a) => a.courseId)
+    file.assignedTo.map((a: any) => a.courseId)
   );
   const me = useCurrentUser();
 
@@ -85,8 +84,8 @@ export const AssignFile = ({ file }: AssignFileProps) => {
                       }
                     );
                   })}
-                  onChange={(value) => {
-                    setSelectedCourses(value.map((v) => v.value));
+                  onChange={(value: any) => {
+                    setSelectedCourses(value.map((v: any) => v.value));
                   }}
                 />
               )}

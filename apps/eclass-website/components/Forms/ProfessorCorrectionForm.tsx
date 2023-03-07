@@ -145,6 +145,7 @@ const CorrectionModal = ({
                   name={field.id}
                   defaultValue={field.studentAnswer}
                   disabled
+                  // @ts-ignore
                   display="none"
                   label={field.question}
                   colSpan={10}

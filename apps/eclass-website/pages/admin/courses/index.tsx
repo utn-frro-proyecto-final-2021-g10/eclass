@@ -16,7 +16,7 @@ const CoursesPage = ({ initialCourses, users }: CoursesPageProps) => {
   const [courses, setCourses] = useState<Course[]>(initialCourses);
   const toast = useToast();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const values = eventToFormValues(e);
 

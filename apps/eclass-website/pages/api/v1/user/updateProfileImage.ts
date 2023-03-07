@@ -1,8 +1,8 @@
 import { NextApiResponse } from "next";
 import { protect } from "../../../../middleware/protect";
 import { reqWithUser } from "../../../../types/reqWithUser";
-import { formidable } from "formidable";
 import { v2 as cloudinary } from "cloudinary";
+import { IncomingForm } from "formidable";
 
 export const config = {
   api: {
@@ -17,9 +17,9 @@ async function handler(req: reqWithUser, res: NextApiResponse) {
     });
   }
 
-  const data = await new Promise(function (resolve, reject) {
-    const form = new formidable.IncomingForm({ keepExtensions: true });
-    form.parse(req, function (err, fields, files) {
+  const data: any = await new Promise(function (resolve, reject) {
+    const form = new IncomingForm({ keepExtensions: true });
+    form.parse(req, function (err: any, fields: any, files: any) {
       if (err) return reject(err);
       resolve({ fields, files });
     });

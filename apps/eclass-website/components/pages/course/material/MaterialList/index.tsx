@@ -24,7 +24,7 @@ export const MaterialList = ({ files, courseId }: MaterialListProps) => {
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  const handleRemoveFile = async (file) => {
+  const handleRemoveFile = async (file: any) => {
     const result = await fetch(`/api/v1/file/${file.fileId}/unassign`, {
       method: "POST",
       body: JSON.stringify({
@@ -65,7 +65,7 @@ export const MaterialList = ({ files, courseId }: MaterialListProps) => {
       </CardHeader>
       <CardBody>
         <VStack align="left" spacing={3} divider={<Divider />}>
-          {files.map((file, i) => (
+          {files.map((file: any, i: number) => (
             <HStack key={i} justify="space-between">
               <VStack align="left" spacing="0">
                 <Text fontWeight="bold" fontSize="md">

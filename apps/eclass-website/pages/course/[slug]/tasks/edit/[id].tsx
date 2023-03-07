@@ -18,6 +18,7 @@ import { Card, CardBody } from "../../../../../components/Card";
 import { CreateAndEditField } from "../../../../../components/pages/course/tasks/CreateAndEditField";
 import { FieldsList } from "../../../../../components/pages/course/tasks/FieldsList";
 import { useCurrentCourse } from "../../../../../hooks/useCurrentCourse";
+import { Field } from "@prisma/client";
 
 interface Props {
   initialTask: any;

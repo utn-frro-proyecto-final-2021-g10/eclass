@@ -22,6 +22,7 @@
     "@emotion/styled": "^11",
     "@prisma/client": "3.4.1",
     "@types/bcrypt": "^5.0.0",
+    "@types/formidable": "^2.0.5",
     "bcrypt": "^5.0.1",
     "chakra-react-select": "^4.4.3",
     "chakra-ui-markdown-renderer": "^4.0.0",

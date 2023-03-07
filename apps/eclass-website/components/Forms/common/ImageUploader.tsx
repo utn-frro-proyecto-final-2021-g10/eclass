@@ -32,7 +32,7 @@ export const ImageUploader = ({
   const handleUploadImage = async () => {
     setLoading.on();
     const form = formRef.current;
-
+    if (!form) return
     const data = new FormData(form);
     const values = getFormValues(data);
 

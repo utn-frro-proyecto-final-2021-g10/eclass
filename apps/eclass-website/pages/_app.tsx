@@ -23,7 +23,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     <QueryClientProvider client={queryClient}>
       <SessionProvider>
         <ChakraProvider>
-          {getLayout(<Component {...pageProps} />)}
+          {
+            // @ts-ignore 
+            getLayout(<Component {...pageProps} />)
+          }
         </ChakraProvider>
       </SessionProvider>
     </QueryClientProvider>

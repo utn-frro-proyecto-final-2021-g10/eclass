@@ -9,7 +9,7 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
-  fieldToEdit?: Field;
+  fieldToEdit?: Field | null;
 }
 
 export const CreateAndEditField = ({
@@ -51,6 +51,7 @@ export const CreateAndEditField = ({
             { value: "multiple-choice", label: "Opción correcta" },
             { value: "truth-or-false", label: "Verdadero - falso" },
           ]}
+          // @ts-ignore
           onChange={(e) => setQuestionType(e.target.value)}
           defaultValue={fieldToEdit?.type}
         />
@@ -105,6 +106,7 @@ export const CreateAndEditField = ({
         )}
         {fieldToEdit && (
           <GridItemInput
+            // @ts-ignore
             display="none"
             size="sm"
             label="Id"

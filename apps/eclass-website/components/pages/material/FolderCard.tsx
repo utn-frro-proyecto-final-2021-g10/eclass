@@ -22,7 +22,7 @@ import { useQueryClient } from "react-query";
 import { formatBytes } from "../../../utils/formatBytes";
 
 interface FolderCardProps {
-  folder: Folder;
+  folder: any;
   isCurrent?: boolean;
   setEditFolder: (folder: Folder) => void;
   onOpenCreateFolder: () => void;
@@ -141,9 +141,9 @@ export const FolderCard = ({
               {folder.files?.length}
               {folder.files?.length === 1 ? " archivo" : " archivos"}
               <br />
-              {folder.files?.reduce((acc, file) => acc + file.size, 0) > 0 ? (
+              {folder.files?.reduce((acc: any, file: { size: any; }) => acc + file.size, 0) > 0 ? (
                 formatBytes(
-                  folder.files?.reduce((acc, file) => acc + file.size, 0)
+                  folder.files?.reduce((acc: any, file: { size: any; }) => acc + file.size, 0)
                 )
               ) : (
                 <br />

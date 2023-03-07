@@ -144,6 +144,7 @@ export const TasksList = ({
                                 Fecha de inicio:{" "}
                                 <Badge colorScheme="green">
                                   {new Date(
+                                    // @ts-ignore 
                                     task.dateStart
                                   ).toLocaleDateString()}
                                 </Badge>
@@ -151,7 +152,10 @@ export const TasksList = ({
                               <Text fontSize="sm">
                                 Fecha de entrega:{" "}
                                 <Badge colorScheme="red">
-                                  {new Date(task.dateEnd).toLocaleDateString()}
+                                  {
+                                    // @ts-ignore 
+                                    new Date(task.dateEnd).toLocaleDateString()
+                                  }
                                 </Badge>
                               </Text>
                             </VStack>
