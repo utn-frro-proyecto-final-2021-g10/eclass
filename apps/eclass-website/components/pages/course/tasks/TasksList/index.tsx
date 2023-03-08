@@ -161,28 +161,6 @@ export const TasksList = ({
                       <Text fontWeight="bold" fontSize="md">
                         {task.name}
                       </Text>
-                      {user?.role === "professor" && (
-                        <>
-                          {" "}
-                          <Badge colorScheme="green">
-                            {task.published ? "Publicada" : "No publicada"}
-                          </Badge>
-                          {/* @ts-ignore */}
-                          {new Date(task.dateStart) > new Date() && (
-                            <Badge colorScheme="yellow">Pendiente</Badge>
-                          )}
-                          {/* @ts-ignore */}
-                          {new Date(task.dateStart) < new Date() &&
-                            // @ts-ignore
-                            new Date(task.dateEnd) > new Date() && (
-                              <Badge colorScheme="blue">En curso</Badge>
-                            )}
-                          {/* @ts-ignore */}
-                          {new Date(task.dateEnd) < new Date() && (
-                            <Badge colorScheme="red">Finalizada</Badge>
-                          )}
-                        </>
-                      )}
                       <Popover>
                         <PopoverTrigger>
                           <IconButton
@@ -221,6 +199,28 @@ export const TasksList = ({
                           </PopoverBody>
                         </PopoverContent>
                       </Popover>
+                      {user?.role === "professor" && (
+                        <>
+                          {" "}
+                          <Badge colorScheme={task.published ? "green" : "red"}>
+                            {task.published ? "Publicada" : "No publicada"}
+                          </Badge>
+                          {/* @ts-ignore */}
+                          {new Date(task.dateStart) > new Date() && (
+                            <Badge colorScheme="yellow">Pendiente</Badge>
+                          )}
+                          {/* @ts-ignore */}
+                          {new Date(task.dateStart) < new Date() &&
+                            // @ts-ignore
+                            new Date(task.dateEnd) > new Date() && (
+                              <Badge colorScheme="blue">En curso</Badge>
+                            )}
+                          {/* @ts-ignore */}
+                          {new Date(task.dateEnd) < new Date() && (
+                            <Badge colorScheme="orange">Finalizada</Badge>
+                          )}
+                        </>
+                      )}
                     </HStack>
                     <Text fontSize="sm">{task.description}</Text>
                   </VStack>

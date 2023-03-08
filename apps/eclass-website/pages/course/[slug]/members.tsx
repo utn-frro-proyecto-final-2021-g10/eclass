@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { CourseLayout } from "../../../layouts/course-layout";
 import { useCurrentUser } from "../../../hooks/useCurrentUser";
 import { useCurrentCourse } from "../../../hooks/useCurrentCourse";
@@ -46,6 +46,10 @@ const Members: NextPage<{ courseId: string }> = ({ courseId }) => {
       )
     );
   };
+
+  useEffect(() => {
+    resetEmailLists();
+  }, []);
 
   const emailList: string[] = useMemo(() => {
     const list = {
