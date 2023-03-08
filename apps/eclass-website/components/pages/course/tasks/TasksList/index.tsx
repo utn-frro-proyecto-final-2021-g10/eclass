@@ -54,6 +54,16 @@ export const TasksList = ({
       dateEnd: new Date(values.dateEnd),
     };
 
+    if (updatedTask.dateEnd <= updatedTask.dateStart) {
+      toast({
+        title: "Error",
+        description: "La fecha de fin debe ser posterior a la fecha de inicio",
+        status: "error",
+        isClosable: true,
+      });
+      return;
+    }
+
     const result = await fetch(`/api/v1/task/${taskToEdit?.id}`, {
       method: "PUT",
       body: JSON.stringify(updatedTask),
@@ -151,6 +161,28 @@ export const TasksList = ({
                       <Text fontWeight="bold" fontSize="md">
                         {task.name}
                       </Text>
+                      {user?.role === "professor" && (
+                        <>
+                          {" "}
+                          <Badge colorScheme="green">
+                            {task.published ? "Publicada" : "No publicada"}
+                          </Badge>
+                          {/* @ts-ignore */}
+                          {new Date(task.dateStart) > new Date() && (
+                            <Badge colorScheme="yellow">Pendiente</Badge>
+                          )}
+                          {/* @ts-ignore */}
+                          {new Date(task.dateStart) < new Date() &&
+                            // @ts-ignore
+                            new Date(task.dateEnd) > new Date() && (
+                              <Badge colorScheme="blue">En curso</Badge>
+                            )}
+                          {/* @ts-ignore */}
+                          {new Date(task.dateEnd) < new Date() && (
+                            <Badge colorScheme="red">Finalizada</Badge>
+                          )}
+                        </>
+                      )}
                       <Popover>
                         <PopoverTrigger>
                           <IconButton

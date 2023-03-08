@@ -30,6 +30,16 @@ export const TaskForm = ({ course }: Props) => {
       },
     };
 
+    if (task.dateEnd < task.dateStart) {
+      toast({
+        title: "Error",
+        description: "La fecha de fin debe ser posterior a la fecha de inicio",
+        status: "error",
+        isClosable: true,
+      });
+      return;
+    }
+
     const result = await fetch(`/api/v1/task`, {
       method: "POST",
       body: JSON.stringify(task),
