@@ -161,6 +161,9 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
                 },
               }
             : {}),
+          orderBy: {
+            name: "asc",
+          },
         },
         settings: true,
       },

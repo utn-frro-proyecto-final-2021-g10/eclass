@@ -106,6 +106,33 @@ export const TasksList = ({
     onOpen();
   };
 
+  const handlePublishTask = async (taskToEdit: Task, published: boolean) => {
+    const result = await fetch(`/api/v1/task/${taskToEdit?.id}`, {
+      method: "PUT",
+      body: JSON.stringify({ published }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const success = result.status === 200;
+
+    toast({
+      title: success ? "Éxito" : "Error",
+      description: success
+        ? `la tarea se ha ${
+            published ? "publicado" : "despublicado"
+          } correctamente`
+        : `Error al ${published ? "publicar" : "despublicar"} la tarea`,
+      status: success ? "success" : "error",
+      isClosable: true,
+    });
+
+    if (success) {
+      queryClient.invalidateQueries("current-course");
+    }
+  };
+
   return (
     <>
       <Card>
@@ -144,7 +171,7 @@ export const TasksList = ({
                                 Fecha de inicio:{" "}
                                 <Badge colorScheme="green">
                                   {new Date(
-                                    // @ts-ignore 
+                                    // @ts-ignore
                                     task.dateStart
                                   ).toLocaleDateString()}
                                 </Badge>
@@ -153,7 +180,7 @@ export const TasksList = ({
                                 Fecha de entrega:{" "}
                                 <Badge colorScheme="red">
                                   {
-                                    // @ts-ignore 
+                                    // @ts-ignore
                                     new Date(task.dateEnd).toLocaleDateString()
                                   }
                                 </Badge>
@@ -204,6 +231,18 @@ export const TasksList = ({
                         </Link>
                       </>
                     )}
+                    {user?.role === "professor" && (
+                      <Button
+                        outline="none"
+                        size="sm"
+                        variant={task.published ? "outline" : "solid"}
+                        colorScheme="pink"
+                        onClick={() => handlePublishTask(task, !task.published)}
+                      >
+                        {task.published ? "Despublicar" : "Publicar"}
+                      </Button>
+                    )}
+
                     <Link
                       href={`/course/${course.slug}/tasks/${task.id}`}
                       passHref
@@ -215,6 +254,10 @@ export const TasksList = ({
                         variant="solid"
                         colorScheme="green"
                         leftIcon={<ArrowForwardIcon />}
+                        disabled={task.published === false}
+                        pointerEvents={
+                          task.published === false ? "none" : "auto"
+                        }
                       >
                         {user?.role === "professor"
                           ? "Ver respuestas"
