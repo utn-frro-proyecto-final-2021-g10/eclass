@@ -1,6 +1,6 @@
 import { Novelty } from "@prisma/client";
 
-export const novelties: Omit<Novelty, "id" | "date" >[] = [
+export const novelties: Omit<Novelty, "id" | "date">[] = [
   {
     title: "lorem ipsum",
     description:

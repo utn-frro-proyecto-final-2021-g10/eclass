@@ -33,7 +33,7 @@ export const FileUploader = ({ folderId, color }: FileUploaderProps) => {
   const handleUploadFile = async () => {
     setLoading.on();
     const form = formRef.current;
-    if (!form) return
+    if (!form) return;
     const data = new FormData(form);
     const values = getFormValues(data);
 

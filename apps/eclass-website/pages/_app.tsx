@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <SessionProvider>
         <ChakraProvider>
           {
-            // @ts-ignore 
+            // @ts-ignore
             getLayout(<Component {...pageProps} />)
           }
         </ChakraProvider>

@@ -18,7 +18,9 @@ function handler(req: reqWithUser, res: NextApiResponse) {
 
   // gets all novelties
   async function getNovelties() {
-    const novelties = await prisma.novelty.findMany({ orderBy: { date: "desc" } });
+    const novelties = await prisma.novelty.findMany({
+      orderBy: { date: "desc" },
+    });
     if (novelties)
       return res.status(200).json({
         success: true,
@@ -38,7 +40,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
           data: {
             ...req.body,
             date: new Date(),
-          }
+          },
         });
         return res.status(200).json({
           success: true,

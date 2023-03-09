@@ -18,17 +18,17 @@ export const BaseLayout = ({ children }: BaseLayoutProps) => {
     <>
       <Head>
         <title>
-          E-Class {institution?.name ? `| ${institution.name}` : ""}
+          e-Class {institution?.name ? `| ${institution.name}` : ""}
         </title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
           name="description"
-          content={`E-Class ${
+          content={`e-Class ${
             institution?.name ? `| ${institution.name}` : ""
           }`}
         />
         <meta name="author" content="PencilPaperScissor" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
       </Head>
       <Flex as="main" direction="column" minH="100vh">
         {me ? (

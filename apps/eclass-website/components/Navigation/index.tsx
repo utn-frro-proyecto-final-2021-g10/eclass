@@ -13,6 +13,7 @@ import {
   MenuList,
   MenuItem,
   Badge,
+  Image,
 } from "@chakra-ui/react";
 import {
   CloseIcon,
@@ -75,15 +76,9 @@ export const Navigation = () => {
     >
       <Box color="gray.700" pb={[0, 0, 0, 2]}>
         <Link href="/" passHref>
-          <Text
-            as="a"
-            fontSize="3xl"
-            fontWeight="bold"
-            cursor="pointer"
-            lineHeight={1}
-          >
-            e-class
-          </Text>
+          <a>
+            <Image src="/logo.png" alt="e-Class" w="6.5rem" />
+          </a>
         </Link>
       </Box>
       {course && (

@@ -47,7 +47,7 @@ function handler(req: reqWithUser, res: NextApiResponse) {
       message: "No se encontraron tareas",
     });
   }
-  
+
   // creates an task
   async function createTask() {
     if (req.body) {
