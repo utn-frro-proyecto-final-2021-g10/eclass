@@ -14,8 +14,8 @@ export const createCourses = async (prisma: PrismaClient) => {
 
       const professor = await prisma.user.create({
         data: {
-          firstName: `Owner of ${course.name}`,
-          lastName: `Professor ${i}`,
+          firstName: `Dueño de "${course.name}"`,
+          lastName: `Profesor ${i}`,
           birthDate: new Date("2000-01-01"),
           institutionIdentifier: (InitialID + i).toString(),
           email: `professorowner${i}@eclass.com`,

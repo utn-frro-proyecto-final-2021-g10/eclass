@@ -9,6 +9,7 @@ import {
   useBoolean,
   Badge,
   IconButton,
+  Box,
 } from "@chakra-ui/react";
 import { ArrowForwardIcon, ChatIcon } from "@chakra-ui/icons";
 import { Card, CardHeader, CardBody } from "../../../../Card";
@@ -60,6 +61,13 @@ export const Publication = ({ message }: Props) => {
             <Text fontSize="xl">
               {message.user.firstName} {message.user.lastName}
             </Text>
+            {message.user.role === "professor" && (
+              <Box>
+                <Badge ml={1} colorScheme="purple">
+                  Profesor
+                </Badge>
+              </Box>
+            )}
           </HStack>
           <Badge colorScheme="teal">{parseDate(message.datetime)}</Badge>
         </HStack>

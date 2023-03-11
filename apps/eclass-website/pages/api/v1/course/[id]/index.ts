@@ -88,6 +88,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
                     firstName: true,
                     lastName: true,
                     profileImageUrl: true,
+                    role: true,
                   },
                 },
                 replies: {
@@ -97,6 +98,7 @@ const handler = async (req: reqWithUser, res: NextApiResponse) => {
                         firstName: true,
                         lastName: true,
                         profileImageUrl: true,
+                        role: true,
                       },
                     },
                   },

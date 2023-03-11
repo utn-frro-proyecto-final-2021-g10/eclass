@@ -136,7 +136,7 @@ export const Navigation = () => {
               colorScheme={me?.role === "admin" ? "pink" : "blue"}
               variant="solid"
             >
-              {me?.role}
+              {me?.role === "admin" ? "Administrador" : "Profesor"}
             </Badge>
           )}
           <Menu>

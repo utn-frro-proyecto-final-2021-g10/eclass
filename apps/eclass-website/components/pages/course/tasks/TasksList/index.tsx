@@ -77,7 +77,7 @@ export const TasksList = ({
     toast({
       title: success ? "Éxito" : "Error",
       description: success
-        ? "la tarea se ha actualizado correctamente"
+        ? "La tarea se ha actualizado correctamente"
         : "Error al actualizar la tarea",
       status: success ? "success" : "error",
       isClosable: true,
@@ -99,7 +99,7 @@ export const TasksList = ({
     toast({
       title: success ? "Éxito" : "Error",
       description: success
-        ? "la tarea se ha eliminado correctamente"
+        ? "La tarea se ha eliminado correctamente"
         : "Error al eliminar la tarea",
       status: success ? "success" : "error",
       isClosable: true,
@@ -130,7 +130,7 @@ export const TasksList = ({
     toast({
       title: success ? "Éxito" : "Error",
       description: success
-        ? `la tarea se ha ${
+        ? `La tarea se ha ${
             published ? "publicado" : "despublicado"
           } correctamente`
         : `Error al ${published ? "publicar" : "despublicar"} la tarea`,

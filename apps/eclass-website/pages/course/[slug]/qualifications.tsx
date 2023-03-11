@@ -41,7 +41,7 @@ const QualificationsPage: NextPage<{
                 <Tr>
                   <Td>
                     <Text fontWeight="bold" color={"white"} fontSize={"large"}>
-                      User
+                      Alumnos
                     </Text>
                   </Td>
                   {tasks.map((task: any) => (

@@ -120,7 +120,7 @@ export const MemberList = ({
 
                   {owner && user.id === owner && (
                     <Badge colorScheme="purple" variant="outline">
-                      Owner
+                      Dueño
                     </Badge>
                   )}
                 </HStack>
