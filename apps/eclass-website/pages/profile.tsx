@@ -208,43 +208,45 @@ const ProfilePage: NextPage = () => {
               </GridItem>
             </Grid>
           </form>
-          <form autoComplete="off">
-            <Grid gap={5} templateColumns="repeat(6, 1fr)" w="100%" mt="6">
-              <GridItem colSpan={6}>
-                <Text fontSize="2xl" fontWeight="bold">
-                  Cambiar Contraseña
-                </Text>
-                <Text fontSize="sm" color="gray.500">
-                  (No implementado)
-                </Text>
-              </GridItem>
-              <GridItem colSpan={6}>
-                <FormControl isRequired>
-                  <FormLabel>Contraseña Actual</FormLabel>
-                  <Input type="password" />
-                </FormControl>
-              </GridItem>
-              <GridItem colSpan={[6, 6, 3, 3]}>
-                <FormControl isRequired>
-                  <FormLabel>Nueva Contraseña</FormLabel>
-                  <Input type="password" />
-                </FormControl>
-              </GridItem>
-              <GridItem colSpan={[6, 6, 3, 3]}>
-                <FormControl isRequired>
-                  <FormLabel>Repetir Nueva Contraseña</FormLabel>
-                  <Input type="password" />
-                </FormControl>
-              </GridItem>
-              <GridItem colSpan={6}>
-                <HStack justify="end">
-                  <Button type="submit" colorScheme="teal" variant="outline">
-                    Cambiar
-                  </Button>
-                </HStack>
-              </GridItem>
-            </Grid>
-          </form>
+          {false && (
+            <form autoComplete="off">
+              <Grid gap={5} templateColumns="repeat(6, 1fr)" w="100%" mt="6">
+                <GridItem colSpan={6}>
+                  <Text fontSize="2xl" fontWeight="bold">
+                    Cambiar Contraseña
+                  </Text>
+                  <Text fontSize="sm" color="gray.500">
+                    (No implementado)
+                  </Text>
+                </GridItem>
+                <GridItem colSpan={6}>
+                  <FormControl isRequired>
+                    <FormLabel>Contraseña Actual</FormLabel>
+                    <Input type="password" />
+                  </FormControl>
+                </GridItem>
+                <GridItem colSpan={[6, 6, 3, 3]}>
+                  <FormControl isRequired>
+                    <FormLabel>Nueva Contraseña</FormLabel>
+                    <Input type="password" />
+                  </FormControl>
+                </GridItem>
+                <GridItem colSpan={[6, 6, 3, 3]}>
+                  <FormControl isRequired>
+                    <FormLabel>Repetir Nueva Contraseña</FormLabel>
+                    <Input type="password" />
+                  </FormControl>
+                </GridItem>
+                <GridItem colSpan={6}>
+                  <HStack justify="end">
+                    <Button type="submit" colorScheme="teal" variant="outline">
+                      Cambiar
+                    </Button>
+                  </HStack>
+                </GridItem>
+              </Grid>
+            </form>
+          )}
         </GridItem>
       </GridContainer>
     </>
