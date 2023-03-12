@@ -85,7 +85,7 @@ const Task = ({ initialTask, courseSlug }: Props) => {
     if (result.status === 200) {
       toast({
         title: "Éxito",
-        description: "La tarea se respondió correctamente",
+        description: "La respuesta a esta tarea se envió correctamente",
         status: "success",
       });
       const taskResult = await fetch(`/api/v1/task/${initialTask.id}`, {

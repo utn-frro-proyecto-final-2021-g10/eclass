@@ -75,7 +75,7 @@ export const courses: Omit<ICourse, "ownerId" | "forumId">[] = [
     moreInfo:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     imageUrl: "https://avatars.dicebear.com/api/identicon/6.svg?b=%23dedede",
-    enrollmentId: "SITEMAS-Y-ORGANIZACIONES-AB1",
+    enrollmentId: "SISTEMAS-Y-ORGANIZACIONES-AB1",
     settings: {
       baseColor: Color.purple,
     },
